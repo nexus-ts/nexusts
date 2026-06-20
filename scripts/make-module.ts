@@ -1,10 +1,24 @@
 #!/usr/bin/env bun
 /**
- * `bun make:module <Name>` — generate a module file under
- * `src/app/modules/` and wire it into AppModule.
+ * DEPRECATED — Use the `nx` CLI instead.
+ *
+ *   bunx nx make:module <Name>
+ *
+ * The new CLI supports optional controllers/services/repositories
+ * (use --no-controller, --no-service, --no-repo) and reads
+ * `nx.config.ts` to determine paths.
+ *
+ * See: docs/user-guide/cli.md
+ *
+ * This file is kept only so older workflows don't break. It will be
+ * removed in v0.3.
  */
-import { writeFileSync, appendFileSync, mkdirSync, existsSync } from "node:fs";
+import { writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { resolve, dirname } from "node:path";
+
+console.warn(
+	"\n⚠  scripts/make-module.ts is deprecated. Use `bunx nx make:module <Name>` instead.\n",
+);
 
 const name = process.argv[2];
 if (!name) {
@@ -38,7 +52,8 @@ console.log(`[make:module] wrote ${out}`);
 // Best-effort: add the import + module to AppModule if it exists.
 const appModule = resolve("src/app/app.module.ts");
 if (existsSync(appModule)) {
-	const content = readFileUtf8(appModule);
+	const { readFileSync } = require("node:fs") as typeof import("node:fs");
+	const content = readFileSync(appModule, "utf8");
 	if (!content.includes(`${name}Module`)) {
 		const updated = content
 			.replace(/(@Module\(\{[\s\S]*?imports:\s*\[)/, `$1${name}Module, `)
@@ -49,9 +64,4 @@ if (existsSync(appModule)) {
 		writeFileSync(appModule, updated);
 		console.log(`[make:module] wired ${name}Module into AppModule`);
 	}
-}
-
-function readFileUtf8(p: string): string {
-	const { readFileSync } = require("node:fs") as typeof import("node:fs");
-	return readFileSync(p, "utf8");
 }

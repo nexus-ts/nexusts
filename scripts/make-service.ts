@@ -1,10 +1,23 @@
 #!/usr/bin/env bun
 /**
- * `bun make:service <Name>` — generate a service file under
- * `src/app/services/` with the @Injectable decorator.
+ * DEPRECATED — Use the `nx` CLI instead.
+ *
+ *   bunx nx make:service <Name>
+ *
+ * The new CLI reads `nx.config.ts` and can inject a matching repository
+ * automatically when an ORM is configured.
+ *
+ * See: docs/user-guide/cli.md
+ *
+ * This file is kept only so older workflows don't break. It will be
+ * removed in v0.3.
  */
 import { writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { resolve, dirname } from "node:path";
+
+console.warn(
+	"\n⚠  scripts/make-service.ts is deprecated. Use `bunx nx make:service <Name>` instead.\n",
+);
 
 const name = process.argv[2];
 if (!name) {

@@ -1,10 +1,24 @@
 #!/usr/bin/env bun
 /**
- * `bun make:controller <Name>` — generate a controller file under
- * `src/app/controllers/` with the basic decorator structure.
+ * DEPRECATED — Use the `nx` CLI instead.
+ *
+ *   bunx nx make:controller <Name>
+ *
+ * The new CLI supports routing-style selection (nest/adonis/functional),
+ * reads the project config from `nx.config.ts`, and offers a much richer
+ * set of generators (`make:crud`, `make:model`, `make:migration`, …).
+ *
+ * See: docs/user-guide/cli.md
+ *
+ * This file is kept only so older workflows don't break. It will be
+ * removed in v0.3.
  */
 import { writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { resolve, dirname } from "node:path";
+
+console.warn(
+	"\n⚠  scripts/make-controller.ts is deprecated. Use `bunx nx make:controller <Name>` instead.\n",
+);
 
 const name = process.argv[2];
 if (!name) {

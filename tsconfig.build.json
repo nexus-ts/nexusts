@@ -2,9 +2,11 @@
   "extends": "./tsconfig.json",
   "include": [
     "src/core/**/*.ts",
-    "src/core/**/*.d.ts"
+    "src/cli/**/*.ts",
+    "src/core/**/*.d.ts",
+    "src/cli/**/*.d.ts"
   ],
   "compilerOptions": {
-    "rootDir": "./src/core"
+    "rootDir": "./src"
   }
 }

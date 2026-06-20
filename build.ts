@@ -24,13 +24,13 @@ if (existsSync(DIST)) rmSync(DIST, { recursive: true, force: true });
 mkdirSync(DIST, { recursive: true });
 
 // -------------------------------------------------------------------------
-// Phase 1: bun.build() — produces the runtime artifact from src/index.ts.
-//          This entry file re-exports from src/core/*, so the bundler
-//          follows the import graph automatically.
+// Phase 1: bun.build() — produces runtime artifacts.
+//          We bundle two entry points: the public `nexus` package
+//          (`src/index.ts`) and the `nx` CLI (`src/cli/index.ts`).
 // -------------------------------------------------------------------------
 console.log("[build] bundling with bun.build()…");
 const result = await Bun.build({
-	entrypoints: ["./src/index.ts"],
+	entrypoints: ["./src/index.ts", "./src/cli/index.ts"],
 	outdir: "./dist",
 	target: "bun",
 	format: "esm",
@@ -78,9 +78,9 @@ const tsc = spawnSync(
 		"--project",
 		"tsconfig.build.json",
 		"--rootDir",
-		"./src/core",
+		"./src",
 		"--outDir",
-		`${DIST}/core`,
+		`${DIST}`,
 	],
 	{ stdio: "inherit" },
 );
@@ -89,10 +89,14 @@ if (tsc.status !== 0) {
 	process.exit(tsc.status ?? 1);
 }
 
-// Emit the top-level declaration too.
+// Emit the top-level declarations too.
 await Bun.write(
 	`${DIST}/index.d.ts`,
 	`export * from './core/index.js';\nexport { default } from './core/application.js';\n`,
+);
+await Bun.write(
+	`${DIST}/cli/index.d.ts`,
+	`export {} from '../core/cli/index.js';\n`,
 );
 
 // -------------------------------------------------------------------------

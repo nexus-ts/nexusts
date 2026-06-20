@@ -42,7 +42,14 @@
     "./runtime": {
       "types": "./dist/core/runtime/index.d.ts",
       "import": "./dist/core/runtime/index.js"
+    },
+    "./cli": {
+      "types": "./dist/cli/index.d.ts",
+      "import": "./dist/cli/index.js"
     }
+  },
+  "bin": {
+    "nx": "./dist/cli/index.js"
   },
   "files": [
     "dist",
@@ -52,10 +59,11 @@
     "build": "bun run build.ts",
     "dev": "bun --hot src/app/main.ts",
     "start": "bun src/app/main.ts",
-    "test": "vitest",
+    "test": "vitest run",
     "test:watch": "vitest --watch",
     "typecheck": "tsc --noEmit",
     "lint": "echo 'Add eslint later'",
+    "nx": "bun src/cli/index.ts",
     "make:controller": "bun scripts/make-controller.ts",
     "make:service": "bun scripts/make-service.ts",
     "make:module": "bun scripts/make-module.ts"

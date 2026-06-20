@@ -47,6 +47,7 @@ Step-by-step guides for building applications.
 | View engines | [`user-guide/view-engines.md`](./user-guide/view-engines.md) | [`user-guide/view-engines.ko.md`](./user-guide/view-engines.ko.md) |
 | Inertia.js adapter | [`user-guide/inertia.md`](./user-guide/inertia.md) | [`user-guide/inertia.ko.md`](./user-guide/inertia.ko.md) |
 | Runtime & deployment | [`user-guide/runtime-deployment.md`](./user-guide/runtime-deployment.md) | [`user-guide/runtime-deployment.ko.md`](./user-guide/runtime-deployment.ko.md) |
+| **CLI · `nx` command runner** | [`user-guide/cli.md`](./user-guide/cli.md) | [`user-guide/cli.ko.md`](./user-guide/cli.ko.md) |
 
 ---
 

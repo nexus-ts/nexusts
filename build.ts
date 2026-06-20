@@ -25,12 +25,17 @@ mkdirSync(DIST, { recursive: true });
 
 // -------------------------------------------------------------------------
 // Phase 1: bun.build() — produces runtime artifacts.
-//          We bundle two entry points: the public `nexus` package
-//          (`src/index.ts`) and the `nx` CLI (`src/cli/index.ts`).
+//          We bundle three entry points: the public `nexus` package
+//          (`src/index.ts`), the `nx` CLI (`src/cli/index.ts`), and
+//          the optional `nexus/auth` module (`src/auth/index.ts`).
 // -------------------------------------------------------------------------
 console.log("[build] bundling with bun.build()…");
 const result = await Bun.build({
-	entrypoints: ["./src/index.ts", "./src/cli/index.ts"],
+	entrypoints: [
+		"./src/index.ts",
+		"./src/cli/index.ts",
+		"./src/auth/index.ts",
+	],
 	outdir: "./dist",
 	target: "bun",
 	format: "esm",

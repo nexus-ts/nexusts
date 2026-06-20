@@ -8,6 +8,12 @@ export default defineConfig({
 		environment: "node",
 		globals: false,
 		include: ["tests/**/*.test.ts"],
+		// Known issue: better-auth pulls in zod v4 via
+		// @better-auth/core. When run alongside tests that import the
+		// top-level zod (v3), a race during module init makes `z.object`
+		// undefined. Workaround: run auth tests separately, or upgrade
+		// zod to v4. See the "Auth module integration" section in the
+		// auth docs.
 	},
 	esbuild: {
 		target: "es2022",

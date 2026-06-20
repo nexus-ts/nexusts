@@ -19,7 +19,7 @@ import "reflect-metadata";
 import { METADATA_KEY, PARAM_TYPES } from "../constants.js";
 import type { ParamMetadata } from "../di/tokens.js";
 
-function createParamDecorator(
+export function createParamDecorator(
 	type: number,
 	data?: string | object,
 ): ParameterDecorator {

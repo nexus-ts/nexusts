@@ -22,8 +22,15 @@ export type Filter =
 	| "plural"
 	| "singular";
 
-export type RenderValue = string | number | boolean | undefined | null | RenderObject;
 export interface RenderObject { [key: string]: RenderValue }
+export type RenderValue =
+	| string
+	| number
+	| boolean
+	| undefined
+	| null
+	| RenderObject
+	| RenderValue[];
 export type RenderContext = RenderObject;
 
 const VAR_RE = /\{\{\s*([\w.]+)(?:\s*\|\s*(\w+))?\s*\}\}/;

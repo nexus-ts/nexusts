@@ -11,6 +11,7 @@ NexusJS로 애플리케이션을 개발하기 위한 단계별 가이드.
 | Validation | [`validation.md`](./validation.md) | [`validation.ko.md`](./validation.ko.md) |
 | View engines | [`view-engines.md`](./view-engines.md) | [`view-engines.ko.md`](./view-engines.ko.md) |
 | Inertia.js adapter | [`inertia.md`](./inertia.md) | [`inertia.ko.md`](./inertia.ko.md) |
+| **Authentication (better-auth)** | [`auth.md`](./auth.md) | [`auth.ko.md`](./auth.ko.md) |
 | Runtime & deployment | [`runtime-deployment.md`](./runtime-deployment.md) | [`runtime-deployment.ko.md`](./runtime-deployment.ko.md) |
 | **CLI · `nx` command runner** | [`cli.md`](./cli.md) | [`cli.ko.md`](./cli.ko.md) |
 

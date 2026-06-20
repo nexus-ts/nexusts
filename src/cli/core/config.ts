@@ -24,6 +24,55 @@ export type DatabaseDriver =
 	| "mysql"
 	| "none";
 
+/** Authentication surface. Mirrors `src/auth/types.ts` (kept inline so
+ * the CLI doesn't depend on the auth module). */
+export interface NxAuthConfig {
+	/** Mount path for better-auth handler. Default: `/api/auth`. */
+	basePath?: string;
+	/** Email + password authentication. */
+	emailAndPassword?: {
+		enabled?: boolean;
+		requireEmailVerification?: boolean;
+		minPasswordLength?: number;
+		maxPasswordLength?: number;
+	};
+	/** Social providers keyed by name (github, google, discord, ...). */
+	socialProviders?: Record<string, {
+		clientId: string;
+		clientSecret: string;
+		scope?: string[];
+		redirectURI?: string;
+	}>;
+	/** JWT plugin (token + JWKS endpoint). */
+	jwt?: {
+		enabled: boolean;
+		jwksPath?: string;
+		issuer?: string;
+		audience?: string;
+		expiresIn?: number;
+	};
+	/** Passkey plugin (WebAuthn). */
+	passkey?: {
+		enabled: boolean;
+		rpName: string;
+		rpId: string;
+		origin: string | string[];
+	};
+	/** Session TTL in seconds. Default: 7 days. */
+	sessionExpiresInSeconds?: number;
+	/** Cookie domain for subdomains. */
+	cookieDomain?: string;
+	/** Cross-subdomain cookies. */
+	crossSubDomainCookies?: {
+		enabled: boolean;
+		domain?: string;
+	};
+	/** Cookie `SameSite` attribute. */
+	cookieSameSite?: "lax" | "strict" | "none";
+	/** Cookie `Secure` flag. Default: true in production. */
+	cookieSecure?: boolean;
+}
+
 export interface NxConfig {
 	/** Routing style for `make:controller` templates. */
 	routing: RoutingStyle;
@@ -55,6 +104,9 @@ export interface NxConfig {
 	};
 	/** Names that get auto-included in `@Module({ controllers: [...] })`. */
 	moduleStyle: "nest" | "adonis";
+
+	/** Authentication (better-auth) configuration. Optional. */
+	auth?: NxAuthConfig;
 }
 
 export const DEFAULT_CONFIG: NxConfig = {
@@ -81,6 +133,7 @@ export const DEFAULT_CONFIG: NxConfig = {
 		dto: "src/app/dto",
 	},
 	moduleStyle: "nest",
+	auth: undefined,
 };
 
 const CONFIG_CANDIDATES = ["nx.config.ts", "nx.config.js", "nx.config.mjs", ".nxrc.json"];

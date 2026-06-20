@@ -36,12 +36,12 @@
  *   await events.emit('user.created', { userId: '1', email: 'a@b.c' });
  */
 
-export * from './types.js';
-export { NexusEventEmitter, compilePattern } from './emitter.js';
-export { EventService } from './event.service.js';
-export { EventsModule } from './events.module.js';
+export * from "./types.js";
+export { NexusEventEmitter, compilePattern } from "./emitter.js";
+export { EventService } from "./event.service.js";
+export { EventsModule } from "./events.module.js";
 export {
 	OnEvent,
 	scanForListeners,
 	getOnEventHooks,
-} from './decorators/on-event.js';
+} from "./decorators/on-event.js";

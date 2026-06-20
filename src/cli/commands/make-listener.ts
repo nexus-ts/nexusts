@@ -54,10 +54,7 @@ export const makeListenerCommand: Command = {
 	summary: "Scaffold an event listener class",
 	description:
 		"Generates an @Injectable listener class with example @OnEvent handlers under src/events/listeners/.",
-	examples: [
-		"nx make:listener UserEvents",
-		"nx make:listener OrderEvents",
-	],
+	examples: ["nx make:listener UserEvents", "nx make:listener OrderEvents"],
 	async run(ctx: CommandContext): Promise<number> {
 		const name = ctx.positional[0];
 		if (!name) {

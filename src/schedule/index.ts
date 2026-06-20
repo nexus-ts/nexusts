@@ -41,19 +41,19 @@
  *   schedule.start();
  */
 
-export * from './types.js';
+export * from "./types.js";
 export {
 	MemorySchedulesBackend,
 	CloudflareSchedulesBackend,
 	CronExpr,
-} from './backends/index.js';
-export type { MemoryBackendOptions } from './backends/memory.js';
+} from "./backends/index.js";
+export type { MemoryBackendOptions } from "./backends/memory.js";
 export type {
 	CloudflareScheduledEvent,
 	CloudflareSchedulesOptions,
-} from './backends/cloudflare.js';
-export { ScheduleService } from './schedule.service.js';
-export { ScheduleModule } from './schedule.module.js';
+} from "./backends/cloudflare.js";
+export { ScheduleService } from "./schedule.service.js";
+export { ScheduleModule } from "./schedule.module.js";
 export {
 	Cron,
 	Interval,
@@ -62,5 +62,10 @@ export {
 	getCronHooks,
 	getIntervalHooks,
 	getTimeoutHooks,
-} from './decorators/cron.js';
-export { parseCron, nextCron, CronExpression as CronExpressionClass, CronField } from './cron-parser.js';
+} from "./decorators/cron.js";
+export {
+	parseCron,
+	nextCron,
+	CronExpression as CronExpressionClass,
+	CronField,
+} from "./cron-parser.js";

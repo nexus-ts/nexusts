@@ -46,10 +46,10 @@ export interface CronOptions {
 // ---------------------------------------------------------------------------
 
 /** A scheduled task's status. */
-export type TaskStatus = 'running' | 'stopped' | 'paused';
+export type TaskStatus = "running" | "stopped" | "paused";
 
 /** What kind of schedule a task uses. */
-export type TaskKind = 'cron' | 'interval' | 'timeout';
+export type TaskKind = "cron" | "interval" | "timeout";
 
 /** A registered scheduled task. */
 export interface ScheduledTask {
@@ -94,12 +94,20 @@ export interface ScheduleRegistry {
 	/**
 	 * Register a recurring task.
 	 */
-	addInterval(name: string, milliseconds: number, handler: ScheduleHandler): string;
+	addInterval(
+		name: string,
+		milliseconds: number,
+		handler: ScheduleHandler,
+	): string;
 
 	/**
 	 * Register a one-shot delayed task.
 	 */
-	addTimeout(name: string, milliseconds: number, handler: ScheduleHandler): string;
+	addTimeout(
+		name: string,
+		milliseconds: number,
+		handler: ScheduleHandler,
+	): string;
 
 	/** Delete a task by id. Returns true if it existed. */
 	delete(id: string): boolean;
@@ -127,7 +135,7 @@ export interface ScheduleRegistry {
 // Configuration
 // ---------------------------------------------------------------------------
 
-export type ScheduleBackendKind = 'memory' | 'cloudflare';
+export type ScheduleBackendKind = "memory" | "cloudflare";
 
 export interface ScheduleConfig {
 	/** Backend to use. Default: memory. */
@@ -159,12 +167,26 @@ export interface ScheduleConfig {
 // ---------------------------------------------------------------------------
 
 export type ScheduleEvent =
-	| { kind: 'task:registered'; id: string; name: string; taskKind: TaskKind; expression: string }
-	| { kind: 'task:invoked'; id: string; name: string; startedAt: string }
-	| { kind: 'task:completed'; id: string; name: string; durationMs: number; returnvalue?: unknown }
-	| { kind: 'task:failed'; id: string; name: string; error: Error }
-	| { kind: 'task:paused'; id: string }
-	| { kind: 'task:resumed'; id: string }
-	| { kind: 'task:deleted'; id: string };
+	| {
+			kind: "task:registered";
+			id: string;
+			name: string;
+			taskKind: TaskKind;
+			expression: string;
+	  }
+	| { kind: "task:invoked"; id: string; name: string; startedAt: string }
+	| {
+			kind: "task:completed";
+			id: string;
+			name: string;
+			durationMs: number;
+			returnvalue?: unknown;
+	  }
+	| { kind: "task:failed"; id: string; name: string; error: Error }
+	| { kind: "task:paused"; id: string }
+	| { kind: "task:resumed"; id: string }
+	| { kind: "task:deleted"; id: string };
 
-export type ScheduleEventListener = (event: ScheduleEvent) => void | Promise<void>;
+export type ScheduleEventListener = (
+	event: ScheduleEvent,
+) => void | Promise<void>;

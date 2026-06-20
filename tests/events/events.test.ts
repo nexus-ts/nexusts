@@ -10,13 +10,13 @@
  *   - EventsModule.forRoot validation (no surprises)
  */
 
-import 'reflect-metadata';
-import { describe, it, expect, beforeEach } from 'vitest';
-import { Application } from '@core/application';
-import { Module } from '@core/decorators/module';
-import { Controller } from '@core/decorators/controller';
-import { Get } from '@core/decorators/http-methods';
-import { Injectable, Inject } from '@core/decorators/injectable';
+import "reflect-metadata";
+import { describe, it, expect, beforeEach } from "vitest";
+import { Application } from "@core/application";
+import { Module } from "@core/decorators/module";
+import { Controller } from "@core/decorators/controller";
+import { Get } from "@core/decorators/http-methods";
+import { Injectable, Inject } from "@core/decorators/injectable";
 import {
 	NexusEventEmitter,
 	compilePattern,
@@ -24,221 +24,225 @@ import {
 	EventsModule,
 	OnEvent,
 	scanForListeners,
-} from '../../src/events/index.js';
+} from "../../src/events/index.js";
 
-describe('compilePattern', () => {
-	it('returns null for an exact pattern (no wildcards)', () => {
-		expect(compilePattern('user.created')).toBeNull();
+describe("compilePattern", () => {
+	it("returns null for an exact pattern (no wildcards)", () => {
+		expect(compilePattern("user.created")).toBeNull();
 	});
-	it('compiles star (single segment)', () => {
-		const re = compilePattern('user.*');
+	it("compiles star (single segment)", () => {
+		const re = compilePattern("user.*");
 		expect(re).not.toBeNull();
-		expect(re!.test('user.created')).toBe(true);
-		expect(re!.test('user.updated')).toBe(true);
-		expect(re!.test('user.profile.updated')).toBe(false);
+		expect(re!.test("user.created")).toBe(true);
+		expect(re!.test("user.updated")).toBe(true);
+		expect(re!.test("user.profile.updated")).toBe(false);
 	});
-	it('compiles double-star (multi segment)', () => {
-		const re = compilePattern('**');
+	it("compiles double-star (multi segment)", () => {
+		const re = compilePattern("**");
 		expect(re).not.toBeNull();
-		expect(re!.test('a')).toBe(true);
-		expect(re!.test('a.b')).toBe(true);
-		expect(re!.test('a.b.c.d')).toBe(true);
+		expect(re!.test("a")).toBe(true);
+		expect(re!.test("a.b")).toBe(true);
+		expect(re!.test("a.b.c.d")).toBe(true);
 	});
 });
 
-describe('NexusEventEmitter — exact match', () => {
+describe("NexusEventEmitter — exact match", () => {
 	let em: NexusEventEmitter;
 	beforeEach(() => {
 		em = new NexusEventEmitter();
 	});
 
-	it('delivers to an exact-match listener', async () => {
+	it("delivers to an exact-match listener", async () => {
 		const received: unknown[] = [];
-		em.on('user.created', (p) => void received.push(p));
-		const r = await em.emit('user.created', { id: '1' });
+		em.on("user.created", (p) => void received.push(p));
+		const r = await em.emit("user.created", { id: "1" });
 		expect(r.matched).toBe(1);
 		expect(r.completed).toBe(1);
-		expect(received).toEqual([{ id: '1' }]);
+		expect(received).toEqual([{ id: "1" }]);
 	});
 
-	it('returns zero matches for an event with no listener', async () => {
-		const r = await em.emit('nothing.here');
+	it("returns zero matches for an event with no listener", async () => {
+		const r = await em.emit("nothing.here");
 		expect(r.matched).toBe(0);
 	});
 });
 
-describe('NexusEventEmitter — wildcards', () => {
+describe("NexusEventEmitter — wildcards", () => {
 	let em: NexusEventEmitter;
 	beforeEach(() => {
 		em = new NexusEventEmitter();
 	});
 
-	it('star matches a single segment', async () => {
+	it("star matches a single segment", async () => {
 		const got: string[] = [];
-		em.on('user.*', (p) => void got.push(String((p as { type: string }).type)));
-		await em.emit('user.created', { type: 'created' });
-		await em.emit('user.updated', { type: 'updated' });
-		await em.emit('user.profile.changed', { type: 'changed' });
-		expect(got).toEqual(['created', 'updated']);
+		em.on("user.*", (p) => void got.push(String((p as { type: string }).type)));
+		await em.emit("user.created", { type: "created" });
+		await em.emit("user.updated", { type: "updated" });
+		await em.emit("user.profile.changed", { type: "changed" });
+		expect(got).toEqual(["created", "updated"]);
 	});
 
-	it('double-star matches multiple segments', async () => {
+	it("double-star matches multiple segments", async () => {
 		const got: string[] = [];
-		em.on('**', () => void got.push('fired'));
-		await em.emit('a');
-		await em.emit('a.b');
-		await em.emit('a.b.c.d');
+		em.on("**", () => void got.push("fired"));
+		await em.emit("a");
+		await em.emit("a.b");
+		await em.emit("a.b.c.d");
 		expect(got).toHaveLength(3);
 	});
 
-	it('exact and wildcard can co-exist', async () => {
+	it("exact and wildcard can co-exist", async () => {
 		const exact: string[] = [];
 		const wildcard: string[] = [];
-		em.on('user.created', () => exact.push('exact'));
-		em.on('user.*', () => wildcard.push('star'));
-		await em.emit('user.created');
-		await em.emit('user.deleted');
-		expect(exact).toEqual(['exact']);
-		expect(wildcard).toEqual(['star', 'star']);
+		em.on("user.created", () => exact.push("exact"));
+		em.on("user.*", () => wildcard.push("star"));
+		await em.emit("user.created");
+		await em.emit("user.deleted");
+		expect(exact).toEqual(["exact"]);
+		expect(wildcard).toEqual(["star", "star"]);
 	});
 });
 
-describe('NexusEventEmitter — priorities', () => {
-	it('runs lower-priority listeners first', async () => {
+describe("NexusEventEmitter — priorities", () => {
+	it("runs lower-priority listeners first", async () => {
 		const em = new NexusEventEmitter();
 		const order: string[] = [];
-		em.on('e', () => void order.push('hi'), { priority: 10 });
-		em.on('e', () => void order.push('mid'), { priority: 5 });
-		em.on('e', () => void order.push('lo'), { priority: 1 });
-		await em.emit('e');
-		expect(order).toEqual(['lo', 'mid', 'hi']);
+		em.on("e", () => void order.push("hi"), { priority: 10 });
+		em.on("e", () => void order.push("mid"), { priority: 5 });
+		em.on("e", () => void order.push("lo"), { priority: 1 });
+		await em.emit("e");
+		expect(order).toEqual(["lo", "mid", "hi"]);
 	});
 
-	it('preserves registration order at the same priority (FIFO)', async () => {
+	it("preserves registration order at the same priority (FIFO)", async () => {
 		const em = new NexusEventEmitter();
 		const order: string[] = [];
-		em.on('e', () => void order.push('a'));
-		em.on('e', () => void order.push('b'));
-		em.on('e', () => void order.push('c'));
-		await em.emit('e');
-		expect(order).toEqual(['a', 'b', 'c']);
+		em.on("e", () => void order.push("a"));
+		em.on("e", () => void order.push("b"));
+		em.on("e", () => void order.push("c"));
+		await em.emit("e");
+		expect(order).toEqual(["a", "b", "c"]);
 	});
 });
 
-describe('NexusEventEmitter — guards', () => {
-	it('skips a listener whose guard returns false', async () => {
+describe("NexusEventEmitter — guards", () => {
+	it("skips a listener whose guard returns false", async () => {
 		const em = new NexusEventEmitter();
 		const got: unknown[] = [];
-		em.on('order.paid', (p) => void got.push(p), {
+		em.on("order.paid", (p) => void got.push(p), {
 			if: (p) => (p as { amount: number }).amount > 100,
 		});
-		await em.emit('order.paid', { amount: 50 });
-		await em.emit('order.paid', { amount: 200 });
+		await em.emit("order.paid", { amount: 50 });
+		await em.emit("order.paid", { amount: 200 });
 		expect(got).toEqual([{ amount: 200 }]);
 	});
 
-	it('skips when the guard throws', async () => {
+	it("skips when the guard throws", async () => {
 		const em = new NexusEventEmitter();
 		const got: unknown[] = [];
-		em.on('e', () => void got.push(1), { if: () => { throw new Error('boom'); } });
-		em.on('e', () => void got.push(2));
-		await em.emit('e');
+		em.on("e", () => void got.push(1), {
+			if: () => {
+				throw new Error("boom");
+			},
+		});
+		em.on("e", () => void got.push(2));
+		await em.emit("e");
 		expect(got).toEqual([2]);
 	});
 });
 
-describe('NexusEventEmitter — once / off / removeAllListeners', () => {
-	it('once fires a single time then auto-removes', async () => {
+describe("NexusEventEmitter — once / off / removeAllListeners", () => {
+	it("once fires a single time then auto-removes", async () => {
 		const em = new NexusEventEmitter();
 		let count = 0;
-		em.once('e', () => void count++);
-		await em.emit('e');
-		await em.emit('e');
-		await em.emit('e');
+		em.once("e", () => void count++);
+		await em.emit("e");
+		await em.emit("e");
+		await em.emit("e");
 		expect(count).toBe(1);
-		expect(em.listenerCount('e')).toBe(0);
+		expect(em.listenerCount("e")).toBe(0);
 	});
 
-	it('off() removes by id', async () => {
+	it("off() removes by id", async () => {
 		const em = new NexusEventEmitter();
-		const id = em.on('e', () => {});
+		const id = em.on("e", () => {});
 		expect(em.off(id)).toBe(1);
 		expect(em.listenerCount()).toBe(0);
 	});
 
-	it('off() removes all listeners matching a pattern', async () => {
+	it("off() removes all listeners matching a pattern", async () => {
 		const em = new NexusEventEmitter();
-		em.on('e', () => {});
-		em.on('e', () => {});
-		em.on('other', () => {});
-		expect(em.off('e')).toBe(2);
+		em.on("e", () => {});
+		em.on("e", () => {});
+		em.on("other", () => {});
+		expect(em.off("e")).toBe(2);
 		expect(em.listenerCount()).toBe(1);
 	});
 
-	it('removeAllListeners() clears every listener', () => {
+	it("removeAllListeners() clears every listener", () => {
 		const em = new NexusEventEmitter();
-		em.on('a', () => {});
-		em.on('b', () => {});
+		em.on("a", () => {});
+		em.on("b", () => {});
 		em.removeAllListeners();
 		expect(em.listenerCount()).toBe(0);
 	});
 });
 
-describe('NexusEventEmitter — error handling', () => {
-	it('collects errors in EmitResult without stopping dispatch', async () => {
+describe("NexusEventEmitter — error handling", () => {
+	it("collects errors in EmitResult without stopping dispatch", async () => {
 		const em = new NexusEventEmitter();
 		const got: string[] = [];
-		em.on('e', () => {
-			throw new Error('boom1');
+		em.on("e", () => {
+			throw new Error("boom1");
 		});
-		em.on('e', () => void got.push('ok'));
-		em.on('e', () => {
-			throw new Error('boom2');
+		em.on("e", () => void got.push("ok"));
+		em.on("e", () => {
+			throw new Error("boom2");
 		});
-		const r = await em.emit('e');
+		const r = await em.emit("e");
 		expect(r.matched).toBe(3);
 		expect(r.completed).toBe(1);
 		expect(r.failed).toBe(2);
 		expect(r.errors).toHaveLength(2);
-		expect(got).toEqual(['ok']);
+		expect(got).toEqual(["ok"]);
 	});
 
-	it('throws on first error when throwOnError is true', async () => {
+	it("throws on first error when throwOnError is true", async () => {
 		const em = new NexusEventEmitter({ throwOnError: true });
-		em.on('e', () => {
-			throw new Error('boom');
+		em.on("e", () => {
+			throw new Error("boom");
 		});
-		await expect(em.emit('e')).rejects.toThrow(/boom/);
+		await expect(em.emit("e")).rejects.toThrow(/boom/);
 	});
 
-	it('throws when max listeners per pattern is exceeded', () => {
+	it("throws when max listeners per pattern is exceeded", () => {
 		const em = new NexusEventEmitter({ maxListenersPerPattern: 2 });
-		em.on('e', () => {});
-		em.on('e', () => {});
-		expect(() => em.on('e', () => {})).toThrow(/Too many listeners/);
+		em.on("e", () => {});
+		em.on("e", () => {});
+		expect(() => em.on("e", () => {})).toThrow(/Too many listeners/);
 	});
 });
 
-describe('NexusEventEmitter — emitSync', () => {
-	it('returns synchronously', () => {
+describe("NexusEventEmitter — emitSync", () => {
+	it("returns synchronously", () => {
 		const em = new NexusEventEmitter();
 		let fired = false;
-		em.on('e', () => {
+		em.on("e", () => {
 			fired = true;
 		});
-		const r = em.emitSync('e');
+		const r = em.emitSync("e");
 		expect(fired).toBe(true);
 		expect(r.completed).toBe(1);
 	});
 });
 
-describe('EventService DI integration', () => {
+describe("EventService DI integration", () => {
 	const AppEventsModule = EventsModule.forRoot();
 
 	@Module({ imports: [AppEventsModule] })
 	class RootModule {}
 
-	it('resolves via DI under both tokens', () => {
+	it("resolves via DI under both tokens", () => {
 		const app = new Application(RootModule);
 		const byClass = app.container.resolve(EventService);
 		const byToken = app.container.resolve(EventService.TOKEN);
@@ -246,24 +250,27 @@ describe('EventService DI integration', () => {
 		expect(byToken).toBe(byClass);
 	});
 
-	it('emits events that reach a registered listener', async () => {
+	it("emits events that reach a registered listener", async () => {
 		const app = new Application(RootModule);
 		const svc = app.container.resolve(EventService);
 
 		const got: string[] = [];
-		svc.on('user.created', (p) => void got.push((p as { email: string }).email));
-		const r = await svc.emit('user.created', { email: 'a@b.c' });
+		svc.on(
+			"user.created",
+			(p) => void got.push((p as { email: string }).email),
+		);
+		const r = await svc.emit("user.created", { email: "a@b.c" });
 		expect(r.completed).toBe(1);
-		expect(got).toEqual(['a@b.c']);
+		expect(got).toEqual(["a@b.c"]);
 	});
 });
 
-describe('@OnEvent + scanForListeners', () => {
+describe("@OnEvent + scanForListeners", () => {
 	const AppEventsModule = EventsModule.forRoot();
 
-	@Controller('/probe')
+	@Controller("/probe")
 	class ProbeController {
-		@Get('/')
+		@Get("/")
 		probe() {
 			return { ok: true };
 		}
@@ -274,12 +281,12 @@ describe('@OnEvent + scanForListeners', () => {
 		created: unknown[] = [];
 		anyUser: unknown[] = [];
 
-		@OnEvent('user.created')
+		@OnEvent("user.created")
 		onCreated(p: unknown) {
 			this.created.push(p);
 		}
 
-		@OnEvent('user.*', { priority: 1 })
+		@OnEvent("user.*", { priority: 1 })
 		onAnyUser(p: unknown) {
 			this.anyUser.push(p);
 		}
@@ -291,24 +298,24 @@ describe('@OnEvent + scanForListeners', () => {
 	})
 	class RootModule {}
 
-	it('registers @OnEvent handlers and dispatches in priority order', async () => {
+	it("registers @OnEvent handlers and dispatches in priority order", async () => {
 		const app = new Application(RootModule);
 		const svc = app.container.resolve(EventService);
 		const listener = new UserListeners();
 		const ids = scanForListeners(listener, svc);
 		expect(ids).toHaveLength(2);
 
-		await svc.emit('user.created', { id: '1' });
+		await svc.emit("user.created", { id: "1" });
 		expect(listener.anyUser).toHaveLength(1); // priority 1 runs first
 		expect(listener.created).toHaveLength(1);
 		// anyUser should have fired first because of its lower priority.
-		expect(listener.anyUser[0]).toEqual({ id: '1' });
-		expect(listener.created[0]).toEqual({ id: '1' });
+		expect(listener.anyUser[0]).toEqual({ id: "1" });
+		expect(listener.created[0]).toEqual({ id: "1" });
 	});
 });
 
-describe('EventsModule — backend validation', () => {
-	it('resolves when no config is supplied (defaults to memory)', () => {
+describe("EventsModule — backend validation", () => {
+	it("resolves when no config is supplied (defaults to memory)", () => {
 		const M = EventsModule.forRoot();
 		@Module({ imports: [M] })
 		class R {}

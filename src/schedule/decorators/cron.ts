@@ -41,15 +41,26 @@ const TIMEOUT_META = "nexus:schedule:timeout";
 /**
  * Schedule the decorated method as a cron task.
  */
-export function Cron(expression: CronExpression, options: CronOptions = {}): MethodDecorator {
+export function Cron(
+	expression: CronExpression,
+	options: CronOptions = {},
+): MethodDecorator {
 	return (target, propertyKey, descriptor) => {
 		if (!descriptor || typeof descriptor.value !== "function") {
 			throw new Error("@Cron can only decorate methods.");
 		}
 		const ctor = target.constructor as object;
-		const hooks: Array<{ method: string; expression: CronExpression; options: CronOptions }> =
+		const hooks: Array<{
+			method: string;
+			expression: CronExpression;
+			options: CronOptions;
+		}> =
 			(Reflect.getMetadata(CRON_META, ctor) as
-				| Array<{ method: string; expression: CronExpression; options: CronOptions }>
+				| Array<{
+						method: string;
+						expression: CronExpression;
+						options: CronOptions;
+				  }>
 				| undefined) ?? [];
 		hooks.push({ method: String(propertyKey), expression, options });
 		Reflect.defineMetadata(CRON_META, hooks, ctor);
@@ -65,7 +76,11 @@ export function Interval(milliseconds: number, name?: string): MethodDecorator {
 			throw new Error("@Interval can only decorate methods.");
 		}
 		const ctor = target.constructor as object;
-		const hooks: Array<{ method: string; milliseconds: number; name?: string }> =
+		const hooks: Array<{
+			method: string;
+			milliseconds: number;
+			name?: string;
+		}> =
 			(Reflect.getMetadata(INTERVAL_META, ctor) as
 				| Array<{ method: string; milliseconds: number; name?: string }>
 				| undefined) ?? [];
@@ -83,7 +98,11 @@ export function Timeout(milliseconds: number, name?: string): MethodDecorator {
 			throw new Error("@Timeout can only decorate methods.");
 		}
 		const ctor = target.constructor as object;
-		const hooks: Array<{ method: string; milliseconds: number; name?: string }> =
+		const hooks: Array<{
+			method: string;
+			milliseconds: number;
+			name?: string;
+		}> =
 			(Reflect.getMetadata(TIMEOUT_META, ctor) as
 				| Array<{ method: string; milliseconds: number; name?: string }>
 				| undefined) ?? [];
@@ -98,28 +117,41 @@ export function Timeout(milliseconds: number, name?: string): MethodDecorator {
 export function getCronHooks(
 	target: unknown,
 ): Array<{ method: string; expression: CronExpression; options: CronOptions }> {
-	const ctor = (target as { constructor?: object }).constructor ?? (target as object);
-	return (Reflect.getMetadata(CRON_META, ctor) as
-		| Array<{ method: string; expression: CronExpression; options: CronOptions }>
-		| undefined) ?? [];
+	const ctor =
+		(target as { constructor?: object }).constructor ?? (target as object);
+	return (
+		(Reflect.getMetadata(CRON_META, ctor) as
+			| Array<{
+					method: string;
+					expression: CronExpression;
+					options: CronOptions;
+			  }>
+			| undefined) ?? []
+	);
 }
 
 export function getIntervalHooks(
 	target: unknown,
 ): Array<{ method: string; milliseconds: number; name?: string }> {
-	const ctor = (target as { constructor?: object }).constructor ?? (target as object);
-	return (Reflect.getMetadata(INTERVAL_META, ctor) as
-		| Array<{ method: string; milliseconds: number; name?: string }>
-		| undefined) ?? [];
+	const ctor =
+		(target as { constructor?: object }).constructor ?? (target as object);
+	return (
+		(Reflect.getMetadata(INTERVAL_META, ctor) as
+			| Array<{ method: string; milliseconds: number; name?: string }>
+			| undefined) ?? []
+	);
 }
 
 export function getTimeoutHooks(
 	target: unknown,
 ): Array<{ method: string; milliseconds: number; name?: string }> {
-	const ctor = (target as { constructor?: object }).constructor ?? (target as object);
-	return (Reflect.getMetadata(TIMEOUT_META, ctor) as
-		| Array<{ method: string; milliseconds: number; name?: string }>
-		| undefined) ?? [];
+	const ctor =
+		(target as { constructor?: object }).constructor ?? (target as object);
+	return (
+		(Reflect.getMetadata(TIMEOUT_META, ctor) as
+			| Array<{ method: string; milliseconds: number; name?: string }>
+			| undefined) ?? []
+	);
 }
 
 /**

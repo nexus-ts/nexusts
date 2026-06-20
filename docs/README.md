@@ -30,6 +30,9 @@ Architectural deep-dives for contributors and advanced users.
 | Architecture overview | [`architecture.md`](./design/architecture.md) | [`architecture.ko.md`](./design/architecture.ko.md) |
 | DI container design | [`di-container.md`](./design/di-container.md) | [`di-container.ko.md`](./design/di-container.ko.md) |
 | Inertia adapter design | [`inertia-adapter.md`](./design/inertia-adapter.md) | [`inertia-adapter.ko.md`](./design/inertia-adapter.ko.md) |
+| Auth module design | [`auth.md`](./design/auth.md) | [`auth.ko.md`](./design/auth.ko.md) |
+| Queue module design | [`queue.md`](./design/queue.md) | [`queue.ko.md`](./design/queue.ko.md) |
+| Schedule module design | [`schedule.md`](./design/schedule.md) | [`schedule.ko.md`](./design/schedule.ko.md) |
 
 ---
 

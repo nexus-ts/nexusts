@@ -23,7 +23,7 @@ import type {
 	CronOptions,
 	ScheduleEvent,
 	ScheduleEventListener,
-} from '../types.js';
+} from "../types.js";
 
 interface InternalTask {
 	id: string;
@@ -65,20 +65,26 @@ export class CloudflareSchedulesBackend implements ScheduleRegistry {
 		const id = `sched-${this.#nextId++}`;
 		this.#tasks.set(id, { id, name, expression, handler, options });
 		this.#byName.set(name, id);
-		this.#emit({ kind: 'task:registered', id, name, taskKind: 'cron', expression });
+		this.#emit({
+			kind: "task:registered",
+			id,
+			name,
+			taskKind: "cron",
+			expression,
+		});
 		return id;
 	}
 
 	addInterval(): string {
 		throw new Error(
-			'[schedule/cloudflare] setInterval is not supported on Workers. ' +
-				'Use @Cron with a short interval or use the memory backend for in-process scheduling.',
+			"[schedule/cloudflare] setInterval is not supported on Workers. " +
+				"Use @Cron with a short interval or use the memory backend for in-process scheduling.",
 		);
 	}
 
 	addTimeout(): string {
 		throw new Error(
-			'[schedule/cloudflare] setTimeout is not supported on Workers. ' +
+			"[schedule/cloudflare] setTimeout is not supported on Workers. " +
 				'Use @Cron with a delay (e.g. "@every 30s") or run the work from a request handler.',
 		);
 	}
@@ -90,7 +96,7 @@ export class CloudflareSchedulesBackend implements ScheduleRegistry {
 		if (!task) return false;
 		this.#tasks.delete(id);
 		this.#byName.delete(task.name);
-		this.#emit({ kind: 'task:deleted', id });
+		this.#emit({ kind: "task:deleted", id });
 		return true;
 	}
 
@@ -98,9 +104,9 @@ export class CloudflareSchedulesBackend implements ScheduleRegistry {
 		return [...this.#tasks.values()].map((t) => ({
 			id: t.id,
 			name: t.name,
-			kind: 'cron',
+			kind: "cron",
 			expression: t.expression,
-			status: 'running',
+			status: "running",
 			invocations: 0,
 		}));
 	}
@@ -110,7 +116,14 @@ export class CloudflareSchedulesBackend implements ScheduleRegistry {
 		if (!id) return undefined;
 		const t = this.#tasks.get(id);
 		return t
-			? { id: t.id, name: t.name, kind: 'cron', expression: t.expression, status: 'running', invocations: 0 }
+			? {
+					id: t.id,
+					name: t.name,
+					kind: "cron",
+					expression: t.expression,
+					status: "running",
+					invocations: 0,
+				}
 			: undefined;
 	}
 
@@ -162,10 +175,13 @@ export class CloudflareSchedulesBackend implements ScheduleRegistry {
 		};
 	}
 
-	async #dispatch(task: InternalTask, event: CloudflareScheduledEvent): Promise<void> {
+	async #dispatch(
+		task: InternalTask,
+		event: CloudflareScheduledEvent,
+	): Promise<void> {
 		const startedAt = new Date();
 		this.#emit({
-			kind: 'task:invoked',
+			kind: "task:invoked",
 			id: task.id,
 			name: task.name,
 			startedAt: startedAt.toISOString(),
@@ -173,7 +189,7 @@ export class CloudflareSchedulesBackend implements ScheduleRegistry {
 		try {
 			const result = await task.handler();
 			this.#emit({
-				kind: 'task:completed',
+				kind: "task:completed",
 				id: task.id,
 				name: task.name,
 				durationMs: Date.now() - startedAt.getTime(),
@@ -181,7 +197,7 @@ export class CloudflareSchedulesBackend implements ScheduleRegistry {
 			});
 		} catch (err) {
 			const error = err instanceof Error ? err : new Error(String(err));
-			this.#emit({ kind: 'task:failed', id: task.id, name: task.name, error });
+			this.#emit({ kind: "task:failed", id: task.id, name: task.name, error });
 		}
 		void event; // (kept for future event-based logic)
 	}

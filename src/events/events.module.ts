@@ -26,10 +26,10 @@
  *   await events.emit('user.created', { email: 'a@b.c' });
  */
 
-import 'reflect-metadata';
-import { Module } from '../core/decorators/module.js';
-import { EventService } from './event.service.js';
-import type { EventsConfig } from './types.js';
+import "reflect-metadata";
+import { Module } from "../core/decorators/module.js";
+import { EventService } from "./event.service.js";
+import type { EventsConfig } from "./types.js";
 
 @Module({
 	providers: [
@@ -44,14 +44,14 @@ export class EventsModule {
 			providers: [
 				EventService,
 				{ provide: EventService.TOKEN, useExisting: EventService },
-				{ provide: 'EVENTS_CONFIG', useValue: config },
+				{ provide: "EVENTS_CONFIG", useValue: config },
 			],
 			exports: [EventService, EventService.TOKEN],
 		})
 		class ConfiguredEventsModule {}
 
-		Object.defineProperty(ConfiguredEventsModule, 'name', {
-			value: 'ConfiguredEventsModule',
+		Object.defineProperty(ConfiguredEventsModule, "name", {
+			value: "ConfiguredEventsModule",
 		});
 
 		return ConfiguredEventsModule;

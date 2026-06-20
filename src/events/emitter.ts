@@ -28,12 +28,12 @@ import type {
 	EmitterEvent,
 	EmitterEventListener,
 	EventsConfig,
-} from './types.js';
+} from "./types.js";
 
 interface InternalListener {
 	id: string;
 	pattern: string;
-	regex: RegExp | null;        // null = exact match
+	regex: RegExp | null; // null = exact match
 	priority: EventPriority;
 	guard?: (payload: any) => boolean | Promise<boolean>;
 	once: boolean;
@@ -83,18 +83,20 @@ export class NexusEventEmitter implements EventEmitter {
 			createdAt: Date.now(),
 		};
 		if (options.if !== undefined) {
-			internal.guard = options.if as (payload: any) => boolean | Promise<boolean>;
+			internal.guard = options.if as (
+				payload: any,
+			) => boolean | Promise<boolean>;
 		}
 		this.#listeners.push(internal);
 		this.#sortListeners();
-		this.#emitEmitterEvent({ kind: 'listener:registered', id, pattern });
+		this.#emitEmitterEvent({ kind: "listener:registered", id, pattern });
 		return id;
 	}
 
 	once<T = unknown>(
 		pattern: EventName,
 		listener: EventListener<T>,
-		options: Omit<ListenerOptions, 'once'> = {},
+		options: Omit<ListenerOptions, "once"> = {},
 	): string {
 		return this.on(pattern, listener, { ...options, once: true });
 	}
@@ -108,7 +110,7 @@ export class NexusEventEmitter implements EventEmitter {
 			return !match;
 		});
 		for (const r of removed) {
-			this.#emitEmitterEvent({ kind: 'listener:removed', id: r.id });
+			this.#emitEmitterEvent({ kind: "listener:removed", id: r.id });
 		}
 		return before - this.#listeners.length;
 	}
@@ -133,20 +135,20 @@ export class NexusEventEmitter implements EventEmitter {
 					const ok = await l.guard(payload);
 					if (!ok) {
 						this.#emitEmitterEvent({
-							kind: 'listener:skipped',
+							kind: "listener:skipped",
 							id: l.id,
 							pattern: l.pattern,
-							reason: 'guard',
+							reason: "guard",
 						});
 						continue;
 					}
 				} catch {
 					// Guard threw — skip.
 					this.#emitEmitterEvent({
-						kind: 'listener:skipped',
+						kind: "listener:skipped",
 						id: l.id,
 						pattern: l.pattern,
-						reason: 'guard',
+						reason: "guard",
 					});
 					continue;
 				}
@@ -163,7 +165,7 @@ export class NexusEventEmitter implements EventEmitter {
 				await listener.listener(p);
 				result.completed++;
 				this.#emitEmitterEvent({
-					kind: 'listener:fired',
+					kind: "listener:fired",
 					id: listener.id,
 					pattern: listener.pattern,
 					durationMs: Date.now() - start,
@@ -177,7 +179,7 @@ export class NexusEventEmitter implements EventEmitter {
 					error: error.message,
 				});
 				this.#emitEmitterEvent({
-					kind: 'listener:failed',
+					kind: "listener:failed",
 					id: listener.id,
 					pattern: listener.pattern,
 					error,
@@ -222,7 +224,7 @@ export class NexusEventEmitter implements EventEmitter {
 			const start = Date.now();
 			try {
 				const ret = l.listener(payload);
-				if (ret && typeof (ret as Promise<unknown>).then === 'function') {
+				if (ret && typeof (ret as Promise<unknown>).then === "function") {
 					// Promise — fire-and-forget; not awaited in sync mode.
 					(ret as Promise<unknown>).then(
 						() => {
@@ -244,7 +246,7 @@ export class NexusEventEmitter implements EventEmitter {
 					if (l.once) toRemove.push(l);
 				}
 				this.#emitEmitterEvent({
-					kind: 'listener:fired',
+					kind: "listener:fired",
 					id: l.id,
 					pattern: l.pattern,
 					durationMs: Date.now() - start,
@@ -278,9 +280,10 @@ export class NexusEventEmitter implements EventEmitter {
 		priority: EventPriority;
 		once: boolean;
 	}> {
-		const list = pattern === undefined
-			? this.#listeners
-			: this.#listeners.filter((l) => l.pattern === pattern);
+		const list =
+			pattern === undefined
+				? this.#listeners
+				: this.#listeners.filter((l) => l.pattern === pattern);
 		return list.map((l) => ({
 			id: l.id,
 			pattern: l.pattern,
@@ -293,7 +296,7 @@ export class NexusEventEmitter implements EventEmitter {
 		const ids = this.#listeners.map((l) => l.id);
 		this.#listeners = [];
 		for (const id of ids) {
-			this.#emitEmitterEvent({ kind: 'listener:removed', id });
+			this.#emitEmitterEvent({ kind: "listener:removed", id });
 		}
 	}
 
@@ -349,16 +352,16 @@ export class NexusEventEmitter implements EventEmitter {
  *      (`**` → `.*`, `*` → `[^.]+`).
  */
 export function compilePattern(pattern: string): RegExp | null {
-	if (!pattern.includes('*')) return null;
+	if (!pattern.includes("*")) return null;
 
-	const DOUBLE = '\x00DOUBLE\x00';
-	const SINGLE = '\x00SINGLE\x00';
-	let p = pattern.split('**').join(DOUBLE).split('*').join(SINGLE);
+	const DOUBLE = "\x00DOUBLE\x00";
+	const SINGLE = "\x00SINGLE\x00";
+	let p = pattern.split("**").join(DOUBLE).split("*").join(SINGLE);
 
 	// Escape regex metacharacters (except our placeholders, which are
 	// control characters that have no regex meaning).
-	p = p.replace(/[.+?^${}()|[\]\\]/g, '\\$&');
+	p = p.replace(/[.+?^${}()|[\]\\]/g, "\\$&");
 
-	p = p.split(DOUBLE).join('.*').split(SINGLE).join('[^.]+');
+	p = p.split(DOUBLE).join(".*").split(SINGLE).join("[^.]+");
 	return new RegExp(`^${p}$`);
 }

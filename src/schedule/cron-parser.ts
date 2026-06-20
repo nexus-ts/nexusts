@@ -21,27 +21,43 @@
  */
 
 const FIELD_RANGES: Array<[number, number]> = [
-	[0, 59],   // minute
-	[0, 23],   // hour
-	[1, 31],   // day of month
-	[1, 12],   // month
-	[0, 7],    // day of week (0 or 7 = Sunday)
+	[0, 59], // minute
+	[0, 23], // hour
+	[1, 31], // day of month
+	[1, 12], // month
+	[0, 7], // day of week (0 or 7 = Sunday)
 ];
 
 const FIELD_NAMES: Record<string, number> = {
-	JAN: 1, FEB: 2, MAR: 3, APR: 4, MAY: 5, JUN: 6,
-	JUL: 7, AUG: 8, SEP: 9, OCT: 10, NOV: 11, DEC: 12,
-	SUN: 0, MON: 1, TUE: 2, WED: 3, THU: 4, FRI: 5, SAT: 6,
+	JAN: 1,
+	FEB: 2,
+	MAR: 3,
+	APR: 4,
+	MAY: 5,
+	JUN: 6,
+	JUL: 7,
+	AUG: 8,
+	SEP: 9,
+	OCT: 10,
+	NOV: 11,
+	DEC: 12,
+	SUN: 0,
+	MON: 1,
+	TUE: 2,
+	WED: 3,
+	THU: 4,
+	FRI: 5,
+	SAT: 6,
 };
 
 const ALIASES: Record<string, string> = {
-	'@yearly':   '0 0 1 1 *',
-	'@annually': '0 0 1 1 *',
-	'@monthly':  '0 0 1 * *',
-	'@weekly':   '0 0 * * 0',
-	'@daily':    '0 0 * * *',
-	'@midnight': '0 0 * * *',
-	'@hourly':   '0 * * * *',
+	"@yearly": "0 0 1 1 *",
+	"@annually": "0 0 1 1 *",
+	"@monthly": "0 0 1 * *",
+	"@weekly": "0 0 * * 0",
+	"@daily": "0 0 * * *",
+	"@midnight": "0 0 * * *",
+	"@hourly": "0 * * * *",
 };
 
 /** A single field expanded into a set of allowed numeric values. */
@@ -59,7 +75,7 @@ export class CronField {
 
 /** A fully-parsed cron expression. */
 export class CronExpression {
-	readonly fields: CronField[];          // 5 or 6 entries
+	readonly fields: CronField[]; // 5 or 6 entries
 	readonly hasSeconds: boolean;
 
 	constructor(raw: string) {
@@ -114,19 +130,45 @@ export class CronExpression {
 				cur = new Date(cur.getFullYear(), cur.getMonth() + 1, 1, 0, 0, 0, 0);
 				continue;
 			}
-			// If the day doesn't match, jump to next day.
-			if (!this.fields[this.hasSeconds ? 3 : 2]!.contains(cur.getDate())) {
-				cur = new Date(cur.getFullYear(), cur.getMonth(), cur.getDate() + 1, 0, 0, 0, 0);
+			// If day-of-month is restricted and current day doesn't match,
+			// jump to next month at the first allowed day.
+			const domIdx = this.hasSeconds ? 3 : 2;
+			const domField = this.fields[domIdx]!;
+			if (!domField.contains(cur.getDate())) {
+				// Find the first allowed day in the set, or jump to next month.
+				const sortedDays = [...domField.values].sort((a, b) => a - b);
+				const nextDay = sortedDays.find((d) => d >= cur.getDate());
+				if (nextDay !== undefined) {
+					cur = new Date(cur.getFullYear(), cur.getMonth(), nextDay, 0, 0, 0, 0);
+				} else {
+					cur = new Date(cur.getFullYear(), cur.getMonth() + 1, sortedDays[0]!, 0, 0, 0, 0);
+				}
 				continue;
 			}
 			// If the hour doesn't match, jump to next hour.
 			if (!this.fields[this.hasSeconds ? 2 : 1]!.contains(cur.getHours())) {
-				cur = new Date(cur.getFullYear(), cur.getMonth(), cur.getDate(), cur.getHours() + 1, 0, 0, 0);
+				cur = new Date(
+					cur.getFullYear(),
+					cur.getMonth(),
+					cur.getDate(),
+					cur.getHours() + 1,
+					0,
+					0,
+					0,
+				);
 				continue;
 			}
 			// If the minute doesn't match, jump to next minute.
 			if (!this.fields[this.hasSeconds ? 1 : 0]!.contains(cur.getMinutes())) {
-				cur = new Date(cur.getFullYear(), cur.getMonth(), cur.getDate(), cur.getHours(), cur.getMinutes() + 1, 0, 0);
+				cur = new Date(
+					cur.getFullYear(),
+					cur.getMonth(),
+					cur.getDate(),
+					cur.getHours(),
+					cur.getMinutes() + 1,
+					0,
+					0,
+				);
 				continue;
 			}
 			// If seconds field exists and doesn't match, jump to next second.
@@ -143,20 +185,34 @@ export class CronExpression {
 
 	private matches(d: Date): boolean {
 		const fields = this.hasSeconds
-			? [d.getSeconds(), d.getMinutes(), d.getHours(), d.getDate(), d.getMonth() + 1, d.getDay()]
-			: [d.getMinutes(), d.getHours(), d.getDate(), d.getMonth() + 1, d.getDay()];
+			? [
+					d.getSeconds(),
+					d.getMinutes(),
+					d.getHours(),
+					d.getDate(),
+					d.getMonth() + 1,
+					d.getDay(),
+				]
+			: [
+					d.getMinutes(),
+					d.getHours(),
+					d.getDate(),
+					d.getMonth() + 1,
+					d.getDay(),
+				];
 		// Day-of-week in crontab: 0 = Sunday. Day-of-month is OR'd with
 		// day-of-week when both are restricted (standard crontab behavior).
 		const domField = this.fields[this.hasSeconds ? 3 : 2]!;
 		const dowField = this.fields[this.hasSeconds ? 4 : 3]!;
 		const isWildDom = domField.values.size === FIELD_RANGES[2]![1]!;
 		const isWildDow = dowField.values.size === FIELD_RANGES[4]![1]! + 1;
-		const dayMatch = isWildDom || isWildDow
-			? domField.contains(d.getDate()) || dowField.contains(d.getDay())
-			: domField.contains(d.getDate()) || dowField.contains(d.getDay());
+		const dayMatch =
+			isWildDom || isWildDow
+				? domField.contains(d.getDate()) || dowField.contains(d.getDay())
+				: domField.contains(d.getDate()) || dowField.contains(d.getDay());
 
 		for (let i = 0; i < this.fields.length; i++) {
-			if (i === (this.hasSeconds ? 3 : 2) || i === (this.hasSeconds ? 4 : 3)) continue;
+			if (i === (this.hasSeconds ? 3 : 2)) continue;
 			if (!this.fields[i]!.contains(fields[i]!)) return false;
 		}
 		return dayMatch;
@@ -177,12 +233,16 @@ function expandEvery(raw: string): number | null {
 	const m = /^@every\s+(\d+)\s*(s|m|h|d)?$/i.exec(raw.trim());
 	if (!m) return null;
 	const n = Number(m[1]);
-	const unit = (m[2] ?? 's').toLowerCase();
+	const unit = (m[2] ?? "s").toLowerCase();
 	switch (unit) {
-		case 's': return n * 1000;
-		case 'm': return n * 60 * 1000;
-		case 'h': return n * 60 * 60 * 1000;
-		case 'd': return n * 24 * 60 * 60 * 1000;
+		case "s":
+			return n * 1000;
+		case "m":
+			return n * 60 * 1000;
+		case "h":
+			return n * 60 * 60 * 1000;
+		case "d":
+			return n * 24 * 60 * 60 * 1000;
 	}
 	return null;
 }
@@ -194,18 +254,32 @@ function everyToFields(intervalMs: number): CronField[] {
 	if (seconds < 60) {
 		// fire every N seconds (only if it divides 60)
 		if (60 % seconds === 0) {
-			return [new CronField(`*/${seconds}`, [0, 59]), new CronField('*', [0, 59]), new CronField('*', [0, 23]), new CronField('*', [1, 31]), new CronField('*', [1, 12]), new CronField('*', [0, 7])];
+			return [
+				new CronField(`*/${seconds}`, [0, 59]),
+				new CronField("*", [0, 59]),
+				new CronField("*", [0, 23]),
+				new CronField("*", [1, 31]),
+				new CronField("*", [1, 12]),
+				new CronField("*", [0, 7]),
+			];
 		}
 	}
 	// Otherwise just allow every minute; the registry layer handles
 	// throttling via setInterval.
-	return [new CronField('0', [0, 59]), new CronField('*', [0, 59]), new CronField('*', [0, 23]), new CronField('*', [1, 31]), new CronField('*', [1, 12]), new CronField('*', [0, 7])];
+	return [
+		new CronField("0", [0, 59]),
+		new CronField("*", [0, 59]),
+		new CronField("*", [0, 23]),
+		new CronField("*", [1, 31]),
+		new CronField("*", [1, 12]),
+		new CronField("*", [0, 7]),
+	];
 }
 
 function parseField(field: string, range: [number, number]): Set<number> {
 	const out = new Set<number>();
 	const [lo, hi] = range;
-	const parts = field.split(',');
+	const parts = field.split(",");
 	for (const partRaw of parts) {
 		const part = partRaw.trim();
 		// step: e.g. "*/2" or "0-30/2"
@@ -218,11 +292,11 @@ function parseField(field: string, range: [number, number]): Set<number> {
 		}
 		let start: number;
 		let end: number;
-		if (base === '*') {
+		if (base === "*") {
 			start = lo;
 			end = hi;
-		} else if (base.includes('-')) {
-			const [a, b] = base.split('-').map((s) => resolveValue(s, lo, hi));
+		} else if (base.includes("-")) {
+			const [a, b] = base.split("-").map((s) => resolveValue(s, lo, hi));
 			start = a;
 			end = b;
 		} else {
@@ -242,7 +316,7 @@ function parseField(field: string, range: [number, number]): Set<number> {
 
 function resolveValue(token: string, lo: number, hi: number): number {
 	const t = token.trim();
-	if (t === '*') return lo;
+	if (t === "*") return lo;
 	const named = FIELD_NAMES[t.toUpperCase()];
 	if (named !== undefined) return named;
 	const n = Number(t);
@@ -264,6 +338,9 @@ export function parseCron(expression: string): CronExpression {
 }
 
 /** Convenience: return the next Date matching `expression` after `from`. */
-export function nextCron(expression: string, from: Date = new Date()): Date | null {
+export function nextCron(
+	expression: string,
+	from: Date = new Date(),
+): Date | null {
 	return parseCron(expression).next(from);
 }

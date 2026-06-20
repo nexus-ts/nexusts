@@ -15,6 +15,7 @@ import makeValidator from "./make-validator.js";
 import makeCrud from "./make-crud.js";
 import makeAuth from "./make-auth.js";
 import makeQueue from "./make-queue.js";
+import makeSchedule from "./make-schedule.js";
 import makeListener from "./make-listener.js";
 import info from "./info.js";
 import routeList from "./route-list.js";
@@ -36,6 +37,7 @@ export const commands: Command[] = [
 	makeValidator,
 	makeAuth,
 	makeQueue,
+	makeSchedule,
 	makeListener,
 	routeList,
 	info,

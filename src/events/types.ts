@@ -53,7 +53,7 @@ export interface ListenerOptions {
 
 interface InternalListener {
 	id: string;
-	name: string;          // exact event name (post-wildcard)
+	name: string; // exact event name (post-wildcard)
 	originalPattern: string;
 	priority: EventPriority;
 	guard?: (payload: any) => boolean | Promise<boolean>;
@@ -99,7 +99,7 @@ export interface EventEmitter {
 	once<T = unknown>(
 		pattern: EventName,
 		listener: EventListener<T>,
-		options?: Omit<ListenerOptions, 'once'>,
+		options?: Omit<ListenerOptions, "once">,
 	): string;
 
 	/** Remove a listener by id (or by pattern — all matching listeners). */
@@ -132,13 +132,20 @@ export interface EventEmitter {
 
 /** Internal events emitted by the emitter itself (not user-facing). */
 export type EmitterEvent =
-	| { kind: 'listener:registered'; id: string; pattern: string }
-	| { kind: 'listener:removed'; id: string }
-	| { kind: 'listener:fired'; id: string; pattern: string; durationMs: number }
-	| { kind: 'listener:failed'; id: string; pattern: string; error: Error }
-	| { kind: 'listener:skipped'; id: string; pattern: string; reason: 'guard' | 'once' | 'pattern' };
+	| { kind: "listener:registered"; id: string; pattern: string }
+	| { kind: "listener:removed"; id: string }
+	| { kind: "listener:fired"; id: string; pattern: string; durationMs: number }
+	| { kind: "listener:failed"; id: string; pattern: string; error: Error }
+	| {
+			kind: "listener:skipped";
+			id: string;
+			pattern: string;
+			reason: "guard" | "once" | "pattern";
+	  };
 
-export type EmitterEventListener = (event: EmitterEvent) => void | Promise<void>;
+export type EmitterEventListener = (
+	event: EmitterEvent,
+) => void | Promise<void>;
 
 // ---------------------------------------------------------------------------
 // Configuration

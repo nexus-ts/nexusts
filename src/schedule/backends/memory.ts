@@ -19,8 +19,8 @@ import type {
 	ScheduleEvent,
 	ScheduleEventListener,
 	TaskKind,
-} from '../types.js';
-import { CronExpression as CronExpr, nextCron } from '../cron-parser.js';
+} from "../types.js";
+import { CronExpression as CronExpr, nextCron } from "../cron-parser.js";
 
 interface InternalTask {
 	id: string;
@@ -33,7 +33,7 @@ interface InternalTask {
 	lastRunAt?: number;
 	invocations: number;
 	lastError?: string;
-	status: 'running' | 'stopped' | 'paused';
+	status: "running" | "stopped" | "paused";
 	handler: ScheduleHandler;
 	/** Interval handle for `interval` / `timeout` tasks. */
 	timer?: ReturnType<typeof setInterval> | ReturnType<typeof setTimeout>;
@@ -55,7 +55,7 @@ export class MemorySchedulesBackend implements ScheduleRegistry {
 	#tickHandle: ReturnType<typeof setInterval> | null = null;
 	#tickMs: number;
 	#maxDriftMs: number;
-	#defaultTimezone: string | undefined;
+	#defaultTimezone: string | undefined = undefined;
 	#nextId = 1;
 
 	constructor(options: MemoryBackendOptions = {}) {
@@ -75,24 +75,27 @@ export class MemorySchedulesBackend implements ScheduleRegistry {
 		options: CronOptions = {},
 	): string {
 		const id = this.#allocateId();
-		const next = nextCron(expression, options.runOnInit ? new Date(Date.now() - 1000) : new Date());
+		const next = nextCron(
+			expression,
+			options.runOnInit ? new Date(Date.now() - 1000) : new Date(),
+		);
 		const task: InternalTask = {
 			id,
 			name,
-			kind: 'cron',
+			kind: "cron",
 			expression,
 			nextRunAt: next?.getTime() ?? Date.now() + 60_000,
 			invocations: 0,
-			status: 'running',
+			status: "running",
 			handler,
 		};
 		this.#tasks.set(id, task);
 		this.#byName.set(name, id);
 		this.#emit({
-			kind: 'task:registered',
+			kind: "task:registered",
 			id,
 			name,
-			taskKind: 'cron',
+			taskKind: "cron",
 			expression,
 		});
 		return id;
@@ -103,21 +106,21 @@ export class MemorySchedulesBackend implements ScheduleRegistry {
 		const task: InternalTask = {
 			id,
 			name,
-			kind: 'interval',
+			kind: "interval",
 			expression: `${ms}ms`,
 			nextRunAt: Date.now() + ms,
 			invocations: 0,
-			status: 'running',
+			status: "running",
 			handler,
 		};
 		task.timer = setInterval(() => this.#runTask(id), ms);
 		this.#tasks.set(id, task);
 		this.#byName.set(name, id);
 		this.#emit({
-			kind: 'task:registered',
+			kind: "task:registered",
 			id,
 			name,
-			taskKind: 'interval',
+			taskKind: "interval",
 			expression: `${ms}ms`,
 		});
 		return id;
@@ -128,21 +131,21 @@ export class MemorySchedulesBackend implements ScheduleRegistry {
 		const task: InternalTask = {
 			id,
 			name,
-			kind: 'timeout',
+			kind: "timeout",
 			expression: `${ms}ms`,
 			nextRunAt: Date.now() + ms,
 			invocations: 0,
-			status: 'running',
+			status: "running",
 			handler,
 		};
 		task.timer = setTimeout(() => this.#runOnceAndRemove(id), ms);
 		this.#tasks.set(id, task);
 		this.#byName.set(name, id);
 		this.#emit({
-			kind: 'task:registered',
+			kind: "task:registered",
 			id,
 			name,
-			taskKind: 'timeout',
+			taskKind: "timeout",
 			expression: `${ms}ms`,
 		});
 		return id;
@@ -156,7 +159,7 @@ export class MemorySchedulesBackend implements ScheduleRegistry {
 		this.#clearTimer(task);
 		this.#tasks.delete(id);
 		this.#byName.delete(task.name);
-		this.#emit({ kind: 'task:deleted', id });
+		this.#emit({ kind: "task:deleted", id });
 		return true;
 	}
 
@@ -177,8 +180,8 @@ export class MemorySchedulesBackend implements ScheduleRegistry {
 		const task = this.#tasks.get(id);
 		if (!task) return false;
 		this.#clearTimer(task);
-		task.status = 'paused';
-		this.#emit({ kind: 'task:paused', id });
+		task.status = "paused";
+		this.#emit({ kind: "task:paused", id });
 		return true;
 	}
 
@@ -187,11 +190,14 @@ export class MemorySchedulesBackend implements ScheduleRegistry {
 		if (!id) return false;
 		const task = this.#tasks.get(id);
 		if (!task) return false;
-		if (task.kind === 'interval' && !task.timer) {
-			task.timer = setInterval(() => this.#runTask(id), Number(task.expression.replace('ms', '')));
+		if (task.kind === "interval" && !task.timer) {
+			task.timer = setInterval(
+				() => this.#runTask(id),
+				Number(task.expression.replace("ms", "")),
+			);
 		}
-		task.status = 'running';
-		this.#emit({ kind: 'task:resumed', id });
+		task.status = "running";
+		this.#emit({ kind: "task:resumed", id });
 		return true;
 	}
 
@@ -224,7 +230,7 @@ export class MemorySchedulesBackend implements ScheduleRegistry {
 		this.#tickHandle = setInterval(() => this.#tick(), this.#tickMs);
 		// Don't keep Node alive just for the tick.
 		const handle = this.#tickHandle as unknown as { unref?: () => void };
-		if (typeof handle.unref === 'function') handle.unref();
+		if (typeof handle.unref === "function") handle.unref();
 	}
 
 	// ===========================================================================
@@ -268,8 +274,8 @@ export class MemorySchedulesBackend implements ScheduleRegistry {
 	#tick(): void {
 		const now = Date.now();
 		for (const [id, task] of this.#tasks) {
-			if (task.status !== 'running') continue;
-			if (task.kind !== 'cron') continue; // intervals/timeouts fire via their own timer
+			if (task.status !== "running") continue;
+			if (task.kind !== "cron") continue; // intervals/timeouts fire via their own timer
 			if (task.nextRunAt > now) continue;
 			void this.#runTask(id);
 		}
@@ -279,7 +285,12 @@ export class MemorySchedulesBackend implements ScheduleRegistry {
 		const task = this.#tasks.get(id);
 		if (!task) return;
 		const startedAt = new Date();
-		this.#emit({ kind: 'task:invoked', id, name: task.name, startedAt: startedAt.toISOString() });
+		this.#emit({
+			kind: "task:invoked",
+			id,
+			name: task.name,
+			startedAt: startedAt.toISOString(),
+		});
 		const start = Date.now();
 		try {
 			const result = await task.handler();
@@ -287,23 +298,26 @@ export class MemorySchedulesBackend implements ScheduleRegistry {
 			task.lastRunAt = start;
 			task.lastError = undefined;
 			this.#emit({
-				kind: 'task:completed',
+				kind: "task:completed",
 				id,
 				name: task.name,
 				durationMs: Date.now() - start,
 				returnvalue: result,
 			});
 		} catch (err) {
+			task.invocations++;
+			task.lastRunAt = start;
 			const error = err instanceof Error ? err : new Error(String(err));
 			task.lastError = error.message;
-			this.#emit({ kind: 'task:failed', id, name: task.name, error });
+			this.#emit({ kind: "task:failed", id, name: task.name, error });
 		} finally {
 			// Schedule the next cron run.
-			if (task.kind === 'cron' && task.status === 'running') {
+			if (task.kind === "cron" && task.status === "running") {
 				const next = nextCron(task.expression, new Date());
 				if (next) {
 					const drift = next.getTime() - Date.now();
-					task.nextRunAt = drift > this.#maxDriftMs ? Date.now() + 60_000 : next.getTime();
+					task.nextRunAt =
+						drift > this.#maxDriftMs ? Date.now() + 60_000 : next.getTime();
 				} else {
 					task.nextRunAt = Date.now() + 60_000;
 				}
@@ -317,7 +331,7 @@ export class MemorySchedulesBackend implements ScheduleRegistry {
 		if (task) {
 			this.#tasks.delete(id);
 			this.#byName.delete(task.name);
-			this.#emit({ kind: 'task:deleted', id });
+			this.#emit({ kind: "task:deleted", id });
 		}
 	}
 

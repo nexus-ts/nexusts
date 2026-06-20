@@ -27,11 +27,11 @@
  *   }
  */
 
-import 'reflect-metadata';
-import type { EventService } from '../event.service.js';
-import type { EventName, ListenerOptions, EventListener } from '../types.js';
+import "reflect-metadata";
+import type { EventService } from "../event.service.js";
+import type { EventName, ListenerOptions, EventListener } from "../types.js";
 
-const ON_EVENT_META = 'nexus:events:on-event';
+const ON_EVENT_META = "nexus:events:on-event";
 
 interface StoredHook {
 	method: string;
@@ -42,14 +42,18 @@ interface StoredHook {
 /**
  * Mark a method as an event listener.
  */
-export function OnEvent(pattern: EventName, options: ListenerOptions = {}): MethodDecorator {
+export function OnEvent(
+	pattern: EventName,
+	options: ListenerOptions = {},
+): MethodDecorator {
 	return (target, propertyKey, descriptor) => {
-		if (!descriptor || typeof descriptor.value !== 'function') {
-			throw new Error('@OnEvent can only decorate methods.');
+		if (!descriptor || typeof descriptor.value !== "function") {
+			throw new Error("@OnEvent can only decorate methods.");
 		}
 		const ctor = target.constructor as object;
 		const hooks: StoredHook[] =
-			(Reflect.getMetadata(ON_EVENT_META, ctor) as StoredHook[] | undefined) ?? [];
+			(Reflect.getMetadata(ON_EVENT_META, ctor) as StoredHook[] | undefined) ??
+			[];
 		hooks.push({ method: String(propertyKey), pattern, options });
 		Reflect.defineMetadata(ON_EVENT_META, hooks, ctor);
 	};
@@ -57,25 +61,33 @@ export function OnEvent(pattern: EventName, options: ListenerOptions = {}): Meth
 
 /** Get the on-event hooks declared on a class. */
 export function getOnEventHooks(target: unknown): StoredHook[] {
-	const ctor = (target as { constructor?: object }).constructor ?? (target as object);
-	return (Reflect.getMetadata(ON_EVENT_META, ctor) as StoredHook[] | undefined) ?? [];
+	const ctor =
+		(target as { constructor?: object }).constructor ?? (target as object);
+	return (
+		(Reflect.getMetadata(ON_EVENT_META, ctor) as StoredHook[] | undefined) ?? []
+	);
 }
 
 /**
  * Scan an instance for `@OnEvent` hooks and register them with the
  * `EventService`. Returns the assigned listener ids.
  */
-export function scanForListeners(instance: object, service: EventService): string[] {
+export function scanForListeners(
+	instance: object,
+	service: EventService,
+): string[] {
 	const ids: string[] = [];
 	for (const h of getOnEventHooks(instance)) {
 		const fn = (instance as Record<string, unknown>)[h.method] as
 			| EventListener
 			| undefined;
-		if (typeof fn !== 'function') continue;
+		if (typeof fn !== "function") continue;
 		const id = service.on(h.pattern, fn.bind(instance), {
 			priority: h.options.priority,
 			once: h.options.once,
-			if: h.options.if as ((payload: any) => boolean | Promise<boolean>) | undefined,
+			if: h.options.if as
+				| ((payload: any) => boolean | Promise<boolean>)
+				| undefined,
 		});
 		ids.push(id);
 	}

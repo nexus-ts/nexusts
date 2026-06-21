@@ -16,6 +16,7 @@ export interface MemoryStoreOptions {
 export class MemoryStore implements CacheStore {
 	readonly kind = "memory";
 	private data = new Map<string, CacheEntry>();
+	private tagIndex = new Map<string, Set<string>>();
 	private readonly max: number;
 	private sweepTimer: ReturnType<typeof setInterval> | null = null;
 
@@ -59,19 +60,38 @@ export class MemoryStore implements CacheStore {
 		if (!this.data.has(key) && this.data.size >= this.max) {
 			// Evict oldest (first key in iteration order).
 			const oldest = this.data.keys().next().value;
-			if (oldest !== undefined) this.data.delete(oldest);
+			if (oldest !== undefined) {
+				this.data.delete(oldest);
+				for (const keys of this.tagIndex.values()) keys.delete(oldest);
+			}
 		}
 		this.data.set(key, entry);
+		// Refresh tag index: remove old tag associations for this key, then add new ones.
+		if (opts.tags) {
+			for (const [, keys] of this.tagIndex.entries()) keys.delete(key);
+			for (const tag of opts.tags) {
+				let set = this.tagIndex.get(tag);
+				if (!set) {
+					set = new Set();
+					this.tagIndex.set(tag, set);
+				}
+				set.add(key);
+			}
+		}
 	}
 
 	async delete(key: string): Promise<boolean> {
-		return this.data.delete(key);
+		const deleted = this.data.delete(key);
+		// Remove this key from every tag index.
+		for (const keys of this.tagIndex.values()) keys.delete(key);
+		return deleted;
 	}
 
 	async clear(pattern?: string): Promise<number> {
 		if (!pattern) {
 			const n = this.data.size;
 			this.data.clear();
+			this.tagIndex.clear();
 			return n;
 		}
 		const rx = globToRegExp(pattern);
@@ -79,6 +99,7 @@ export class MemoryStore implements CacheStore {
 		for (const k of [...this.data.keys()]) {
 			if (rx.test(k)) {
 				this.data.delete(k);
+				for (const keys of this.tagIndex.values()) keys.delete(k);
 				n++;
 			}
 		}
@@ -93,16 +114,39 @@ export class MemoryStore implements CacheStore {
 		return result;
 	}
 
+	/**
+	 * Tag-based invalidation. Maintains a `tag -> Set<key>` index in
+	 * addition to the main map. Returns the number of keys removed.
+	 */
+	async invalidateByTag(tag: string): Promise<number> {
+		const keys = this.tagIndex.get(tag);
+		if (!keys) return 0;
+		let n = 0;
+		for (const k of keys) {
+			if (this.data.delete(k)) n++;
+		}
+		this.tagIndex.delete(tag);
+		return n;
+	}
+
 	async close(): Promise<void> {
 		if (this.sweepTimer) clearInterval(this.sweepTimer);
 		this.sweepTimer = null;
 		this.data.clear();
+		this.tagIndex.clear();
 	}
 
 	private sweepExpired(): void {
 		const now = Date.now();
 		for (const [k, e] of this.data.entries()) {
 			if (e.expiresAt > 0 && e.expiresAt <= now) this.data.delete(k);
+		}
+		// Drop tags whose keys are all gone.
+		for (const [tag, keys] of this.tagIndex.entries()) {
+			for (const k of keys) {
+				if (!this.data.has(k)) keys.delete(k);
+			}
+			if (keys.size === 0) this.tagIndex.delete(tag);
 		}
 	}
 }

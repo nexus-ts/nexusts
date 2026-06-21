@@ -44,6 +44,13 @@ export interface CacheStore {
 	clear(pattern?: string): Promise<number>;
 	/** Wrap a function with cache-or-compute semantics. */
 	wrap<T>(key: string, fn: () => Promise<T>, ttl?: number): Promise<T>;
+	/**
+	 * Remove every entry tagged with `tag`. Backends without a tag
+	 * index (e.g. MemoryStore) return 0.
+	 */
+	invalidateByTag?(tag: string): Promise<number>;
+	/** Sweep expired entries. Backends without a sweep loop return 0. */
+	gc?(): Promise<number>;
 	/** Optional: free resources. */
 	close?(): Promise<void>;
 }

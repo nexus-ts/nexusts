@@ -71,11 +71,30 @@ export class CacheService {
 		return this.store.wrap<T>(this.key(k), fn, ttl ?? this.defaultTtl);
 	}
 
-	/** Tag-based invalidation (best-effort for in-memory; requires Redis tagging for full power). */
-	async invalidateByTag(_tag: string): Promise<number> {
-		// In-memory store doesn't track tags in a separate index. Redis would.
-		// For now, this is a no-op that returns 0. Override in a custom store.
+	/**
+	 * Tag-based invalidation. Delegates to the underlying store.
+	 * Stores without a tag index (the default `MemoryStore`) return 0.
+	 * Use `DrizzleCacheStore` (or implement `invalidateByTag` on a
+	 * custom store) for true tag-based removal.
+	 */
+	async invalidateByTag(tag: string): Promise<number> {
+		if (typeof (this.store as any).invalidateByTag === "function") {
+			return await (this.store as any).invalidateByTag(this.prefixedTag(tag));
+		}
 		return 0;
+	}
+
+	/** Sweep expired entries. No-op on stores that don't implement `gc()`. */
+	async gc(): Promise<number> {
+		if (typeof this.store.gc === "function") {
+			return await this.store.gc();
+		}
+		return 0;
+	}
+
+	/** Apply the configured prefix to a tag name. */
+	private prefixedTag(tag: string): string {
+		return `${this.prefix}:${tag}`;
 	}
 
 	/**

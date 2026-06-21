@@ -364,6 +364,43 @@ new DrizzleHealthIndicator('database', db, { timeoutMs: 3000 });
 Runs `SELECT 1` (or a custom probe) against the database, returns
 `'up'` / `'down'` with `latencyMs` in the data field.
 
+### `nexus/cache` — DrizzleCacheStore
+
+```ts
+import { DrizzleCacheStore } from 'nexus/cache';
+
+CacheModule.forRoot({
+  store: new DrizzleCacheStore(drizzleService, {
+    tableName: 'nexus_cache',
+    tagsTableName: 'nexus_cache_tags',
+  }),
+  defaultTtl: 300,
+});
+
+-- schema (managed by your migration)
+CREATE TABLE nexus_cache (
+  key        TEXT PRIMARY KEY,
+  value      TEXT NOT NULL,            -- JSON-encoded
+  expires_at TEXT,                     -- ISO timestamp, null = never
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL
+);
+CREATE TABLE nexus_cache_tags (
+  tag        TEXT NOT NULL,
+  key        TEXT NOT NULL,
+  PRIMARY KEY (tag, key)
+);
+```
+
+The `DrizzleCacheStore` is the first backend that supports
+**real tag-based invalidation**: `cache.invalidateByTag('users')`
+removes every entry tagged 'users' in a single statement, regardless
+of how many keys share the tag. MemoryStore also supports tags
+(via an in-memory index), but the Drizzle version is durable and
+shared across pods.
+
+The store also implements `gc()` for sweeping expired entries.
+
 ### `nexus/limiter` — DrizzleRateLimitStorage
 
 ```ts

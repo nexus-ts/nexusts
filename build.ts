@@ -52,6 +52,7 @@ const result = await Bun.build({
 		"./src/openapi/index.ts",
 		"./src/upload/index.ts",
 		"./src/sse/index.ts",
+		"./src/tracing/index.ts",
 	],
 	outdir: "./dist",
 	target: "bun",

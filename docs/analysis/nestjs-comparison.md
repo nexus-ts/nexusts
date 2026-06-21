@@ -69,8 +69,9 @@ analysis. This section documents what shipped and where.
 | **File upload helper** (v0.4) | ✅ | `nexus/upload` |
 | **Request-scoped DI** (v0.4) | ✅ | core DI + ALS + Hono middleware |
 | **Server-Sent Events** (v0.4) | ✅ | `nexus/sse` |
+| **Distributed tracing** (v0.4) | ✅ | `nexus/tracing` |
 
-Total: **16 Tier 1+2 gaps closed** since v0.2 (12 in v0.3 + 4 in v0.4).
+Total: **17 Tier 1+2 gaps closed** since v0.2 (12 in v0.3 + 5 in v0.4).
 
 ---
 
@@ -259,10 +260,10 @@ NexusJS v0.4 is **production-ready for the majority of backend
 services**:
 
 - The MVC + DI + validation core is solid and battle-tested.
-- All 20 optional modules (auth, queue, schedule, events, session,
+- All 21 optional modules (auth, queue, schedule, events, session,
   health, config, logger, static, limiter, shield, cache, drive,
-  mail, drizzle, cli, openapi, upload, sse) are independently
-  usable and well-scoped.
+  mail, drizzle, cli, openapi, upload, sse, tracing) are
+  independently usable and well-scoped.
 - Tier 1 gaps are **fully closed** as of v0.4 (12 closed in v0.3
   - openapi + upload). What's left is Tier 2 (SSE, request-scoped
   DI, tracing, metrics).

@@ -21,6 +21,7 @@
     "src/openapi/**/*.ts",
     "src/upload/**/*.ts",
     "src/sse/**/*.ts",
+    "src/tracing/**/*.ts",
     "src/core/**/*.d.ts",
     "src/cli/**/*.d.ts",
     "src/auth/**/*.d.ts",
@@ -40,7 +41,8 @@
     "src/drizzle/**/*.d.ts",
     "src/openapi/**/*.d.ts",
     "src/upload/**/*.d.ts",
-    "src/sse/**/*.d.ts"
+    "src/sse/**/*.d.ts",
+    "src/tracing/**/*.d.ts"
   ],
   "compilerOptions": {
     "rootDir": "./src"

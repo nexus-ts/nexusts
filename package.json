@@ -118,6 +118,10 @@
     "./sse": {
       "types": "./dist/sse/index.d.ts",
       "import": "./dist/sse/index.js"
+    },
+    "./tracing": {
+      "types": "./dist/tracing/index.d.ts",
+      "import": "./dist/tracing/index.js"
     }
   },
   "bin": {
@@ -159,6 +163,7 @@
     "bun": ">=1.1.0"
   },
   "dependencies": {
+    "@opentelemetry/api": "^1.9.1",
     "bullmq": "^5.79.0",
     "hono": "^4.6.0",
     "ioredis": "^5.11.1",
@@ -180,28 +185,27 @@
     "better-auth": "^1.6.0",
     "bullmq": "^5.79.0",
     "ioredis": "^5.11.1",
-    "drizzle-orm": "^0.36.0"
+    "drizzle-orm": "^0.36.0",
+    "@opentelemetry/api": "^1.9.0",
+    "@opentelemetry/sdk-node": "",
+    "@opentelemetry/exporter-trace-otlp-http": "",
+    "@opentelemetry/resources": "",
+    "@opentelemetry/semantic-conventions": "^1.41.1"
   },
   "peerDependenciesMeta": {
-    "zod": {
-      "optional": false
-    },
-    "drizzle-orm": {
-      "optional": false
-    },
-    "react": {
+    "@opentelemetry/sdk-node": {
       "optional": true
     },
-    "react-dom": {
+    "@opentelemetry/exporter-trace-otlp-http": {
       "optional": true
     },
-    "vue": {
+    "@opentelemetry/resources": {
       "optional": true
     },
-    "svelte": {
+    "@opentelemetry/semantic-conventions": {
       "optional": true
     },
-    "solid-js": {
+    "@opentelemetry/api": {
       "optional": true
     }
   },

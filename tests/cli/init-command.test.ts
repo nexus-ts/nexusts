@@ -170,6 +170,74 @@ describe("nx init — fresh install", () => {
 		const after = await readFile(join(target, "package.json"), "utf8");
 		expect(after).toBe(original);
 	});
+
+	it("handles package.json with // line comments (JSON5-style)", async () => {
+		// This is what tripped the user's CLI: `bun init`-generated
+		// package.json (or a hand-edited one) with trailing `//` comments
+		// that strict `JSON.parse` rejects with "Unrecognized token '/'".
+		const original = `{
+  // my app
+  "name": "json5-test",
+  "type": "module", // ESM
+  "private": true,
+  "dependencies": {
+    "hono": "^4.6.0", // web framework
+  },
+}
+`;
+		await writeFile(join(target, "package.json"), original);
+
+		// Should NOT throw "Unrecognized token '/'"
+		const code = await initCommand.run!(
+			makeCtx(target, {
+				"no-interaction": true,
+				view: "none",
+				orm: "none",
+				db: "none",
+				frontend: "react",
+			}),
+		);
+		expect(code).toBe(0);
+
+		// hono preserved, nexusjs added
+		const pkg = JSON.parse(
+			await readFile(join(target, "package.json"), "utf8"),
+		);
+		expect(pkg.dependencies.hono).toBe("^4.6.0");
+		expect(pkg.dependencies.nexusjs).toBe("*");
+	});
+
+	it("handles package.json with trailing commas and block comments", async () => {
+		// Block comment + trailing comma. Note: only one trailing
+		// comma per slot — `,,` is not in the JSON5 spec.
+		const original = `{
+  "name": "trailing-comma-test",
+  /* multi-line
+     block comment */
+  "dependencies": {
+    "hono": "^4.6.0",
+  },
+}
+`;
+		await writeFile(join(target, "package.json"), original);
+
+		const code = await initCommand.run!(
+			makeCtx(target, {
+				"no-interaction": true,
+				view: "none",
+				orm: "none",
+				db: "none",
+				frontend: "react",
+			}),
+		);
+		expect(code).toBe(0);
+
+		const pkg = JSON.parse(
+			await readFile(join(target, "package.json"), "utf8"),
+		);
+		expect(pkg.dependencies.hono).toBe("^4.6.0");
+		expect(pkg.dependencies.nexusjs).toBe("*");
+	});
 });
 
 describe("nx init — idempotent re-run", () => {

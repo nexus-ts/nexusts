@@ -37,6 +37,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import type { Command, CommandContext } from "../core/index.js";
 import { flagBool, logger, render, select } from "../core/index.js";
+import { parseJsonLoose } from "../core/loose-json.js";
 import { templates } from "../templates/index.js";
 
 type WriteMode = "write" | "skip" | "merge-pkg" | "merge-tsconfig";
@@ -340,7 +341,7 @@ function defaultTsconfig(): string {
  */
 function mergePackageJson(path: string, additions: Record<string, string>): void {
 	const raw = readFileSync(path, "utf8");
-	const pkg = JSON.parse(raw) as Record<string, unknown>;
+	const pkg = parseJsonLoose<Record<string, unknown>>(raw);
 	const deps = (pkg["dependencies"] as Record<string, string> | undefined) ?? {};
 	let changed = false;
 	for (const [k, v] of Object.entries(additions)) {
@@ -364,10 +365,10 @@ function mergeTsconfig(
 	additions: Record<string, boolean | string | string[]>,
 ): void {
 	const raw = readFileSync(path, "utf8");
-	const cfg = JSON.parse(raw) as {
+	const cfg = parseJsonLoose<{
 		compilerOptions?: Record<string, unknown>;
 		include?: string[];
-	};
+	}>(raw);
 	const co = (cfg.compilerOptions ?? {}) as Record<string, unknown>;
 	let changed = false;
 	for (const [k, v] of Object.entries(additions)) {

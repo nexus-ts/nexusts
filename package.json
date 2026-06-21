@@ -106,6 +106,10 @@
     "./drizzle": {
       "types": "./dist/drizzle/index.d.ts",
       "import": "./dist/drizzle/index.js"
+    },
+    "./openapi": {
+      "types": "./dist/openapi/index.d.ts",
+      "import": "./dist/openapi/index.js"
     }
   },
   "bin": {

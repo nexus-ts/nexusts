@@ -18,6 +18,7 @@
     "src/drive/**/*.ts",
     "src/mail/**/*.ts",
     "src/drizzle/**/*.ts",
+    "src/openapi/**/*.ts",
     "src/core/**/*.d.ts",
     "src/cli/**/*.d.ts",
     "src/auth/**/*.d.ts",
@@ -34,7 +35,8 @@
     "src/cache/**/*.d.ts",
     "src/drive/**/*.d.ts",
     "src/mail/**/*.d.ts",
-    "src/drizzle/**/*.d.ts"
+    "src/drizzle/**/*.d.ts",
+    "src/openapi/**/*.d.ts"
   ],
   "compilerOptions": {
     "rootDir": "./src"

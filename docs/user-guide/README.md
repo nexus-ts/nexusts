@@ -17,6 +17,7 @@ NexusJS로 애플리케이션을 개발하기 위한 단계별 가이드.
 | **Event System** | [`events.md`](./events.md) | [`events.ko.md`](./events.ko.md) |
 | **Session (cookie / memory / Redis)** | [`session.md`](./session.md) | [`session.ko.md`](./session.ko.md) |
 | **Production basics (health / config / logger / static)** | [`production-basics.md`](./production-basics.md) | [`production-basics.ko.md`](./production-basics.ko.md) |
+| **Cross-cutting (limiter / shield / cache / drive / mail)** | [`cross-cutting-features.md`](./cross-cutting-features.md) | [`cross-cutting-features.ko.md`](./cross-cutting-features.ko.md) |
 | Runtime & deployment | [`runtime-deployment.md`](./runtime-deployment.md) | [`runtime-deployment.ko.md`](./runtime-deployment.ko.md) |
 | **CLI · `nx` command runner** | [`cli.md`](./cli.md) | [`cli.ko.md`](./cli.ko.md) |
 

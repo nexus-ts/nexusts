@@ -12,6 +12,11 @@
     "src/config/**/*.ts",
     "src/logger/**/*.ts",
     "src/static/**/*.ts",
+    "src/limiter/**/*.ts",
+    "src/shield/**/*.ts",
+    "src/cache/**/*.ts",
+    "src/drive/**/*.ts",
+    "src/mail/**/*.ts",
     "src/core/**/*.d.ts",
     "src/cli/**/*.d.ts",
     "src/auth/**/*.d.ts",
@@ -22,7 +27,12 @@
     "src/health/**/*.d.ts",
     "src/config/**/*.d.ts",
     "src/logger/**/*.d.ts",
-    "src/static/**/*.d.ts"
+    "src/static/**/*.d.ts",
+    "src/limiter/**/*.d.ts",
+    "src/shield/**/*.d.ts",
+    "src/cache/**/*.d.ts",
+    "src/drive/**/*.d.ts",
+    "src/mail/**/*.d.ts"
   ],
   "compilerOptions": {
     "rootDir": "./src"

@@ -24,12 +24,14 @@ import makeValidator from "./make-validator.js";
 import dbMigrate from "./db-migrate.js";
 import dbSeed from "./db-seed.js";
 import newCmd from "./new.js";
+import configCmd from "./config.js";
 import repl from "./repl.js";
 import routeList from "./route-list.js";
 
 export const commands: Command[] = [
 	newCmd,
 	init,
+	configCmd,
 	makeCrud,
 	makeController,
 	makeService,

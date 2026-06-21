@@ -20,6 +20,7 @@ import modelKysely from "./model/kysely.js";
 import modelPrisma from "./model/prisma.js";
 import module from "./module/module.js";
 import projectNxConfig from "./project/nx.config.js";
+import projectDrizzleConfig from "./project/drizzle.config.js";
 import service from "./service/service.js";
 import validator from "./validator/validator.js";
 
@@ -50,6 +51,7 @@ export const templates = {
 	},
 	project: {
 		"nx.config.ts": projectNxConfig,
+		"drizzle.config.ts": projectDrizzleConfig,
 	},
 };
 

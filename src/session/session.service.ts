@@ -230,6 +230,20 @@ export class SessionService {
 			}
 			case 'redis':
 				throw new Error('[session] redis backend is planned for v0.2.');
+			case 'database': {
+				if (!config.database) {
+					throw new Error(
+						'[session] backend=database requires `database` in config. ' +
+							'Provide `{ db: DrizzleService, tableName?: string }`.',
+					);
+				}
+				const { DrizzleSessionStorage } = require('./backends/drizzle.js') as typeof import('./backends/drizzle.js');
+				const backend = new DrizzleSessionStorage({
+					db: config.database.db as any,
+					tableName: config.database.tableName,
+				});
+				return backend;
+			}
 		}
 	}
 

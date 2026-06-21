@@ -48,6 +48,7 @@ const result = await Bun.build({
 		"./src/cache/index.ts",
 		"./src/drive/index.ts",
 		"./src/mail/index.ts",
+		"./src/drizzle/index.ts",
 	],
 	outdir: "./dist",
 	target: "bun",

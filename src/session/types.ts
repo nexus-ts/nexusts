@@ -170,7 +170,7 @@ export interface CookieOptions {
 // Configuration
 // ---------------------------------------------------------------------------
 
-export type SessionBackendKind = "cookie" | "memory" | "redis";
+export type SessionBackendKind = "cookie" | "memory" | "redis" | "database";
 
 export interface SessionConfig {
 	/** Backend to use. Default: 'cookie'. */
@@ -188,6 +188,20 @@ export interface SessionConfig {
 	redis?: {
 		connection: string | { host: string; port: number; password?: string };
 		keyPrefix?: string;
+	};
+	/**
+	 * Database backend config (uses `nexus/drizzle`).
+	 *
+	 *   session: {
+	 *     backend: 'database',
+	 *     database: { db: drizzleService, tableName: 'nexus_sessions' },
+	 *   }
+	 */
+	database?: {
+		/** A `DrizzleService` instance (or anything with `rawQuery`). */
+		db: { rawQuery<T = unknown>(sql: string, params?: unknown[]): Promise<T[]> };
+		/** Table name. Default: 'nexus_sessions'. */
+		tableName?: string;
 	};
 	/** Default options applied to every session. */
 	defaults?: {

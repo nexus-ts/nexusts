@@ -10,7 +10,10 @@ import {
 	Cacheable,
 	CacheInvalidate,
 } from "../../src/cache/index.js";
-import { getCacheableSpecs, getCacheInvalidateSpecs } from "../../src/cache/types.js";
+import {
+	getCacheableSpecs,
+	getCacheInvalidateSpecs,
+} from "../../src/cache/types.js";
 
 describe("MemoryStore", () => {
 	let store: MemoryStore;

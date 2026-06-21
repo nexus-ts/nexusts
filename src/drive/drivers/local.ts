@@ -5,7 +5,15 @@
  * - Creates intermediate directories on write.
  * - Uses node:fs/promises for portability with Node and Bun.
  */
-import { mkdir, readFile, stat, unlink, writeFile, readdir, rename } from "node:fs/promises";
+import {
+	mkdir,
+	readFile,
+	stat,
+	unlink,
+	writeFile,
+	readdir,
+	rename,
+} from "node:fs/promises";
 import { dirname, join, normalize, resolve, sep } from "node:path";
 import type {
 	FileContent,
@@ -44,10 +52,15 @@ export class LocalDriver implements StorageDriver {
 		return full;
 	}
 
-	async put(key: string, body: FileContent, _opts: PutOptions = {}): Promise<void> {
+	async put(
+		key: string,
+		body: FileContent,
+		_opts: PutOptions = {},
+	): Promise<void> {
 		const path = this.resolveKey(key);
 		await mkdir(dirname(path), { recursive: true });
-		const buf = typeof body === "string" ? Buffer.from(body, "utf-8") : Buffer.from(body);
+		const buf =
+			typeof body === "string" ? Buffer.from(body, "utf-8") : Buffer.from(body);
 		await writeFile(path, buf);
 	}
 
@@ -116,7 +129,10 @@ export class LocalDriver implements StorageDriver {
 		};
 	}
 
-	async getSignedUrl(key: string, _opts: SignedUrlOptions = {}): Promise<string> {
+	async getSignedUrl(
+		key: string,
+		_opts: SignedUrlOptions = {},
+	): Promise<string> {
 		// Local driver: serve via a public prefix. Real signing would require
 		// an upstream reverse proxy with signature verification.
 		return `${this.publicUrlPrefix}/${key}`;
@@ -135,7 +151,11 @@ export class LocalDriver implements StorageDriver {
 	}
 }
 
-async function walk(root: string, dir: string, prefix: string): Promise<string[]> {
+async function walk(
+	root: string,
+	dir: string,
+	prefix: string,
+): Promise<string[]> {
 	const out: string[] = [];
 	const full = join(root, dir);
 	let entries;
@@ -149,7 +169,12 @@ async function walk(root: string, dir: string, prefix: string): Promise<string[]
 		if (e.isDirectory()) {
 			// Recurse if this directory is on the prefix path
 			// (e.g. searching for 'a/1' should walk into 'a').
-			if (!prefix || rel === prefix.slice(0, -1) || rel.startsWith(prefix) || prefix.startsWith(`${rel}/`)) {
+			if (
+				!prefix ||
+				rel === prefix.slice(0, -1) ||
+				rel.startsWith(prefix) ||
+				prefix.startsWith(`${rel}/`)
+			) {
 				const sub = await walk(root, rel, prefix);
 				out.push(...sub);
 			}

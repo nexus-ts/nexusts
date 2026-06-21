@@ -21,7 +21,11 @@ export class MemoryDriver implements StorageDriver {
 	readonly kind = "memory";
 	private data = new Map<string, MemEntry>();
 
-	async put(key: string, body: FileContent, opts: PutOptions = {}): Promise<void> {
+	async put(
+		key: string,
+		body: FileContent,
+		opts: PutOptions = {},
+	): Promise<void> {
 		const buf = toBuffer(body);
 		const contentType = opts.contentType ?? "application/octet-stream";
 		this.data.set(key, {
@@ -72,7 +76,10 @@ export class MemoryDriver implements StorageDriver {
 		};
 	}
 
-	async getSignedUrl(key: string, _opts: SignedUrlOptions = {}): Promise<string> {
+	async getSignedUrl(
+		key: string,
+		_opts: SignedUrlOptions = {},
+	): Promise<string> {
 		if (!this.data.has(key)) throw new Error(`File not found: ${key}`);
 		// No signing in-memory; return a sentinel URL.
 		return `memory://${encodeURIComponent(key)}`;
@@ -81,7 +88,10 @@ export class MemoryDriver implements StorageDriver {
 	async copy(src: string, dest: string): Promise<void> {
 		const e = this.data.get(src);
 		if (!e) throw new Error(`File not found: ${src}`);
-		this.data.set(dest, { body: e.body, meta: { ...e.meta, key: dest, lastModified: Date.now() } });
+		this.data.set(dest, {
+			body: e.body,
+			meta: { ...e.meta, key: dest, lastModified: Date.now() },
+		});
 	}
 
 	async move(src: string, dest: string): Promise<void> {

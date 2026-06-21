@@ -80,10 +80,15 @@ export class S3Driver implements StorageDriver {
 		return this._presigner;
 	}
 
-	async put(key: string, body: FileContent, opts: PutOptions = {}): Promise<void> {
+	async put(
+		key: string,
+		body: FileContent,
+		opts: PutOptions = {},
+	): Promise<void> {
 		const client = await this.client();
 		const mod = await import("@aws-sdk/client-s3");
-		const buf = typeof body === "string" ? Buffer.from(body, "utf-8") : Buffer.from(body);
+		const buf =
+			typeof body === "string" ? Buffer.from(body, "utf-8") : Buffer.from(body);
 		const command = new mod.PutObjectCommand({
 			Bucket: this.opts.bucket,
 			Key: key,
@@ -99,17 +104,24 @@ export class S3Driver implements StorageDriver {
 	async get(key: string): Promise<Buffer> {
 		const client = await this.client();
 		const mod = await import("@aws-sdk/client-s3");
-		const command = new mod.GetObjectCommand({ Bucket: this.opts.bucket, Key: key });
+		const command = new mod.GetObjectCommand({
+			Bucket: this.opts.bucket,
+			Key: key,
+		});
 		const res = await client.send(command);
 		const chunks: Uint8Array[] = [];
-		for await (const chunk of res.Body as AsyncIterable<Uint8Array>) chunks.push(chunk);
+		for await (const chunk of res.Body as AsyncIterable<Uint8Array>)
+			chunks.push(chunk);
 		return Buffer.concat(chunks);
 	}
 
 	async delete(key: string): Promise<boolean> {
 		const client = await this.client();
 		const mod = await import("@aws-sdk/client-s3");
-		const command = new mod.DeleteObjectCommand({ Bucket: this.opts.bucket, Key: key });
+		const command = new mod.DeleteObjectCommand({
+			Bucket: this.opts.bucket,
+			Key: key,
+		});
 		await client.send(command);
 		return true;
 	}
@@ -126,7 +138,10 @@ export class S3Driver implements StorageDriver {
 	async head(key: string): Promise<FileMetadata> {
 		const client = await this.client();
 		const mod = await import("@aws-sdk/client-s3");
-		const command = new mod.HeadObjectCommand({ Bucket: this.opts.bucket, Key: key });
+		const command = new mod.HeadObjectCommand({
+			Bucket: this.opts.bucket,
+			Key: key,
+		});
 		const res = await client.send(command);
 		return {
 			key,
@@ -155,7 +170,10 @@ export class S3Driver implements StorageDriver {
 		};
 	}
 
-	async getSignedUrl(key: string, opts: SignedUrlOptions = {}): Promise<string> {
+	async getSignedUrl(
+		key: string,
+		opts: SignedUrlOptions = {},
+	): Promise<string> {
 		const client = await this.client();
 		const mod = await import("@aws-sdk/client-s3");
 		const presigner = await this.presigner();

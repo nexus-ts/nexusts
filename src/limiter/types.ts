@@ -33,7 +33,10 @@ import { METADATA_KEY } from "../core/constants.js";
 export type RateLimitKey = string;
 
 /** Strategy used to count requests. */
-export type RateLimitStrategy = "fixed-window" | "sliding-window" | "token-bucket";
+export type RateLimitStrategy =
+	| "fixed-window"
+	| "sliding-window"
+	| "token-bucket";
 
 /**
  * Numeric size of a window. Either a millisecond count or one of
@@ -103,13 +106,18 @@ export interface LimiterConfig {
 	/** Default key derivation when a rule omits one. Default: IP address. */
 	defaultKey?: (c: any) => string | undefined | Promise<string | undefined>;
 	/** Default response when a request is rejected. */
-	defaultReject?: (c: any, result: RateLimitResult) => Response | Promise<Response>;
+	defaultReject?: (
+		c: any,
+		result: RateLimitResult,
+	) => Response | Promise<Response>;
 }
 
 export const LIMITER_RULE_KEY = Symbol.for("nexus:RateLimitRule");
 
 /** Decorator: attach a per-route rate limit. */
-export function RateLimit(rule: RateLimitRule): MethodDecorator & ClassDecorator {
+export function RateLimit(
+	rule: RateLimitRule,
+): MethodDecorator & ClassDecorator {
 	return (
 		target: any,
 		propertyKey?: string | symbol,

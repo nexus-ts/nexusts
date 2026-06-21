@@ -7,7 +7,11 @@
  *
  * Not cluster-safe. For multi-pod deployments use `RedisStorage`.
  */
-import type { RateLimitStorage, RateLimitKey, RateLimitStrategy } from "../types.js";
+import type {
+	RateLimitStorage,
+	RateLimitKey,
+	RateLimitStrategy,
+} from "../types.js";
 
 interface FixedBucket {
 	resetAt: number;
@@ -135,7 +139,9 @@ export class MemoryRateLimitStorage implements RateLimitStorage {
 			remaining: Math.floor(b.tokens),
 			limit,
 			resetAt: now + durationMs,
-			retryAfter: allowed ? 0 : Math.ceil((points - b.tokens) / refillPerMs / 1000),
+			retryAfter: allowed
+				? 0
+				: Math.ceil((points - b.tokens) / refillPerMs / 1000),
 		};
 	}
 }

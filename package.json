@@ -46,6 +46,66 @@
     "./cli": {
       "types": "./dist/cli/index.d.ts",
       "import": "./dist/cli/index.js"
+    },
+    "./auth": {
+      "types": "./dist/auth/index.d.ts",
+      "import": "./dist/auth/index.js"
+    },
+    "./queue": {
+      "types": "./dist/queue/index.d.ts",
+      "import": "./dist/queue/index.js"
+    },
+    "./schedule": {
+      "types": "./dist/schedule/index.d.ts",
+      "import": "./dist/schedule/index.js"
+    },
+    "./events": {
+      "types": "./dist/events/index.d.ts",
+      "import": "./dist/events/index.js"
+    },
+    "./session": {
+      "types": "./dist/session/index.d.ts",
+      "import": "./dist/session/index.js"
+    },
+    "./health": {
+      "types": "./dist/health/index.d.ts",
+      "import": "./dist/health/index.js"
+    },
+    "./config": {
+      "types": "./dist/config/index.d.ts",
+      "import": "./dist/config/index.js"
+    },
+    "./logger": {
+      "types": "./dist/logger/index.d.ts",
+      "import": "./dist/logger/index.js"
+    },
+    "./static": {
+      "types": "./dist/static/index.d.ts",
+      "import": "./dist/static/index.js"
+    },
+    "./limiter": {
+      "types": "./dist/limiter/index.d.ts",
+      "import": "./dist/limiter/index.js"
+    },
+    "./shield": {
+      "types": "./dist/shield/index.d.ts",
+      "import": "./dist/shield/index.js"
+    },
+    "./cache": {
+      "types": "./dist/cache/index.d.ts",
+      "import": "./dist/cache/index.js"
+    },
+    "./drive": {
+      "types": "./dist/drive/index.d.ts",
+      "import": "./dist/drive/index.js"
+    },
+    "./mail": {
+      "types": "./dist/mail/index.d.ts",
+      "import": "./dist/mail/index.js"
+    },
+    "./drizzle": {
+      "types": "./dist/drizzle/index.d.ts",
+      "import": "./dist/drizzle/index.js"
     }
   },
   "bin": {
@@ -78,7 +138,8 @@
     "adonis",
     "edge",
     "typescript",
-    "decorator"
+    "decorator",
+    "drizzle"
   ],
   "license": "MIT",
   "engines": {
@@ -95,16 +156,24 @@
   },
   "optionalDependencies": {
     "better-auth": "^1.6.20",
-    "drizzle-orm": "^0.36.0"
+    "drizzle-orm": "^0.36.0",
+    "pg": "^8.13.1",
+    "mysql2": "^3.11.4",
+    "better-sqlite3": "^11.7.0",
+    "postgres": "^3.4.5"
   },
   "peerDependencies": {
     "zod": "^3.23.8",
     "better-auth": "^1.6.0",
     "bullmq": "^5.79.0",
-    "ioredis": "^5.11.1"
+    "ioredis": "^5.11.1",
+    "drizzle-orm": "^0.36.0"
   },
   "peerDependenciesMeta": {
     "zod": {
+      "optional": false
+    },
+    "drizzle-orm": {
       "optional": false
     },
     "react": {

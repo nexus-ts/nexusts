@@ -5,7 +5,11 @@
 import "reflect-metadata";
 import { describe, it, expect } from "vitest";
 import { Hono } from "hono";
-import { CsrfGuard, HeadersGuard, ShieldService } from "../../src/shield/index.js";
+import {
+	CsrfGuard,
+	HeadersGuard,
+	ShieldService,
+} from "../../src/shield/index.js";
 import type { ShieldConfig } from "../../src/shield/types.js";
 
 describe("CsrfGuard", () => {
@@ -26,9 +30,7 @@ describe("CsrfGuard", () => {
 	});
 
 	it("verify() allows safe methods without a token", () => {
-		expect(
-			guard.verify({ method: "GET", headers: new Headers() }),
-		).toBe(true);
+		expect(guard.verify({ method: "GET", headers: new Headers() })).toBe(true);
 	});
 
 	it("verify() rejects mutating requests with no cookie", () => {
@@ -100,7 +102,12 @@ describe("HeadersGuard middleware", () => {
 	it("sets CSP", async () => {
 		const g = new HeadersGuard(
 			false,
-			{ directives: { defaultSrc: ["'self'"], scriptSrc: ["'self'", "cdn.example"] } },
+			{
+				directives: {
+					defaultSrc: ["'self'"],
+					scriptSrc: ["'self'", "cdn.example"],
+				},
+			},
 			false,
 			false,
 			undefined,
@@ -153,7 +160,9 @@ describe("ShieldService (combined middleware)", () => {
 		expect(r1.headers.get("X-Frame-Options")).toBe("DENY");
 		expect(r1.headers.get("X-Content-Type-Options")).toBe("nosniff");
 		expect(r1.headers.get("Strict-Transport-Security")).toBe("max-age=60");
-		expect(r1.headers.get("Content-Security-Policy")).toContain("default-src 'self'");
+		expect(r1.headers.get("Content-Security-Policy")).toContain(
+			"default-src 'self'",
+		);
 		expect(r1.headers.get("Referrer-Policy")).toBe("no-referrer");
 		const setCookie = r1.headers.get("set-cookie") ?? "";
 		expect(setCookie).toContain("nexus-csrf=");

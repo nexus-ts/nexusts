@@ -38,7 +38,10 @@ declare module "nodemailer" {
 }
 
 declare module "mjml" {
-	export function mjml2html(input: string, options?: { validationLevel?: "strict" | "soft" | "skip" }): {
+	export function mjml2html(
+		input: string,
+		options?: { validationLevel?: "strict" | "soft" | "skip" },
+	): {
 		html: string;
 		errors: Array<{ line: number; message: string; tagName: string }>;
 	};

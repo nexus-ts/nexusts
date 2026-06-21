@@ -96,7 +96,9 @@ function verify(signed: string, secret: string): string | null {
 	if (lastDot < 1) return null;
 	const value = signed.slice(0, lastDot);
 	const sig = signed.slice(lastDot + 1);
-	const expected = createHmac("sha256", secret).update(value).digest("base64url");
+	const expected = createHmac("sha256", secret)
+		.update(value)
+		.digest("base64url");
 	try {
 		const a = Buffer.from(sig);
 		const b = Buffer.from(expected);

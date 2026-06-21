@@ -58,24 +58,35 @@ export class CsrfGuard {
 	 */
 	verify(req: { method: string; headers: Headers }): boolean {
 		const method = req.method.toUpperCase();
-		if (this.config.ignoreMethods.map((m) => m.toUpperCase()).includes(method)) {
+		if (
+			this.config.ignoreMethods.map((m) => m.toUpperCase()).includes(method)
+		) {
 			return true;
 		}
 		if (this.config.protectGet) {
 			// (no-op; protectGet currently shares ignoreMethods logic)
 		}
 		const cookieHeader = req.headers.get("cookie") ?? "";
-		const cookieToken = this.extractCookie(cookieHeader, this.config.cookieName);
+		const cookieToken = this.extractCookie(
+			cookieHeader,
+			this.config.cookieName,
+		);
 		if (!cookieToken) return false;
 		// Header value
 		const headerToken = req.headers.get(this.config.headerName);
-		if (headerToken && ShieldInternals.verify(headerToken, this.secret) === cookieToken) {
+		if (
+			headerToken &&
+			ShieldInternals.verify(headerToken, this.secret) === cookieToken
+		) {
 			return true;
 		}
 		// Form field (parsed from x-www-form-urlencoded body or multipart)
 		// For simplicity, we accept a custom header `x-csrf-field` with the value.
 		const fieldToken = req.headers.get("x-csrf-field");
-		if (fieldToken && ShieldInternals.verify(fieldToken, this.secret) === cookieToken) {
+		if (
+			fieldToken &&
+			ShieldInternals.verify(fieldToken, this.secret) === cookieToken
+		) {
 			return true;
 		}
 		return false;
@@ -88,7 +99,9 @@ export class CsrfGuard {
 	middleware() {
 		return async (c: any, next: () => Promise<any>) => {
 			const method = (c.req.method as string).toUpperCase();
-			if (this.config.ignoreMethods.map((m) => m.toUpperCase()).includes(method)) {
+			if (
+				this.config.ignoreMethods.map((m) => m.toUpperCase()).includes(method)
+			) {
 				// Safe method: ensure a cookie is present.
 				const cookieHeader = c.req.header("cookie") ?? "";
 				if (!this.extractCookie(cookieHeader, this.config.cookieName)) {

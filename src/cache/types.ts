@@ -33,7 +33,11 @@ export interface CacheStore {
 	/** Get a value. Returns `undefined` if missing or expired. */
 	get<T = unknown>(key: string): Promise<T | undefined>;
 	/** Set a value with optional TTL (seconds) and tags. */
-	set<T = unknown>(key: string, value: T, opts?: CacheSetOptions): Promise<void>;
+	set<T = unknown>(
+		key: string,
+		value: T,
+		opts?: CacheSetOptions,
+	): Promise<void>;
 	/** Delete a single key. */
 	delete(key: string): Promise<boolean>;
 	/** Delete every key matching `pattern` (glob: `*`, `**`). */

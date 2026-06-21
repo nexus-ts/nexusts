@@ -6,6 +6,8 @@
  * added here.
  */
 
+export { DrizzleHealthIndicator } from "./drizzle.js";
+
 import type { HealthIndicator, HealthIndicatorResult } from "../types.js";
 
 /**

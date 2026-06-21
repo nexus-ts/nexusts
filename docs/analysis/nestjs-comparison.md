@@ -108,13 +108,11 @@ doesn't yet cover.
 
 ### 4.2 Server-Sent Events (SSE)
 
-- **Use cases**: one-way streaming (AI chat responses, build progress,
-  live logs).
-- **Proposed module**: `nexus/sse` (small wrapper)
-- **Features**:
-  - `SseStream` return type from handlers
-  - Backed by Hono's `c.stream()`
-  - Reconnection with `Last-Event-ID`
+- **Status**: ✅ closed in v0.4 by `nexus/sse` (Hono's
+  `streamSSE` wrapped behind a type-safe `SseStream` with
+  auto-serialization, idempotent `close()`, and `Last-Event-ID`
+  reconnection support). See
+  [`../../user-guide/sse.md`](../../user-guide/sse.md).
 
 ### 4.3 Request-scoped DI as a core feature
 

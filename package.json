@@ -114,6 +114,10 @@
     "./upload": {
       "types": "./dist/upload/index.d.ts",
       "import": "./dist/upload/index.js"
+    },
+    "./sse": {
+      "types": "./dist/sse/index.d.ts",
+      "import": "./dist/sse/index.js"
     }
   },
   "bin": {

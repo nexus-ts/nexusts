@@ -541,6 +541,118 @@ recommended starting point.)
 
 ---
 
+### Forms (`<Form>` server-side helper)
+
+Inertia v3's `<Form>` component pairs with this server-side helper to
+keep form submissions out of the controller's hot path. The pattern
+is the classic **Post/Redirect/Get**:
+
+```ts
+import { z } from 'zod';
+import { Body, Controller, Post } from 'nexusjs';
+import { Inertia } from 'nexusjs/view/inertia';
+
+const UserSchema = z.object({
+  name: z.string().min(2),
+  email: z.string().email(),
+});
+
+@Controller('/users')
+class UserController {
+  constructor(@Inject(Inertia.TOKEN) private inertia: Inertia) {}
+
+  @Post('/')
+  async store(@Body() input: Record<string, any>) {
+    const form = this.inertia.form('Users/Create');
+    const result = UserSchema.safeParse(input);
+
+    if (!result.success) {
+      const errors: Record<string, string[]> = {};
+      for (const issue of result.error.issues) {
+        const path = issue.path.join('.');
+        (errors[path] ??= []).push(issue.message);
+      }
+      return form
+        .withErrorBag('createUser')
+        .withErrors(errors)
+        .withValues(input)   // re-populate the form
+        .render();
+    }
+
+    return form.redirect('/users'); // 303 (PRG pattern)
+  }
+}
+```
+
+| Builder method   | Effect                                                     |
+| ---------------- | ---------------------------------------------------------- |
+| `withProps()`    | Merge a batch of props at once                             |
+| `with(k, v)`     | Set a single prop                                          |
+| `withErrors()`   | Attach validation errors (string or string[]) per field   |
+| `withError()`    | Add a single error to a field                              |
+| `withErrorBag()` | Name the form's error namespace (multiple forms / page)   |
+| `withValues()`   | Re-populate the form inputs after a failed submission      |
+| `render()`       | Emit the page (with errors + values injected)             |
+| `redirect(url)`  | 303 redirect (PRG — prevents double-submit)                |
+| `back(to?)`      | 303 redirect to `back` (or a specific URL)                 |
+
+### Lazy props
+
+`lazy(fn, tag?)` wraps a callback so its result is computed **once
+per request** and shared across every key that points at the same
+tag. Useful for any expensive computation that doesn't need to wait
+for a partial reload but shouldn't repeat within the same response:
+
+```ts
+return this.inertia.render('Dashboard', {
+  a: lazy(() => this.computeA(), 'stats'),
+  b: lazy(() => this.computeB(), 'stats'),
+});
+```
+
+### SSR adapters
+
+The framework ships first-class adapters for React, Vue, Svelte,
+and Solid. Each lazy-imports its engine — install only what you
+use:
+
+```ts
+import { createReactAdapter, ComponentRegistry } from 'nexusjs/view/inertia/ssr';
+
+const components = new ComponentRegistry()
+  .register('Home', HomePage)
+  .register('Users/Index', UsersIndexPage);
+
+app.inertia.setSsrAdapter(createReactAdapter({ components }));
+```
+
+| Adapter                  | Engine    | SSR API                                        |
+| ------------------------ | --------- | ---------------------------------------------- |
+| `createReactAdapter`     | React 18+ | `react-dom/server.renderToString`              |
+| `createVueAdapter`       | Vue 3     | `vue/server-renderer.renderToString`           |
+| `createSvelteAdapter`    | Svelte 4/5| `svelte/server.render` or `Component.render`  |
+| `createSolidAdapter`     | Solid     | `solid-js/web.renderToString`                  |
+
+### Form middleware (CSRF)
+
+```ts
+import { inertiaFormMiddleware } from 'nexusjs/view/inertia';
+
+app.server.app.use('*', inertiaFormMiddleware({
+  validateCsrf: true,
+  csrfHeader: 'X-CSRF-Token',
+  csrfField: '_token',
+  csrfSharedKey: 'csrfToken',
+}));
+```
+
+Returns **419 Page Expired** on mismatch. The form helper still owns
+the per-field validation flow; this is the upstream CSRF gate.
+
+---
+
+---
+
 ## View engine
 
 The framework ships with a Rendu adapter (PHP-style templates, fast on
@@ -651,150 +763,56 @@ src/
 
 ## Roadmap
 
-**v0.1** ✅ — MVC core, DI, validation, Rendu/Edge/Inertia adapters, CLI bootstrap.
-**v0.2** ✅ — auth, queue, schedule, events, session, full `nx` CLI.
-**v0.3** ✅ — production basics (health, config, logger, static),
-cross-cutting (limiter, shield, cache, drive, mail), and `nexusjs/drizzle`
-as the default ORM. Every Tier 1+2 gap from the NestJS / AdonisJS
-analyses is closed.
+The framework follows [Semantic Versioning](https://semver.org/).
+Until v1.0, minor version bumps may include breaking changes. After
+v1.0, only major bumps will.
 
-**v0.5 (current)** ✅ — Realtime + crypto + i18n. Three new modules:
-- `nexusjs/ws` — unified WebSocket API (`@WebSocketGateway()` + `@OnWebSocketMessage()`). Works on Bun (primary, via `hono/bun`) and Node (via the `ws` package).
-- `nexusjs/crypto` — AES-256-GCM encryption + HMAC + scrypt/argon2 password hashing. Single APP_KEY for sessions, CSRF tokens, encrypted data. Other modules (`session`, `shield`) use it internally for HMAC.
-- `nexusjs/i18n` — locale-aware translations + `Intl` formatters. Pluralization via `|`, locale detection middleware, JSON catalogs.
-- `nexusjs/redis` — runtime-aware Redis client. Bun uses built-in `Bun.redis`, Node uses `ioredis` peer, Cloudflare uses Workers KV. Powers the new `redis` / `cloudflare-kv` session & cache backends.
+### Shipped
 
-**v0.4** ✅ — observability and developer experience.
-Every Tier 1 and Tier 2 gap from the NestJS / AdonisJS analyses
-is closed. New: `nexusjs/openapi`, `nexusjs/upload`, `nexusjs/sse`,
-`nexusjs/tracing`, `nexusjs/metrics`, and request-scoped DI in the
-core. The `nexusjs/session` `@CurrentSession` v0.1 alias is
-removed — use `@Session` instead.
+- **v0.1** (2026-04-30) — MVC core, DI, validation, Rendu / Edge / Inertia adapters, CLI bootstrap.
+- **v0.2** (2026-05-15) — `nexusjs/auth`, `nexusjs/queue`, `nexusjs/schedule`, `nexusjs/events`, `nexusjs/session`, full `nx` CLI.
+- **v0.3** (2026-06-21) — production basics, cross-cutting features, `nexusjs/drizzle` as the default ORM.
+- **v0.4** (2026-06-22) — observability + DX: `nexusjs/openapi`, `nexusjs/upload`, `nexusjs/sse`, `nexusjs/tracing`, `nexusjs/metrics`, request-scoped DI in core.
+- **v0.5** (2026-06-23) — realtime + crypto + i18n + redis: `nexusjs/ws`, `nexusjs/crypto`, `nexusjs/i18n`, `nexusjs/redis`.
+- **v0.6** (2026-06-24) — gRPC + tooling: `nexusjs/grpc` (reflection-based server + typed client) and a publishable `dist/` pipeline (`bin` field, `dist/src/*` flatten).
+- **v0.6.1** (2026-06-25) — patch: `nexus` → `nexusjs` rename across all sources (191 files), `bin` field fix, `dist/src/*` flatten, docs in sync with the published name. No new features.
 
-**v1.0** — long-term API stability + DX polish.
+### Planned
 
-- `nexusjs/i18n` — multi-locale messages
-- AI agent module + MCP server
-- Performance benchmarks + cross-runtime parity tests
-- Long-term LTS support plan
+- **v0.7** — `nexusjs/graphql` (code-first schema) and `nexusjs/resilience` (circuit breaker, retry, bulkhead).
+- **v0.8** — `nexusjs/feature-flag` (canary / A/B testing), runtime parity test suite, performance benchmarks across Bun / Node / Workers.
+- **v1.0** — stable public API surface with semver guarantees, removal of all v0.1 deprecated aliases, long-term LTS support plan.
 
-**v1.0** — semver guarantees on the public API surface.
-
-- Stable public API surface (semver guarantees)
-- Removal of all `v0.1` deprecated aliases
-- Performance benchmarks + cross-runtime parity tests
-- Long-term LTS support plan
-
----
+Detailed release notes for every version live in
+[`CHANGELOG.md`](./CHANGELOG.md).
 
 ## License
 
-MIT
+[MIT](./LICENSE) — Copyright © 2026 NexusJS Contributors.
 
-### Forms (`<Form>` server-side helper)
+The framework is released under the permissive MIT License. You can
+use it in commercial and non-commercial projects, modify the source,
+and distribute derivative works — as long as you preserve the
+copyright notice and the license text. See the [LICENSE](./LICENSE)
+file for the full text.
 
-Inertia v3's `<Form>` component pairs with this server-side helper to
-keep form submissions out of the controller's hot path. The pattern
-is the classic **Post/Redirect/Get**:
+### Third-party notices
 
-```ts
-import { z } from 'zod';
-import { Body, Controller, Post } from 'nexusjs';
-import { Inertia } from 'nexusjs/view/inertia';
+NexusJS depends on several open-source projects. Their licenses are
+reproduced at install time via `bun install` (and `npm install`).
+Notable runtime dependencies:
 
-const UserSchema = z.object({
-  name: z.string().min(2),
-  email: z.string().email(),
-});
+- **Hono** — MIT (web framework)
+- **reflect-metadata** — Apache-2.0
+- **Zod** — MIT (schema validation)
+- **Rendu** — MIT (template engine)
 
-@Controller('/users')
-class UserController {
-  constructor(@Inject(Inertia.TOKEN) private inertia: Inertia) {}
+Optional peer dependencies (each with its own license):
 
-  @Post('/')
-  async store(@Body() input: Record<string, any>) {
-    const form = this.inertia.form('Users/Create');
-    const result = UserSchema.safeParse(input);
-
-    if (!result.success) {
-      const errors: Record<string, string[]> = {};
-      for (const issue of result.error.issues) {
-        const path = issue.path.join('.');
-        (errors[path] ??= []).push(issue.message);
-      }
-      return form
-        .withErrorBag('createUser')
-        .withErrors(errors)
-        .withValues(input)   // re-populate the form
-        .render();
-    }
-
-    return form.redirect('/users'); // 303 (PRG pattern)
-  }
-}
-```
-
-| Builder method   | Effect                                                     |
-| ---------------- | ---------------------------------------------------------- |
-| `withProps()`    | Merge a batch of props at once                             |
-| `with(k, v)`     | Set a single prop                                          |
-| `withErrors()`   | Attach validation errors (string or string[]) per field   |
-| `withError()`    | Add a single error to a field                              |
-| `withErrorBag()` | Name the form's error namespace (multiple forms / page)   |
-| `withValues()`   | Re-populate the form inputs after a failed submission      |
-| `render()`       | Emit the page (with errors + values injected)             |
-| `redirect(url)`  | 303 redirect (PRG — prevents double-submit)                |
-| `back(to?)`      | 303 redirect to `back` (or a specific URL)                 |
-
-### Lazy props
-
-`lazy(fn, tag?)` wraps a callback so its result is computed **once
-per request** and shared across every key that points at the same
-tag. Useful for any expensive computation that doesn't need to wait
-for a partial reload but shouldn't repeat within the same response:
-
-```ts
-return this.inertia.render('Dashboard', {
-  a: lazy(() => this.computeA(), 'stats'),
-  b: lazy(() => this.computeB(), 'stats'),
-});
-```
-
-### SSR adapters
-
-The framework ships first-class adapters for React, Vue, Svelte,
-and Solid. Each lazy-imports its engine — install only what you
-use:
-
-```ts
-import { createReactAdapter, ComponentRegistry } from 'nexusjs/view/inertia/ssr';
-
-const components = new ComponentRegistry()
-  .register('Home', HomePage)
-  .register('Users/Index', UsersIndexPage);
-
-app.inertia.setSsrAdapter(createReactAdapter({ components }));
-```
-
-| Adapter                  | Engine    | SSR API                                        |
-| ------------------------ | --------- | ---------------------------------------------- |
-| `createReactAdapter`     | React 18+ | `react-dom/server.renderToString`              |
-| `createVueAdapter`       | Vue 3     | `vue/server-renderer.renderToString`           |
-| `createSvelteAdapter`    | Svelte 4/5| `svelte/server.render` or `Component.render`  |
-| `createSolidAdapter`     | Solid     | `solid-js/web.renderToString`                  |
-
-### Form middleware (CSRF)
-
-```ts
-import { inertiaFormMiddleware } from 'nexusjs/view/inertia';
-
-app.server.app.use('*', inertiaFormMiddleware({
-  validateCsrf: true,
-  csrfHeader: 'X-CSRF-Token',
-  csrfField: '_token',
-  csrfSharedKey: 'csrfToken',
-}));
-```
-
-Returns **419 Page Expired** on mismatch. The form helper still owns
-the per-field validation flow; this is the upstream CSRF gate.
+- **better-auth** — MIT
+- **bullmq** — MIT
+- **ioredis** — MIT
+- **drizzle-orm** — Apache-2.0
+- **@opentelemetry/*** — Apache-2.0
+- **ws** — MIT
+- **@grpc/grpc-js**, **@grpc/proto-loader** — Apache-2.0

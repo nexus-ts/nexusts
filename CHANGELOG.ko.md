@@ -9,6 +9,40 @@ NexusJS의 모든 주요 변경 사항이 이 파일에 기록됩니다.
 
 ---
 
+## [0.7.0] — 2026-06-22
+
+### 추가
+
+- `@kabyeon/nexusjs/resilience` — 단일 DI singleton에 retry +
+  circuit breaker + bulkhead. 네 가지 백오프 전략(constant,
+  linear, exponential, exponential-jitter)을 가진 `retry()` 함수.
+  closed/open/half-open 상태 머신, rolling failure window,
+  threshold + `isFailure` predicate, `onStateChange` 훅을 가진
+  `CircuitBreaker` 클래스. FIFO 동시성 제한기와 fail-fast의
+  `rejectOnFull`을 가진 `Bulkhead` 클래스. `ResilienceService`가
+  `getOrCreateCircuit(name)` / `getOrCreateBulkhead(name)`
+  레지스트리를 노출하여 "stripe"용 단일 회로가 모든 코드 경로에서
+  공유되게 한다. `@Retry` / `@CircuitBreaker` / `@Bulkhead` /
+  `@Resilient` 메소드 데코레이터 (metadata-only; legacy decorator
+  tsconfig 사용자는 `applyResilience()`를 호출하여 수동 wrap).
+- `examples/33-resilience-calls` — primitive당 하나씩 세 라우트,
+  그리고 `tests/resilience/resilience.test.ts`의 테스트 (backoff,
+  상태 머신, FIFO 순서를 다루는 20개).
+- `docs/user-guide/resilience.md` + `.ko.md` — 사용자 가이드.
+- `docs/design/resilience.md` + `.ko.md` — 아키텍처 심층 문서
+  (상태 머신, FIFO 드레인, 데코레이터 메타데이터 디자인).
+
+### 참고
+
+- 새로운 런타임 의존성 없음 — 순수 TypeScript.
+- `@Retry` / `@CircuitBreaker` / `@Bulkhead` / `@Resilient`
+  데코레이터는 v0.7.0에서 **metadata-only**. 데코레이터 레벨에서의
+  즉시 wrapping은 v0.8에서 다른 Bun stage-3 데코레이터 개선과
+  함께 예정. v0.7에서 권장 패턴은 인라인: `svc.retry(() => ...)`,
+  `cb.execute(() => ...)`.
+
+---
+
 ## [0.6.9] — 2026-06-22
 
 ### 추가

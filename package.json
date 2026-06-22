@@ -1,6 +1,6 @@
 {
   "name": "@kabyeon/nexusjs",
-  "version": "0.6.9",
+  "version": "0.7.0",
   "description": "Bun Native Fullstack Framework - NestJS structure + Adonis productivity + Hono edge performance",
   "type": "module",
   "main": "./dist/index.js",
@@ -150,6 +150,10 @@
     "./graphql": {
       "types": "./dist/graphql/index.d.ts",
       "import": "./dist/graphql/index.js"
+    },
+    "./resilience": {
+      "types": "./dist/resilience/index.d.ts",
+      "import": "./dist/resilience/index.js"
     }
   },
   "bin": {

@@ -34,6 +34,7 @@ NexusJS로 애플리케이션을 개발하기 위한 단계별 가이드.
 | **Crypto (v0.5)** | [`crypto.md`](./crypto.md) | [`crypto.ko.md`](./crypto.ko.md) |
 | **i18n (v0.5)** | [`i18n.md`](./i18n.md) | [`i18n.ko.md`](./i18n.ko.md) |
 | **GraphQL (v0.7)** | [`graphql.md`](./graphql.md) | [`graphql.ko.md`](./graphql.ko.md) |
+| **Resilience — retry, circuit, bulkhead (v0.7)** | [`resilience.md`](./resilience.md) | [`resilience.ko.md`](./resilience.ko.md) |
 | Runtime & deployment | [`runtime-deployment.md`](./runtime-deployment.md) | [`runtime-deployment.ko.md`](./runtime-deployment.ko.md) |
 | **CLI · `nx` command runner** | [`cli.md`](./cli.md) | [`cli.ko.md`](./cli.ko.md) |
 | **Testing the published package** | [`testing-published-package.md`](./testing-published-package.md) | [`testing-published-package.ko.md`](./testing-published-package.ko.md) |

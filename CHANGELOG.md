@@ -9,6 +9,42 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.7.0] — 2026-06-22
+
+### Added
+
+- `@kabyeon/nexusjs/resilience` — retry + circuit breaker +
+  bulkhead in a single DI singleton. `retry()` function with
+  four backoff strategies (constant, linear, exponential,
+  exponential-jitter). `CircuitBreaker` class with closed/open/
+  half-open state machine, rolling failure window, threshold +
+  `isFailure` predicate, `onStateChange` hook. `Bulkhead` class
+  with FIFO concurrency limiter and `rejectOnFull` for fail-fast.
+  `ResilienceService` exposes a `getOrCreateCircuit(name)` /
+  `getOrCreateBulkhead(name)` registry so a single circuit for
+  "stripe" is shared across every code path. `@Retry` /
+  `@CircuitBreaker` / `@Bulkhead` / `@Resilient` method decorators
+  (metadata-only; users on legacy decorator tsconfig can call
+  `applyResilience()` to wrap manually).
+- `examples/33-resilience-calls` — three routes, one per
+  primitive, plus tests in `tests/resilience/resilience.test.ts`
+  (20 tests covering backoff, state machine, FIFO ordering).
+- `docs/user-guide/resilience.md` + `.ko.md` — user guide.
+- `docs/design/resilience.md` + `.ko.md` — architecture deep-dive
+  (state machine, FIFO drain, decorator metadata design).
+
+### Notes
+
+- Zero new runtime dependencies — pure TypeScript.
+- The `@Retry` / `@CircuitBreaker` / `@Bulkhead` / `@Resilient`
+  decorators are **metadata-only** in v0.7.0. Eager wrapping at
+  the decorator level is reserved for v0.8 alongside other
+  Bun stage-3 decorator improvements. The recommended pattern
+  in v0.7 is inline: `svc.retry(() => ...)`,
+  `cb.execute(() => ...)`.
+
+---
+
 ## [0.6.9] — 2026-06-22
 
 ### Added

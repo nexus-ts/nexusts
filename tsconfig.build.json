@@ -29,6 +29,7 @@
     "src/redis/**/*.ts",
     "src/grpc/**/*.ts",
     "src/graphql/**/*.ts",
+    "src/resilience/**/*.ts",
     "src/view/**/*.ts",
     "src/core/**/*.d.ts",
     "src/cli/**/*.d.ts",
@@ -57,6 +58,7 @@
     "src/i18n/**/*.d.ts",
 		"src/grpc/**/*.d.ts",
 		"src/graphql/**/*.d.ts",
+		"src/resilience/**/*.d.ts",
 		"src/view/**/*.d.ts"
   ],
   "compilerOptions": {

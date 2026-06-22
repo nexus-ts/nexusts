@@ -43,7 +43,7 @@ Legend: ✅ ship · ⚠️ partial · ❌ missing · 🔵 third-party required
 | Auth | ✅ @nestjs/passport + many strategies | ✅ `@kabyeon/nexusjs/auth` (better-auth) | better-auth supports many strategies |
 | Encryption | ⚠️ DIY (or `nestjs-crypto`) | ✅ `@kabyeon/nexusjs/crypto` | AES-256-GCM + HMAC + scrypt/argon2 |
 | Feature flags | ⚠️ DIY (no first-party) | ⚠️ DIY | Both lack first-party |
-| Resilience (circuit breaker, retry) | ⚠️ nestjs-recq | ⚠️ DIY | Both lack first-party |
+| Resilience (circuit breaker, retry) | ⚠️ nestjs-recq | ✅ `@kabyeon/nexusjs/resilience` | Retry + Circuit Breaker + Bulkhead, shared named registry, exponential-jitter backoff |
 | GraphQL | ✅ @nestjs/graphql | ✅ `@kabyeon/nexusjs/graphql` | SDL-first; code-first via `@Resolver` (alpha) in v0.6.9 |
 | gRPC | ✅ @nestjs/microservices | ✅ `@kabyeon/nexusjs/grpc` | Reflection-based, unary methods (streaming planned v2) |
 
@@ -210,12 +210,24 @@ None. v0.3 closed every original Tier 1 gap.
 ### 5.6 Resilience: circuit breakers + retry
 
 - **Use cases**: external API resilience.
-- **Status**: ❌ not yet shipped.
-- **Proposed module**: `@kabyeon/nexusjs/resilience`
-- **Features**:
-  - `@Retry({ attempts: 3, backoff: 'exponential' })` decorator
-  - `@CircuitBreaker({ threshold: 0.5 })` decorator
-  - Bulkhead isolation
+- **Status**: ✅ shipped in v0.7.0 as `@kabyeon/nexusjs/resilience`.
+- **What ships**:
+  - `retry()` — function with `exponential-jitter` backoff,
+    `retryOn` filter, `onRetry` hook, overall `timeout`.
+  - `CircuitBreaker` class — `closed` / `open` / `half-open` state
+    machine with rolling window, threshold, configurable
+    `isFailure` predicate, `onStateChange` hook.
+  - `Bulkhead` class — FIFO concurrency limiter with optional
+    queue, `rejectOnFull` for fail-fast.
+  - `ResilienceService` — DI singleton registry. Methods like
+    `getOrCreateCircuit("stripe")` share state across the entire
+    app.
+  - `@Retry` / `@CircuitBreaker` / `@Bulkhead` / `@Resilient`
+    method decorators (metadata-only; users on legacy decorator
+    tsconfig can use `applyResilience()` to wrap manually).
+- **No external deps.** Pure TypeScript.
+- See [`../../user-guide/resilience.md`](../../user-guide/resilience.md) and
+  [`../../design/resilience.md`](../../design/resilience.md).
 
 ### 5.7 Multi-database per project
 
@@ -280,7 +292,7 @@ use-cases.
 - Multi-runtime CI (Bun + Node + Cloudflare Workers)
 - Performance benchmarks + cross-runtime parity tests
 - Long-term LTS support plan
-- **Resilience** (`@kabyeon/nexusjs/resilience`) — circuit breaker / retry / bulkhead
+- **Resilience** (`@kabyeon/nexusjs/resilience`) — ✅ shipped in v0.7.0
 - **Feature flags** (`@kabyeon/nexusjs/feature-flag`)
 
 ### v1.0 — Production-ready LTS
@@ -319,9 +331,8 @@ services**:
 
 What's still missing for full "NestJS feature parity":
 
-- **Code-first GraphQL decorators** (alpha in v0.6.9; full SDL synthesis in v0.8).
-- **Resilience primitives** — circuit breakers, retry, bulkhead.
 - **Feature flags** — useful for canary deploys.
+- **Cross-pod circuit breakers** (in-resilience roadmap).
 
 The path from v0.6.8 to v1.0 is roughly:
 
@@ -329,7 +340,7 @@ The path from v0.6.8 to v1.0 is roughly:
   config, built-in sessionMiddleware, `nx db:generate`,
   `@kabyeon/nexusjs` package rename, `create-nexusjs` scaffolder,
   `examples/` + smoke test suite, Inertia v2 examples (React + Vue,
-  SPA + SSR), `GraphQL` module (v0.6.9).
+  SPA + SSR), `GraphQL` module (v0.6.9), `Resilience` module (v0.7.0).
 - **v0.7** (Q3 2026): Async RPC & DX — GraphQL, resilience, feature flags
 - **v0.8** (Q4 2026): Production hardening — stable public API,
   multi-runtime CI, performance benchmarks, LTS plan.

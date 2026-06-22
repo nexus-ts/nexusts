@@ -140,6 +140,9 @@ export const initCommand: Command = {
 			{ path: "tsconfig.json", mode: "merge-tsconfig" },
 			{ path: "public/.gitkeep", mode: "write" },
 			{ path: "resources/views/welcome.html", mode: "write" },
+			{ path: ".env", mode: "skip" },
+			{ path: ".env.local", mode: "skip" },
+			{ path: ".gitignore", mode: "skip" },
 			{ path: "app/main.ts", mode: "write" },
 			{ path: "app/app.module.ts", mode: "write" },
 			{ path: "app/controllers/home.controller.ts", mode: "write" },
@@ -292,6 +295,58 @@ function renderContent(path: string, ctx: RenderCtx): string {
 			return "";
 		case "resources/views/welcome.html":
 			return `<h1>Welcome to ${ctx.targetName}</h1>\n<p>This is a sample Rendu template.</p>\n<p>Founded <?= year ?>.</p>\n`;
+		case ".gitignore":
+			return `# NexusJS
+node_modules/
+app.db
+*.db
+.env.local
+dist/
+`;
+		case ".env":
+			return `# ──────────────────────────────────────────────────────
+# NexusJS — Environment Variables (committed to git)
+#
+# Shared defaults for all environments. Override locally via
+# .env.local (gitignored) or by environment via .env.{NODE_ENV}
+# (e.g. .env.production, .env.development).
+#
+# Uncomment the database config for your driver:
+# ──────────────────────────────────────────────────────
+
+# ── App ──
+NODE_ENV=development
+PORT=3000
+
+# ── Session secret (REQUIRED) ──
+# Generate with: openssl rand -base64 32
+SESSION_SECRET=change-me-in-production
+
+# ── Database: SQLite (default, zero config) ──
+DATABASE_URL=app.db
+
+# ── Database: PostgreSQL ──
+# DATABASE_URL=postgres://user:password@localhost:5432/myapp
+
+# ── Database: MySQL ──
+# DATABASE_URL=mysql://user:password@localhost:3306/myapp
+
+# ── Better Auth (if using nexusjs/auth) ──
+# BETTER_AUTH_SECRET=
+# BETTER_AUTH_URL=http://localhost:3000
+`;
+		case ".env.local":
+			return `# ──────────────────────────────────────────────────────
+# NexusJS — Local Overrides (DO NOT COMMIT to git)
+#
+# This file is gitignored. Use it for secrets and local
+# configuration that should never be checked in.
+# ──────────────────────────────────────────────────────
+
+# Override any value from .env here:
+# DATABASE_URL=postgres://user:password@localhost:5432/myapp
+# SESSION_SECRET=my-local-secret
+`;
 		case "app/main.ts":
 			return `import 'reflect-metadata';
 import { Application } from 'nexusjs';

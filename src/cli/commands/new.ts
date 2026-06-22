@@ -111,6 +111,10 @@ export const newCommand: Command = {
 			`<h1>Welcome to ${name}</h1>\n<p>This is a sample Rendu template.</p>\n<p>Founded <?= year ?>.</p>\n`,
 		);
 
+		writeFileSync(resolve(target, ".env"), generateEnvFile());
+		writeFileSync(resolve(target, ".env.local"), generateEnvLocalFile());
+		writeFileSync(resolve(target, ".gitignore"), generateGitIgnore());
+
 		const code = render(templates.project["nx.config.ts"], {
 			routing,
 			view,
@@ -248,5 +252,60 @@ bunx nx make:crud Post
 		return 0;
 	},
 };
+
+/** Generate the default .env file content. */
+function generateEnvFile(): string {
+	return `# ──────────────────────────────────────────────────────
+# NexusJS — Environment Variables (committed to git)
+#
+# Shared defaults for all environments. Override locally via
+# .env.local (gitignored) or by environment via .env.{NODE_ENV}
+# (e.g. .env.production, .env.development).
+#
+# Uncomment the database config for your driver:
+# ──────────────────────────────────────────────────────
+
+# ── App ──
+NODE_ENV=development
+PORT=3000
+
+# ── Session secret (REQUIRED) ──
+# Generate with: openssl rand -base64 32
+SESSION_SECRET=change-me-in-production
+
+# ── Database: SQLite (default, zero config) ──
+DATABASE_URL=app.db
+
+# ── Database: PostgreSQL ──
+# DATABASE_URL=postgres://user:password@localhost:5432/myapp
+
+# ── Database: MySQL ──
+# DATABASE_URL=mysql://user:password@localhost:3306/myapp
+`;
+}
+
+function generateEnvLocalFile(): string {
+	return `# ──────────────────────────────────────────────────────
+# NexusJS — Local Overrides (DO NOT COMMIT to git)
+#
+# This file is gitignored. Use it for secrets and local
+# configuration that should never be checked in.
+# ──────────────────────────────────────────────────────
+
+# Override any value from .env here:
+# DATABASE_URL=postgres://user:password@localhost:5432/myapp
+# SESSION_SECRET=my-local-secret
+`;
+}
+
+function generateGitIgnore(): string {
+	return `# NexusJS
+node_modules/
+app.db
+*.db
+.env.local
+dist/
+`;
+}
 
 export default newCommand;

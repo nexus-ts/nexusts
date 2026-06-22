@@ -172,9 +172,6 @@
     "lint": "biome check src/cli/ tests/cli/",
     "lint:fix": "biome check --write src/cli/ tests/cli/",
     "nx": "bun src/cli/index.ts",
-    "make:controller": "bun scripts/make-controller.ts",
-    "make:service": "bun scripts/make-service.ts",
-    "make:module": "bun scripts/make-module.ts",
     "examples:smoke": "vitest run tests/examples/smoke.test.ts",
     "examples:clean": "bash scripts/clean-examples.sh"
   },

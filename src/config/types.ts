@@ -37,6 +37,23 @@ export interface ConfigOptions<S extends ConfigSchema = ConfigSchema> {
 	 */
 	envFilePaths?: string[];
 	/**
+	 * Enable environment-aware loading (`.env.development`, `.env.production`,
+	 * `.env.testing`). When enabled, the service auto-loads:
+	 *   1. `.env` — shared defaults
+	 *   2. `.env.local` — local overrides (add to `.gitignore`)
+	 *   3. `.env.{NODE_ENV}` — environment-specific (e.g. `.env.development`)
+	 *
+	 * `process.env` always takes precedence over all file sources.
+	 * Default: `true`.
+	 */
+	envFile?: boolean;
+	/**
+	 * Override the detected `NODE_ENV`. Useful when the env var name
+	 * differs (e.g. `APP_ENV`, `ENVIRONMENT`). Default: read from
+	 * `process.env.NODE_ENV` and fall back to `"development"`.
+	 */
+	nodeEnv?: string;
+	/**
 	 * Whether to cache the parsed config. Default: `true`. Set `false`
 	 * in tests so each `get()` re-reads the env.
 	 */

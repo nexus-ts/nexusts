@@ -127,7 +127,21 @@ function loadConfig<S extends ConfigSchema>(
 	}
 
 	// 2) .env files (overrides env defaults but env still wins)
-	const paths = options.envFilePaths ?? [".env"];
+	const paths = options.envFilePaths ?? [];
+
+	// When envFile is enabled (default), auto-load environment-specific files.
+	const useEnvFile = options.envFile !== false;
+	if (useEnvFile) {
+		const nodeEnv = options.nodeEnv ?? process.env["NODE_ENV"] ?? "development";
+		// Base .env is always loaded first.
+		if (!paths.includes(".env")) paths.unshift(".env");
+		// .env.local — local overrides (should be .gitignored).
+		if (!paths.includes(".env.local")) paths.push(".env.local");
+		// .env.{NODE_ENV} — environment-specific (e.g. .env.production).
+		const envSpecific = `.env.${nodeEnv}`;
+		if (!paths.includes(envSpecific)) paths.push(envSpecific);
+	}
+
 	for (const p of paths) {
 		const file = readDotEnv(p);
 		for (const [k, v] of Object.entries(file)) {

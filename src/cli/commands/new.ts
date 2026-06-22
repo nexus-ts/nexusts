@@ -168,9 +168,9 @@ export const newCommand: Command = {
 `,
 		);
 
-		const viewPathsArr = view === "none" ? [] : ["resources/views"];
+		const viewPathsArr = view === "none" ? "" : "resources/views";
 		const vpImport = viewPathsArr.length > 0 ? `import { setViewPaths } from "nexusjs/view";\n` : "";
-		const vpCall = viewPathsArr.length > 0 ? `\nsetViewPaths([\n  "${viewPathsArr[0]}",\n]);\n` : "";
+		const vpCall = viewPathsArr.length > 0 ? `\nsetViewPaths("${viewPathsArr}");\n` : "";
 
 		writeFileSync(
 			resolve(target, "app/main.ts"),

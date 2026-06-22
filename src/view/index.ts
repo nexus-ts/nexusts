@@ -10,12 +10,12 @@
  *   inline source.
  *   The adapter is selected by file extension (or Rendu for
  *   inline / non-extension values).
- * - `setViewPaths(paths)` — configure directories searched for
- *   view files. Empty by default.
- * - `getViewPaths()` — return a copy of the current path list.
- * - `loadTemplate(paths, name)` — low-level: load a file from
- *   the first dir that has it.
- * - `Application.setViewPaths(paths)` — same as the module
+ * - `setViewPaths(path)` — configure the directory searched for
+ *   view files. Pass `""` to disable.
+ * - `getViewPaths()` — return the current path (empty = disabled).
+ * - `loadTemplate(dir, name)` — low-level: load a file from
+ *   the given directory.
+ * - `Application.setViewPaths(path)` — same as the module
  *   function, but chainable.
  *
  * Adapters:

@@ -16,7 +16,7 @@
  * Or just use a file with a `.eta` extension — `renderView` picks
  * the Eta adapter automatically:
  *
- *   setViewPaths(["views"]);
+ *   setViewPaths("views");
  *   return { view: "about.eta", data: { title: "Hi" } };
  */
 import type { ViewAdapter, ViewContext, ViewOptions } from "./types.js";

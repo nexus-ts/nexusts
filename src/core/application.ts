@@ -97,13 +97,13 @@ export class Application {
 	 * Typical setup:
 	 *
 	 *   import { setViewPaths } from 'nexusjs/view';
-	 *   setViewPaths(['views', 'src/app/views']);
+	 *   setViewPaths('views');
 	 *
 	 * or in `nx.config.ts`:
 	 *
 	 *   export default {
 	 *     view: 'rendu',
-	 *     viewPaths: ['views'],
+	 *     viewPaths: 'views',
 	 *   };
 	 *
 	 * After this, `@Get('/about') return { view: 'about.html', data }`
@@ -113,8 +113,8 @@ export class Application {
 	 * Edge-only runtimes (Cloudflare Workers) should leave this
 	 * empty and pass inline template strings.
 	 */
-	setViewPaths(paths: string[]): this {
-		setViewPathsModule(paths);
+	setViewPaths(path: string): this {
+		setViewPathsModule(path);
 		return this;
 	}
 

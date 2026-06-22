@@ -48,20 +48,20 @@ import { templates } from "../templates/index.js";
 interface NxConfigValues {
 	routing: string;
 	view: string;
-	viewPaths: string[];
+	viewPaths: string;
 	orm: string;
 	dbDriver: string;
 	dbUrl: string;
 	inertiaFrontend: string;
 	inertiaSSR: boolean;
 	inertiaVersion: string;
-	[key: string]: string | number | boolean | string[] | undefined | null;
+	[key: string]: string | number | boolean | undefined | null;
 }
 
 const DEFAULT_VALUES: NxConfigValues = {
 	routing: "nest",
 	view: "rendu",
-	viewPaths: ["resources/views"],
+	viewPaths: "resources/views",
 	orm: "drizzle",
 	dbDriver: "bun-sqlite",
 	dbUrl: "app.db",
@@ -84,9 +84,9 @@ function parseExistingConfig(path: string): NxConfigValues {
 	};
 	const routing = grab(/routing:\s*['"]([^'"]+)['"]/);
 	const view = grab(/view:\s*['"]([^'"]+)['"]/);
-	const viewPathsMatch = src.match(/viewPaths:\s*\[([^\]]*)\]/);
+	const viewPathsMatch = src.match(/viewPaths:\s*['"]([^'"]+)['"]/);
 	if (viewPathsMatch) {
-		out.viewPaths = viewPathsMatch[1].split(",").map((s) => s.trim().replace(/^['"]|['"]$/g, "")).filter(Boolean);
+		out.viewPaths = viewPathsMatch[1];
 	}
 	const orm = grab(/orm:\s*['"]([^'"]+)['"]/);
 	const driver = grab(/driver:\s*['"]([^'"]+)['"]/);
@@ -196,7 +196,7 @@ export const configCommand: Command = {
 		if (flag("style")) values.routing = flag("style")!;
 		if (flag("view")) values.view = flag("view")!;
 	if (flag("view-paths")) {
-		values.viewPaths = (flag("view-paths") as string).split(",").map((s) => s.trim()).filter(Boolean);
+		values.viewPaths = flag("view-paths")!;
 	}
 		if (flag("orm")) values.orm = flag("orm")!;
 		if (flag("db")) values.dbDriver = flag("db")!;

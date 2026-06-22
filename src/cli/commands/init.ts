@@ -226,7 +226,7 @@ export const initCommand: Command = {
 			const content = renderContent(entry.path, {
 				routing,
 				view,
-				viewPaths: view === "none" ? [] : ["resources/views"],
+				viewPaths: view === "none" ? "" : "resources/views",
 				orm,
 				dbDriver: db,
 				dbUrl: db === "bun-sqlite" || db === "node-sqlite" ? "app.db" : "",
@@ -272,7 +272,7 @@ export const initCommand: Command = {
 interface RenderCtx {
 	routing: string;
 	view: string;
-	viewPaths: string[];
+	viewPaths: string;
 	orm: string;
 	dbDriver: string;
 	dbUrl: string;
@@ -281,7 +281,7 @@ interface RenderCtx {
 	inertiaVersion: string;
 	targetName: string;
 	// Index signature so RenderCtx is assignable to RenderObject.
-	[key: string]: string | number | boolean | string[] | undefined | null;
+	[key: string]: string | number | boolean | undefined | null;
 }
 
 function renderContent(path: string, ctx: RenderCtx): string {
@@ -293,12 +293,12 @@ function renderContent(path: string, ctx: RenderCtx): string {
 		case "resources/views/welcome.html":
 			return `<h1>Welcome to ${ctx.targetName}</h1>\n<p>This is a sample Rendu template.</p>\n<p>Founded <?= year ?>.</p>\n`;
 		case "app/main.ts":
-			const vp = ctx.viewPaths?.filter(Boolean) ?? [];
+			const vp = ctx.viewPaths ?? "";
 			const vpImport = vp.length > 0
 				? `import { setViewPaths } from "nexusjs/view";\n`
 				: "";
 			const vpCall = vp.length > 0
-				? `\nsetViewPaths([\n${vp.map((p: string) => `  "${p}"`).join(",\n")}\n]);\n`
+				? `\nsetViewPaths("${vp}");\n`
 				: "";
 			return `${vpImport}import 'reflect-metadata';
 import { Application } from 'nexusjs';
@@ -406,7 +406,7 @@ function mergePackageJson(path: string, additions: Record<string, string>): void
  */
 function mergeTsconfig(
 	path: string,
-	additions: Record<string, boolean | string | string[]>,
+	additions: Record<string, boolean | string>,
 ): void {
 	const raw = readFileSync(path, "utf8");
 	const cfg = parseJsonLoose<{

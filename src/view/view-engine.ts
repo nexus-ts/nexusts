@@ -16,22 +16,22 @@ import type { ViewAdapter, ViewContext } from "./types.js";
 export type { ViewAdapter, ViewContext, ViewOptions } from "./types.js";
 
 /**
- * Directories to search when the `view` value looks like a file path
+ * A single directory to search when the `view` value looks like a file path
  * (e.g. `"about.html"` or `"emails/welcome.html"`). Configured via
  * `setViewPaths()` or `Application.setViewPaths()`. Empty by default
- * — pass an empty array (the default) to require inline templates,
- * or set the paths once at boot to enable file-based views.
+ * — leave it empty (the default) to require inline templates,
+ * or set it once at boot to enable file-based views.
  */
-let viewPaths: string[] = [];
+let viewPath: string = "";
 
-/** Replace the current view path list. */
-export function setViewPaths(paths: string[]): void {
-	viewPaths = paths.map((p) => (p.endsWith("/") || p.endsWith("\\") ? p : `${p}/`));
+/** Set the directory searched for view files. Pass `""` to disable. */
+export function setViewPaths(path: string): void {
+	viewPath = path ? (path.endsWith("/") || path.endsWith("\\") ? path : `${path}/`) : "";
 }
 
-/** Return a copy of the current view path list. */
-export function getViewPaths(): string[] {
-	return [...viewPaths];
+/** Return the current view path (empty string means disabled). */
+export function getViewPaths(): string {
+	return viewPath;
 }
 
 /** File extensions that indicate the `view` value is a file path. */
@@ -80,11 +80,11 @@ export async function renderView(
 	context?: ViewContext,
 ): Promise<string> {
 	let source = template;
-	if (isViewFilePath(template) && viewPaths.length > 0) {
-		const loaded = await loadTemplate(viewPaths, template);
+	if (isViewFilePath(template) && viewPath.length > 0) {
+		const loaded = await loadTemplate(viewPath, template);
 		if (loaded === null) {
 			throw new Error(
-				`[nexus] View file not found: "${template}" (searched: ${viewPaths.join(", ")})`,
+				`[nexus] View file not found: "${template}" (searched: ${viewPath})`,
 			);
 		}
 		source = loaded;
@@ -94,22 +94,22 @@ export async function renderView(
 }
 
 /**
- * Try a sequence of directories to locate a template file. Returns the
- * first match. This is intentionally filesystem-based and only used on
- * serverful runtimes; edge adapters should pass inline strings instead.
+ * Try to locate a template file inside the given directory. Returns the
+ * file contents or `null` if not found. This is intentionally
+ * filesystem-based and only used on serverful runtimes; edge adapters
+ * should pass inline strings instead.
  */
 export async function loadTemplate(
-	paths: string[],
+	dir: string,
 	name: string,
 ): Promise<string | null> {
-	for (const dir of paths) {
-		const full = joinPath(dir, name);
-		try {
-			const file = await readFile(full);
-			if (file !== null) return file;
-		} catch {
-			// continue
-		}
+	if (!dir) return null;
+	const full = joinPath(dir, name);
+	try {
+		const file = await readFile(full);
+		if (file !== null) return file;
+	} catch {
+		// ignore
 	}
 	return null;
 }

@@ -27,41 +27,41 @@ async function makeTmp(): Promise<string> {
 }
 
 describe("view-engine — setViewPaths / getViewPaths", () => {
-	afterEach(() => setViewPaths([]));
+	afterEach(() => setViewPaths(""));
 
-	it("round-trips the path list", () => {
-		setViewPaths(["views", "src/app/views"]);
+	it("round-trips the path", () => {
+		setViewPaths("views");
 		const got = getViewPaths();
-		expect(got).toEqual(["views/", "src/app/views/"]);
+		expect(got).toBe("views/");
 	});
 
 	it("appends trailing slash if missing", () => {
-		setViewPaths(["views"]);
-		expect(getViewPaths()).toEqual(["views/"]);
+		setViewPaths("views");
+		expect(getViewPaths()).toBe("views/");
 	});
 
 	it("preserves trailing slash if present", () => {
-		setViewPaths(["views/"]);
-		expect(getViewPaths()).toEqual(["views/"]);
+		setViewPaths("views/");
+		expect(getViewPaths()).toBe("views/");
 	});
 
-	it("reset to empty by passing []", () => {
-		setViewPaths(["views"]);
-		setViewPaths([]);
-		expect(getViewPaths()).toEqual([]);
+	it("reset to empty by passing \"\"", () => {
+		setViewPaths("views");
+		setViewPaths("");
+		expect(getViewPaths()).toBe("");
 	});
 });
 
 describe("view-engine — file-based view", () => {
-	let tmp: string;
-	beforeEach(async () => {
-		tmp = await makeTmp();
-		setViewPaths([tmp]);
-	});
-	afterEach(async () => {
-		await rm(tmp, { recursive: true, force: true });
-		setViewPaths([]);
-	});
+let tmp: string;
+beforeEach(async () => {
+tmp = await makeTmp();
+setViewPaths(tmp);
+});
+afterEach(async () => {
+await rm(tmp, { recursive: true, force: true });
+setViewPaths("");
+});
 
 	it("loads a .html file from the configured view path", async () => {
 		await writeFile(
@@ -96,9 +96,9 @@ describe("view-engine — file-based view", () => {
 		expect(out).toBe("<p>inline x</p>");
 	});
 
-	it("uses path as inline when setViewPaths([]) even with .html", async () => {
-		setViewPaths([]);
-		// Without view paths, .html is treated as inline source
+	it("uses path as inline when setViewPaths(\"\") even with .html", async () => {
+		setViewPaths("");
+		// Without view path, .html is treated as inline source
 		const out = await renderView("about.html", { year: 2026 });
 		// Rendu will compile it; since there's no template syntax,
 		// it just outputs the string as text.
@@ -113,36 +113,36 @@ describe("view-engine — file-based view", () => {
 });
 
 describe("view-engine — loadTemplate", () => {
-	let tmp: string;
-	beforeEach(async () => {
-		tmp = await makeTmp();
-	});
-	afterEach(async () => {
-		await rm(tmp, { recursive: true, force: true });
-	});
+let tmp: string;
+beforeEach(async () => {
+tmp = await makeTmp();
+});
+afterEach(async () => {
+await rm(tmp, { recursive: true, force: true });
+});
 
-	it("returns the file contents from the first matching dir", async () => {
-		await writeFile(join(tmp, "x.html"), "hello");
-		const got = await loadTemplate([tmp, "/nonexistent"], "x.html");
-		expect(got).toBe("hello");
-	});
+it("returns the file contents from the dir", async () => {
+await writeFile(join(tmp, "x.html"), "hello");
+const got = await loadTemplate(tmp, "x.html");
+expect(got).toBe("hello");
+});
 
-	it("returns null when no dir matches", async () => {
-		const got = await loadTemplate(["/nope1", "/nope2"], "missing.html");
-		expect(got).toBeNull();
-	});
+it("returns null when the dir doesn't contain the file", async () => {
+const got = await loadTemplate("/nonexistent-dir", "missing.html");
+expect(got).toBeNull();
+});
 });
 
 describe("RenduAdapter — non-string value coercion (Rendu 0.1.0 workaround)", () => {
-	let tmp: string;
-	beforeEach(async () => {
-		tmp = await makeTmp();
-		setViewPaths([tmp]);
-	});
-	afterEach(async () => {
-		await rm(tmp, { recursive: true, force: true });
-		setViewPaths([]);
-	});
+let tmp: string;
+beforeEach(async () => {
+tmp = await makeTmp();
+setViewPaths(tmp);
+});
+afterEach(async () => {
+await rm(tmp, { recursive: true, force: true });
+setViewPaths("");
+});
 
 	it("renders numbers as strings", async () => {
 		await writeFile(join(tmp, "n.html"), "Year: <?= year ?>");

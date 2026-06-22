@@ -1,0 +1,22 @@
+{
+  "name": "create-nexusjs",
+  "version": "0.1.0",
+  "description": "Scaffold a new NexusJS project — bunx create-nexusjs my-app",
+  "bin": "index.js",
+  "type": "module",
+  "files": ["index.js", "package.json"],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kabyeon/nexusjs.git"
+  },
+  "homepage": "https://github.com/kabyeon/nexusjs#readme",
+  "bugs": {
+    "url": "https://github.com/kabyeon/nexusjs/issues"
+  },
+  "engines": {
+    "node": ">=18",
+    "bun": ">=1.0"
+  },
+  "keywords": ["nexusjs", "nexus", "framework", "bun", "fullstack", "scaffold"]
+}

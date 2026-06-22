@@ -1,8 +1,0 @@
-{
-  "name": "create-nexus",
-  "version": "0.1.0",
-  "description": "Scaffold a new NexusJS project",
-  "bin": "index.js",
-  "type": "module",
-  "license": "MIT"
-}

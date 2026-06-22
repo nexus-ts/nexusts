@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 /**
- * create-nexus — scaffold a new NexusJS project.
+ * create-nexusjs — scaffold a new NexusJS project.
  *
  * Usage:
- *   bunx create-nexus my-app
- *   npx create-nexus my-app --view rendu --orm drizzle --db bun-sqlite
+ *   bunx create-nexusjs my-app
+ *   npx create-nexusjs my-app --view rendu --orm drizzle --db bun-sqlite
  */
 
 import { spawn } from "node:child_process";
@@ -15,12 +15,12 @@ const args = process.argv.slice(2);
 const name = args[0];
 
 if (!name || name.startsWith("-")) {
-  console.error("Usage: bunx create-nexus <project-name> [options]");
+  console.error("Usage: bunx create-nexusjs <project-name> [options]");
   console.error("");
   console.error("Examples:");
-  console.error("  bunx create-nexus my-app");
-  console.error("  bunx create-nexus my-app --orm drizzle --db postgres");
-  console.error("  bunx create-nexus my-app --view none");
+  console.error("  bunx create-nexusjs my-app");
+  console.error("  bunx create-nexusjs my-app --orm drizzle --db postgres");
+  console.error("  bunx create-nexusjs my-app --view none");
   process.exit(1);
 }
 

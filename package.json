@@ -166,8 +166,6 @@
   },
   "scripts": {
     "build": "bun run build.ts",
-    "dev": "bun --hot src/app/main.ts",
-    "start": "bun src/app/main.ts",
     "test": "vitest run",
     "test:watch": "vitest --watch",
     "typecheck": "tsc --noEmit",

@@ -118,6 +118,14 @@ for (const pkg of publishOrder) {
 	const npmrcPath = join(PACKAGES_DIR, pkg, ".npmrc");
 	writeFileSync(npmrcPath, `//registry.npmjs.org/:_authToken=${npmToken}\n`);
 
+	// npm 11+ uses device authorization flow for 2FA. When npm publish
+	// returns EOTP, it prints a URL like
+	//   https://www.npmjs.com/auth/cli/<id>
+	// The user must open that URL in a browser, complete 2FA + WebAuthn,
+	// and the CLI will then continue automatically. We detect this and
+	// pass through stdin/stdout/stderr to the user so they can complete
+	// the flow interactively.
+
 	// Retry on 429 (Too Many Requests) with longer backoff. The npm
 	// public registry rate-limits burst publishes — once you hit 429,
 	// you need to wait 1-2 minutes before the next attempt has any
@@ -133,10 +141,13 @@ for (const pkg of publishOrder) {
 			["publish", "--access", "public", "--registry=https://registry.npmjs.org/"],
 			{
 				cwd: join(PACKAGES_DIR, pkg),
-				// Capture stdout/stderr so we can inspect the output for
-				// 429 messages; "inherit" would bypass the spawnSync
-				// stderr buffer and break our rate-limit detection.
-				stdio: ["ignore", "pipe", "pipe"],
+				// For local runs: inherit stdio so the user sees the
+				// device-flow URL from npm 11+ 2FA.
+				// For CI runs: pipe so we can detect 429 retry.
+				stdio:
+					process.env.CI === "true" || process.env.GITHUB_ACTIONS
+						? ["ignore", "pipe", "pipe"]
+						: "inherit",
 				env: { ...process.env, NODE_AUTH_TOKEN: npmToken },
 			},
 		);

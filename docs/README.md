@@ -129,6 +129,7 @@ Architectural deep-dives for contributors and advanced users.
 | ---------- | ------- | ------ |
 | NestJS feature gap | [`analysis/nestjs-comparison.md`](./analysis/nestjs-comparison.md) | [`analysis/nestjs-comparison.ko.md`](./analysis/nestjs-comparison.ko.md) |
 | AdonisJS feature gap | [`analysis/adonisjs-comparison.md`](./analysis/adonisjs-comparison.md) | [`analysis/adonisjs-comparison.ko.md`](./analysis/adonisjs-comparison.ko.md) |
+| Wasp.sh comparison (TS Spec) | [`analysis/wasp-comparison.md`](./analysis/wasp-comparison.md) | [`analysis/wasp-comparison.ko.md`](./analysis/wasp-comparison.ko.md) |
 
 ---
 

@@ -108,6 +108,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Existing guides (`getting-started.md`, `dependency-injection.md`,
   `controllers.md`, `drizzle.md`, `crypto.md`) updated with cross-
   references to the new pitfalls doc and additional tips.
+- **New analysis**: `docs/analysis/wasp-comparison.md` +
+  `wasp-comparison.ko.md` — comparison with [Wasp](https://wasp.sh),
+  which announced its transition from a custom DSL to TypeScript-first
+  spec (`TS Spec`) in June 2026. Highlights the fundamental design
+  difference: Wasp is a **compiler** that generates React + Express +
+  Prisma apps from a `main.wasp.ts` spec; NexusTS is a **library**
+  that gives you DI, decorators, and modules while you write every
+  file. Includes decision framework (when to choose which), side-by-
+  side code, and shared lessons (both converged on "no new language").
 
 ### Fixed
 

@@ -102,6 +102,13 @@ NexusTS의 모든 주요 변경 사항이 이 파일에 기록됩니다.
 - 기존 가이드 (`getting-started.md`, `dependency-injection.md`,
   `controllers.md`, `drizzle.md`, `crypto.md`) 에 새 pitfalls doc으로의
   cross-reference와 추가 팁 업데이트.
+- **새 분석**: `docs/analysis/wasp-comparison.md` +
+  `wasp-comparison.ko.md` — 2026년 6월 TypeScript-first spec
+  (`TS Spec`)으로의 전환을 발표한 [Wasp](https://wasp.sh)와 비교. 핵심
+  설계 차이를 강조: Wasp는 `main.wasp.ts` spec에서 React + Express +
+  Prisma 앱을 **생성하는 컴파일러**; NexusTS는 DI, decorator, module을
+  제공하는 **라이브러리**로 모든 파일을 직접 작성. 의사결정 프레임워크,
+  나란히 코드, 공유된 교훈 (둘 다 "no new language"로 수렴).
 
 ### 수정
 

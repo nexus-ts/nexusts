@@ -101,15 +101,19 @@ export const newCommand: Command = {
 		const ssr = !flagBool(ctx.flags, "no-ssr", false);
 
 		mkdirSync(resolve(target, "app"), { recursive: true });
+		if (view !== "none") {
+			mkdirSync(resolve(target, "resources/views"), { recursive: true });
+		}
 		mkdirSync(resolve(target, "public"), { recursive: true });
-		mkdirSync(resolve(target, "resources/views"), { recursive: true });
 
 		writeFileSync(resolve(target, "public/.gitkeep"), "");
 
-		writeFileSync(
-			resolve(target, "resources/views/welcome.html"),
-			`<h1>Welcome to ${name}</h1>\n<p>This is a sample Rendu template.</p>\n<p>Founded <?= year ?>.</p>\n`,
-		);
+		if (view !== "none") {
+			writeFileSync(
+				resolve(target, "resources/views/welcome.html"),
+				`<h1>Welcome to ${name}</h1>\n<p>This is a sample Rendu template.</p>\n<p>Founded <?= year ?>.</p>\n`,
+			);
+		}
 
 		writeFileSync(resolve(target, ".env"), generateEnvFile());
 		writeFileSync(resolve(target, ".env.local"), generateEnvLocalFile());
@@ -128,6 +132,19 @@ export const newCommand: Command = {
 		});
 		writeFileSync(resolve(target, "nx.config.ts"), code);
 
+		const deps: Record<string, string> = {
+			"@nexusts/core": "*",
+			"reflect-metadata": "^0.2.2",
+			hono: "^4.6.0",
+			zod: "^3.23.8",
+		};
+		if (orm === "drizzle") {
+			deps["@nexusts/drizzle"] = "*";
+			deps["drizzle-orm"] = "^0.45.0";
+		}
+		if (view !== "none") {
+			deps["@nexusts/static"] = "*";
+		}
 		writeFileSync(
 			resolve(target, "package.json"),
 			JSON.stringify(
@@ -142,12 +159,7 @@ export const newCommand: Command = {
 						test: "vitest",
 						nx: "nx",
 					},
-					dependencies: {
-						"@nexusts/core": "*",
-						"reflect-metadata": "^0.2.2",
-						hono: "^4.6.0",
-						zod: "^3.23.8",
-					},
+					dependencies: deps,
 				},
 				null,
 				2,
@@ -173,30 +185,41 @@ export const newCommand: Command = {
 `,
 		);
 
+		const hasView = view !== "none";
+		const staticImport = hasView
+			? `import { StaticModule } from '@nexusts/static';\nconst staticMiddleware = StaticModule.mount({ root: './public', prefix: '/static' });\n`
+			: '';
+		const staticOption = hasView ? '\n  middleware: [staticMiddleware],' : '';
 		writeFileSync(
 			resolve(target, "app/main.ts"),
 			`import 'reflect-metadata';
 import { Application } from '@nexusts/core';
-import { StaticModule } from '@nexusts/static';
-import { AppModule } from './app.module.js';
+${staticImport}import { AppModule } from './app.module.js';
 
-const app = new Application(AppModule);
-// Serve ./public files under /static/*
-app.server.app.use('/static/*', StaticModule.mount({ root: './public', prefix: '/static' }));
+const app = new Application(AppModule, {
+  logging: true,
+  port: Number(process.env['PORT'] ?? 3000),${staticOption}
+});
 
-const port = Number(process.env["PORT"] ?? 3000);
-await app.listen(port);
-console.log("[nexusjs] Listening on http://localhost:" + port);
+await app.listen();
+console.log('[nexus] Listening on http://localhost:' + (process.env['PORT'] ?? 3000));
 `,
 		);
 
+		const ormImport = orm === "drizzle"
+			? `import { DrizzleModule } from '@nexusts/drizzle';\n`
+			: '';
+		const forRootDialect = db === 'bun-sqlite' ? 'bun-sqlite' : 'sqlite';
+		const ormBlock = orm === "drizzle"
+			? `    DrizzleModule.forRoot({\n      dialect: '${forRootDialect}',\n      connection: { filename: 'app.db' },\n      logging: true,\n    })`
+			: '';
 		writeFileSync(
 			resolve(target, "app/app.module.ts"),
-			`import { Module } from '@nexusts/core';
+			`${ormImport}import { Module } from '@nexusts/core';
 import { HomeController } from './controllers/home.controller.js';
 
 @Module({
-  imports: [],
+  imports: [${orm === "drizzle" ? `\n${ormBlock},\n` : ''}  ],
   controllers: [HomeController],
 })
 export class AppModule {}
@@ -204,6 +227,9 @@ export class AppModule {}
 		);
 
 		mkdirSync(resolve(target, "app/controllers"), { recursive: true });
+		const homeViewReturn = view !== "none"
+			? `{\n      view: 'welcome.html',\n      data: { year: new Date().getFullYear() },\n    }`
+			: `{ status: 200, body: { message: 'Hello from NexusTS!' } }`;
 		writeFileSync(
 			resolve(target, "app/controllers/home.controller.ts"),
 			`import { Controller, Get } from '@nexusts/core';
@@ -212,10 +238,7 @@ export class AppModule {}
 export class HomeController {
   @Get('/')
   index() {
-    return {
-      view: 'welcome.html',
-      data: { year: new Date().getFullYear() },
-    };
+    return ${homeViewReturn};
   }
 }
 `,

@@ -10,7 +10,7 @@
  *   3. Publish each package with `npm publish --access public`.
  *   4. Order: core last, with leaf packages first.
  */
-import { readdirSync, readFileSync, writeFileSync, statSync, existsSync } from "node:fs";
+import { readdirSync, readFileSync, writeFileSync, existsSync, unlinkSync } from "node:fs";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
 
@@ -86,16 +86,39 @@ for (const pkg of publishOrder) {
 
 	console.log(`\n[publish] → ${pkgJson.name}@${pkgJson.version}`);
 
-	// Run npm publish with --access public (required for scoped packages)
+	// Resolve npm auth token from the standard sources. GitHub Actions
+	// exposes the secret as NPM_TOKEN (and also as NODE_AUTH_TOKEN when
+	// using actions/setup-node with registry-url). We pass it through
+	// to spawn so the spawned `npm publish` can authenticate.
+	const npmToken = process.env.NPM_TOKEN ?? process.env.NODE_AUTH_TOKEN ?? "";
+	if (!npmToken) {
+		console.error(`[publish] ✖ no NPM_TOKEN in environment`);
+		failed++;
+		continue;
+	}
+
+	// Run npm publish with --access public (required for scoped packages).
+	// Pass the token via .npmrc write to the package directory so npm
+	// picks it up reliably across npm versions.
+	const npmrcPath = join(PACKAGES_DIR, pkg, ".npmrc");
+	writeFileSync(npmrcPath, `//registry.npmjs.org/:_authToken=${npmToken}\n`);
+
 	const result = spawnSync(
 		"npm",
 		["publish", "--access", "public", "--registry=https://registry.npmjs.org/"],
 		{
 			cwd: join(PACKAGES_DIR, pkg),
 			stdio: "inherit",
-			env: { ...process.env, NODE_AUTH_TOKEN: process.env.NPM_TOKEN ?? "" },
+			env: { ...process.env, NODE_AUTH_TOKEN: npmToken },
 		},
 	);
+
+	// Clean up the temporary .npmrc
+	try {
+		unlinkSync(npmrcPath);
+	} catch {
+		/* ignore */
+	}
 
 	if (result.status === 0) {
 		published++;

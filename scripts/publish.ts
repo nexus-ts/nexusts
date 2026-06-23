@@ -133,14 +133,22 @@ for (const pkg of publishOrder) {
 			["publish", "--access", "public", "--registry=https://registry.npmjs.org/"],
 			{
 				cwd: join(PACKAGES_DIR, pkg),
-				stdio: "inherit",
+				// Capture stdout/stderr so we can inspect the output for
+				// 429 messages; "inherit" would bypass the spawnSync
+				// stderr buffer and break our rate-limit detection.
+				stdio: ["ignore", "pipe", "pipe"],
 				env: { ...process.env, NODE_AUTH_TOKEN: npmToken },
 			},
 		);
-		if (result.status === 0) break;
+		// Echo the subprocess output so the user still sees it.
+		const stdout = (result.stdout ?? Buffer.from("")).toString();
 		const stderr = (result.stderr ?? Buffer.from("")).toString();
+		if (stdout) process.stdout.write(stdout);
+		if (stderr) process.stderr.write(stderr);
+		if (result.status === 0) break;
+		const combined = stdout + "\n" + stderr;
 		const isRateLimit =
-			/429|Too Many Requests|rate limit/i.test(stderr);
+			/429|Too Many Requests|rate limit/i.test(combined);
 		if (!isRateLimit) {
 			// Non-rate-limit error: bail out, no point retrying.
 			break;

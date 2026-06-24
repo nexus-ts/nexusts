@@ -64,9 +64,3 @@ examples/*/bun.lock
 
 # VitePress
 webpage/.vitepress/cache/
-
-# Local-only dev docs — not tracked in git
-dev-docs/
-
-# Fork-local overrides — not submitted upstream
-CLAUDE.md

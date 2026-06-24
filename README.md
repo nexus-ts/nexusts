@@ -48,8 +48,8 @@ fully closed.
 | `@nexusts/crypto` | AES-256-GCM encryption + HMAC + scrypt/argon2 password hashing. Single APP_KEY for sessions, CSRF, encrypted data |
 | `@nexusts/i18n` | Locale-aware translations + date/number/currency formatters via `Intl`. `I18nService`, `@CurrentLocale()`, JSON message catalogs |
 | `@nexusts/redis` | Runtime-aware Redis client (Bun / Node / Workers KV). Powers `redis` / `cloudflare-kv` session & cache backends |
-| `@nexusts/grpc` | Reflection-based gRPC server + typed client. Loads `.proto` files at runtime via `@grpc/proto-loader`. Unary methods (streaming deferred to v2) |
-| `@nexusts/graphql` *(v0.7)* | SDL-first GraphQL endpoint. `POST/GET /graphql`, `/graphql/schema`, in-bundle GraphiQL playground. `context()` factory for per-request state. `@Resolver` / `@Query` / `@Mutation` decorators (alpha). Requires the `graphql` peer-dep |
+| `@nexusts/grpc` | Reflection-based gRPC server + typed client. Loads `.proto` files at runtime via `@grpc/proto-loader`. All four call types: unary, server streaming, client streaming, bidirectional (`@GrpcServerStream` / `@GrpcClientStream` / `@GrpcBidiStream` — v0.8) |
+| `@nexusts/graphql` *(v0.7)* | SDL-first GraphQL endpoint. `POST/GET /graphql`, `/graphql/schema`, in-bundle GraphiQL playground. `context()` factory for per-request state. `@Resolver` / `@Query` / `@Mutation` decorators (stable v0.7.1). Requires the `graphql` peer-dep |
 | `@nexusts/resilience` *(v0.7)* | Retry + Circuit Breaker + Bulkhead in a single DI singleton. `retry()` with 4 backoff strategies. `CircuitBreaker` with closed/open/half-open state machine. `Bulkhead` with FIFO queue. `@Retry` / `@CircuitBreaker` / `@Bulkhead` / `@Resilient` decorators. **Zero new dependencies.** |
 | `@nexusts/view` | View engine with 3 adapters: Rendu (default, every runtime), Edge (Adonis-style `.edge`), Eta (EJS-style `.eta`). Auto-detects adapter by file extension. `setViewPaths()` for file-based templates, `Application.tryLoadNxConfig()` auto-loads from `nx.config.ts` |
 
@@ -477,7 +477,7 @@ class OrderService {
 
 The framework also exports `@Retry` / `@CircuitBreaker` /
 `@Bulkhead` / `@Resilient` method decorators (metadata-only;
-eager wrapping is reserved for v0.8). See
+eager wrapping is available since v0.7.1 via `applyResilience()` at controller-mount time). See
 [`docs/user-guide/resilience.md`](./docs/user-guide/resilience.md) for
 the full reference.
 
@@ -542,8 +542,10 @@ full reference.
 
 `@nexusts/grpc` ships a reflection-based gRPC server + typed
 client. No codegen — `.proto` files are loaded at runtime via
-`@grpc/proto-loader`. Unary methods only in v1; streaming
-(server / client / bidi) is on the v2 roadmap.
+`@grpc/proto-loader`. All four gRPC call types are supported:
+unary (`@GrpcMethod`), server streaming (`@GrpcServerStream`),
+client streaming (`@GrpcClientStream`), and bidirectional
+(`@GrpcBidiStream`) — shipped in v2 (v0.8).
 
 ```ts
 import { GrpcModule, GrpcService, GrpcMethod } from '@nexusts/grpc';
@@ -1010,11 +1012,11 @@ v1.0, only major bumps will.
 - **v0.6.7** (2026-06-22) — `create-nexusts` scaffolder published as a separate npm package; 27 working examples under `examples/`.
 - **v0.6.8** (2026-06-22) — smoke test suite (`tests/examples/smoke.test.ts`) with 55 vitest tests, 67 examples by v0.6.8.
 - **v0.7.0** (2026-06-22) — **GraphQL** (`@nexusts/graphql`, SDL-first, optional `graphql` peer-dep) and **Resilience** (`@nexusts/resilience`, retry + circuit + bulkhead, zero new dependencies). 30 first-party modules, 33 examples, 102 vitest tests.
+- **v0.7.1** (2026-06-24) — Inertia `Form` + lazy props SDK stabilization, code-first GraphQL SDL synthesis (`@Resolver` / `@Query` / `@Mutation` stable), eager `applyResilience()` wrapping at controller-mount time, `forceOpen` / `forceClose` admin API via `ResilienceAdminModule`.
+- **v0.8** (2026-06-24) — `@nexusts/feature-flag` (canary / A/B testing), `@nexusts/cache` Redis backend, `@nexusts/shield` CORS support, `@nexusts/drizzle` DB seeding `Factory<T>`, cross-pod circuit breaker (Redis / Drizzle / Memory backing stores), gRPC streaming v2 (`@GrpcServerStream` / `@GrpcClientStream` / `@GrpcBidiStream`), multi-runtime CI (Bun + Node.js 22 + Cloudflare Workers), performance benchmark suite.
 
 ### Planned
 
-- **v0.7.1** — Inertia `Form` + lazy props SDK stabilization, code-first GraphQL SDL synthesis (the `@Resolver` / `@Query` decorators are alpha today), eager `applyResilience()` wrapping at controller-mount time, `forceOpen` / `forceClose` admin API for the circuit breakers.
-- **v0.8** — `@nexusts/feature-flag` (canary / A/B testing), runtime parity test suite, performance benchmarks across Bun / Node / Workers, cross-pod circuit breaker via Redis/Drizzle backing store.
 - **v1.0** — stable public API surface with semver guarantees, removal of all v0.1 deprecated aliases, long-term LTS support plan.
 
 Detailed release notes for every version live in

@@ -1,9 +1,9 @@
 # NexusTS vs Wasp — 비교 분석
 
 > English version: [`wasp-comparison.md`](./wasp-comparison.md)
-> 분석 일자: 2026-06-24 · 기준: NexusTS **v0.8.3**, Wasp **Launch Week #12 / TS Spec**
+> 분석 일자: 2026-06-24 · 기준: NexusTS **v0.8.4**, Wasp **Launch Week #12 / TS Spec**
 
-이 문서는 [NexusTS](https://github.com/nexus-ts/nexusts) v0.8.3과
+이 문서는 [NexusTS](https://github.com/nexus-ts/nexusts) v0.8.4과
 [Wasp](https://wasp.sh)를 비교합니다. 두 프레임워크 모두 "TypeScript 풀스택
 프레임워크"라 칭하지만, 동일한 교훈(개발자는 웹앱을 만들기 위해 새 언어를
 배우고 싶어하지 않는다)에서 출발했음에도 **근본적으로 다른 설계 철학**을

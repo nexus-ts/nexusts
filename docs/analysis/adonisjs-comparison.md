@@ -1,9 +1,9 @@
 # NexusTS vs AdonisJS — Feature Gap Analysis
 
 > 한국어 버전: [`adonisjs-comparison.ko.md`](./adonisjs-comparison.ko.md)
-> 분석 일자: 2026-06-24 · 기준: NexusTS **v0.8.3**
+> 분석 일자: 2026-06-24 · 기준: NexusTS **v0.8.4**
 
-This document compares NexusTS v0.8.3 against [AdonisJS v6](https://adonisjs.com)
+This document compares NexusTS v0.8.4 against [AdonisJS v6](https://adonisjs.com)
 to identify which AdonisJS-style "batteries" (convention-driven,
 "everything just works" features) are **present**, **partially
 present**, or **missing**. The v0.3–v0.7.0 milestones together
@@ -20,7 +20,7 @@ covers every battery AdonisJS ships — and then some.
 
 ---
 
-## 1. Summary table (v0.8.3)
+## 1. Summary table (v0.8.4)
 
 Legend: ✅ ship · ⚠️ partial · ❌ missing · 🔵 third-party required
 
@@ -63,19 +63,19 @@ Legend: ✅ ship · ⚠️ partial · ❌ missing · 🔵 third-party required
 | Admin panel | ✅ `@adonisjs/admin` | ❌ Not shipped | Lower priority |
 | GraphQL | ✅ `@adonisjs/graphql` (legacy) | ✅ `@nexusts/graphql` | SDL-first + code-first (`autoSchema: true`). Full SDL synthesis from decorators. Shipped v0.7.6. |
 | gRPC | ❌ DIY | ✅ `@nexusts/grpc` | Reflection-based, unary (streaming v2). v0.5 shipped. |
-| Feature flags | ❌ DIY | ✅ `@nexusts/feature-flag` | Rollout, allowlist, denylist, `@FeatureFlag` decorator. Shipped v0.8.3. |
+| Feature flags | ❌ DIY | ✅ `@nexusts/feature-flag` | Rollout, allowlist, denylist, `@FeatureFlag` decorator. Shipped v0.8.0. |
 | Resilience (circuit breaker, retry) | ❌ DIY | ✅ `@nexusts/resilience` | Retry + Circuit Breaker + Bulkhead, shared named registry, exponential-jitter backoff. v0.7.0 shipped. **Zero new deps.** |
 
-**Headline**: NexusTS v0.8.3 covers **every** AdonisJS v6 battery
+**Headline**: NexusTS v0.8.4 covers **every** AdonisJS v6 battery
 and exceeds it on modern features (GraphQL, WebSockets, OpenAPI,
 SSE, tracing, metrics, gRPC, resilience) that AdonisJS doesn't
 ship as batteries. All **32** modules are first-party.
 
 ---
 
-## 2. Closed in v0.3 → v0.8.3
+## 2. Closed in v0.3 → v0.8.4
 
-The v0.3–v0.8.3 milestones together closed every
+The v0.3–v0.8.4 milestones together closed every
 "missing battery" gap. **35 AdonisJS-style batteries** now ship.
 
 | Was missing in v0.2 | Shipped | Module |
@@ -296,7 +296,7 @@ A team that needs any of these gets them for free with NexusTS.
 - `@Resolver`-decorated classes auto-registered.
 - `drizzle.config.ts` auto-generation on init/new.
 
-### v0.8.3 — FeatureFlagModule (shipped)
+### v0.8.0 — FeatureFlagModule (shipped)
 
 - **`@nexusts/feature-flag`** — canary / A/B testing with rollout,
   allowlist/denylist, `@FeatureFlag` decorator.
@@ -312,10 +312,10 @@ A team that needs any of these gets them for free with NexusTS.
 
 ---
 
-## 8. Honest assessment (v0.8.3)
+## 8. Honest assessment (v0.8.4)
 
-The v0.8.3 release **closes every AdonisJS v6 battery gap**. A team
-migrating from AdonisJS to NexusTS v0.8.3 would find:
+The v0.8.4 release **closes every AdonisJS v6 battery gap**. A team
+migrating from AdonisJS to NexusTS v0.8.4 would find:
 
 - **Every** first-party battery has an equivalent in NexusTS.
 - GraphQL (`@nexusts/graphql`, code-first `autoSchema: true`).
@@ -334,7 +334,7 @@ What's still missing for **full** AdonisJS coverage:
 - **Inspector** — debugging-only; lower priority.
 - **Admin panel** — lower priority.
 
-AdonisJS v6 vs NexusTS v0.8.3 differentiators:
+AdonisJS v6 vs NexusTS v0.8.4 differentiators:
 
 - **Bun-native** — faster startup, faster I/O, fewer deps.
 - **Per-module bundle entry points** — import only what you use.
@@ -343,7 +343,7 @@ AdonisJS v6 vs NexusTS v0.8.3 differentiators:
 - **Default ORM = Drizzle** — more performant on Bun.
 - **Cloudflare Workers** — NexusTS is more Workers-friendly.
 
-After v0.8.3, NexusTS is a viable alternative for **any** AdonisJS
+After v0.8.4, NexusTS is a viable alternative for **any** AdonisJS
 user today, with the runtime + DX advantages of Bun.
 
 ---

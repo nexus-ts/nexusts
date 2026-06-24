@@ -21,6 +21,49 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.8.4] — 2026-06-24
+
+### Added
+
+- **Inertia scaffold templates**: `nx init`/`nx new` now generate
+  proper React/Vue page components (`resources/js/Pages/Welcome.tsx`
+  or `Welcome.vue`) with Inertia v3 client entry point
+  (`resources/js/app.tsx`/`app.ts`) and SSR adapter setup.
+- **`InertiaConfig.scripts`**: new config option to inject client-side
+  `<script>` tags into the HTML shell. Scaffold sets
+  `scripts: ['/static/app.js']` by default.
+
+### Fixed
+
+- **Inertia v3 protocol compliance**: initial page data is now
+  embedded via `<script data-page="app" type="application/json">`
+  instead of the v2 `data-page` attribute on `<div id="app">`.
+- **Inertia SSR adapter setup**: moved from `container.resolve()`
+  (which fails because module providers live in child containers)
+  to direct `new Inertia()` in the module provider.
+- **`--no-interaction` flag**: was not working because `parseArgs`
+  stores it as `flags.interaction = false` but `flagBool` checked
+  `flags["no-interaction"]`. Fixed to use
+  `flagBool(flags, "interaction", true)`.
+- **CLI input validation**: flag values are now validated against
+  the allowed options list. Invalid flags in non-interactive mode
+  show an error and exit. Interactive mode re-prompts on invalid
+  input.
+- **`mergePackageJson()`**: now adds `build:frontend` and updates
+  `dev` script when switching to Inertia view engine (fixes
+  "Script not found 'build:frontend'" when toggling React↔Vue).
+
+### Changed
+
+- **CLI scaffold refactored**: `init.ts`/`new.ts` template generation
+  extracted to shared `packages/cli/src/core/scaffold.ts`.
+  Reduces code duplication by ~400 lines.
+- **Inertia deps**: `@inertiajs/react` → `^3.0.0`,
+  `@inertiajs/vue3` → `^3.0.0`.
+- **All analysis docs**: baselines updated to v0.8.4.
+
+---
+
 ## [0.8.3] — 2026-06-24
 
 ### Fixed

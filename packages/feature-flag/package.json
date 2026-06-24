@@ -1,6 +1,6 @@
 {
   "name": "@nexusts/feature-flag",
-  "version": "0.8.3",
+  "version": "0.8.4",
   "description": "Feature flags, canary deployments, and A/B testing for NexusTS",
   "type": "module",
   "main": "./dist/index.js",

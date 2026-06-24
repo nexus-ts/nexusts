@@ -1,6 +1,6 @@
 {
   "name": "@nexusts/session",
-  "version": "0.8.3",
+  "version": "0.8.4",
   "description": "Cookie / Memory / Drizzle sessions",
   "type": "module",
   "main": "./dist/index.js",

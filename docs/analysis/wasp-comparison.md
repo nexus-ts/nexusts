@@ -1,9 +1,9 @@
 # NexusTS vs Wasp — Comparison
 
 > 한국어 버전: [`wasp-comparison.ko.md`](./wasp-comparison.ko.md)
-> 분석 일자: 2026-06-24 · 기준: NexusTS **v0.8.3**, Wasp **Launch Week #12 / TS Spec**
+> 분석 일자: 2026-06-24 · 기준: NexusTS **v0.8.4**, Wasp **Launch Week #12 / TS Spec**
 
-This document compares [NexusTS](https://github.com/nexus-ts/nexusts) v0.8.3
+This document compares [NexusTS](https://github.com/nexus-ts/nexusts) v0.8.4
 against [Wasp](https://wasp.sh) — both labelled "full-stack TypeScript
 frameworks", but with **fundamentally different design philosophies** that
 emerged from the same lesson: developers don't want to learn a new language
@@ -19,7 +19,7 @@ framework end and your code begin?" in opposite ways.
 
 ## 1. Summary table
 
-| Category | Wasp (TS Spec) | NexusTS v0.8.3 |
+| Category | Wasp (TS Spec) | NexusTS v0.8.4 |
 | --- | --- | --- |
 | **Paradigm** | Compiler-based — `main.wasp.ts` is **compiled** into a target app | Library-based — you `import { … } from '@nexusts/*'` |
 | **Spec location** | One (or more) root-level `.wasp.ts` files | Anywhere in your project — every file is "user code" |

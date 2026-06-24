@@ -1,9 +1,9 @@
 # NexusTS vs AdonisJS — 기능 격차 분석
 
 > English version: [`adonisjs-comparison.md`](./adonisjs-comparison.md)
-> 분석 일자: 2026-06-24 · 기준: NexusTS **v0.8.3**
+> 분석 일자: 2026-06-24 · 기준: NexusTS **v0.8.4**
 
-이 문서는 NexusTS v0.8.3와 [AdonisJS v6](https://adonisjs.com)를 비교하여
+이 문서는 NexusTS v0.8.4와 [AdonisJS v6](https://adonisjs.com)를 비교하여
 어떤 AdonisJS 스타일 "battery" (관례 기반, "그냥 동작" 기능)가
 **있음**, **부분적**, **없음** 상태인지 식별한다. v0.3–v0.7.0 마일스톤이
 모든 Tier 1, Tier 2, Tier 3 격차를 해소했다. 이제 프레임워크는
@@ -17,11 +17,11 @@ AdonisJS가 출시하는 모든 battery를 다루며, 그 이상을 제공한다
 
 ---
 
-## 1. 요약 표 (v0.8.3)
+## 1. 요약 표 (v0.8.4)
 
 범례: ✅ 출시 · ⚠️ 부분적 · ❌ 없음 · 🔵 third-party 필요
 
-| 카테고리 | AdonisJS | NexusTS v0.8.3 | 비고 |
+| 카테고리 | AdonisJS | NexusTS v0.8.4 | 비고 |
 |----------|----------|--------------|-------|
 | HTTP 서버 | ✅ Custom (Node & Workers) | ✅ Hono (Bun / Node / Workers) | Nexus는 Hono를 기반 서버로 사용 |
 | 라우팅 | ✅ Route groups, resources, subdomains | ✅ 클래스 데코레이터 + functional | 세 가지 스타일: Nest, Adonis, Functional |
@@ -60,7 +60,7 @@ AdonisJS가 출시하는 모든 battery를 다루며, 그 이상을 제공한다
 | Admin panel | ✅ `@adonisjs/admin` | ❌ 출시 안 됨 | 낮은 우선순위 |
 | GraphQL | ✅ `@adonisjs/graphql` (legacy) | ✅ `@nexusts/graphql` | SDL-first; `@Resolver`/`@Query`/`@Mutation` 데코레이터 + 전역 클래스 레지스트리 (v0.7.6). Code-first SDL 합성 v0.8. |
 | gRPC | ❌ DIY | ✅ `@nexusts/grpc` | v0.5에 출시됨 (reflection-based, unary / streaming v2) |
-| Feature flags | ❌ DIY | ✅ `@nexusts/feature-flag` | Rollout, allowlist, denylist, `@FeatureFlag` 데코레이터. v0.8.3 출시. |
+| Feature flags | ❌ DIY | ✅ `@nexusts/feature-flag` | Rollout, allowlist, denylist, `@FeatureFlag` 데코레이터. v0.8.0 출시. |
 | Resilience (서킷 브레이커, retry) | ❌ DIY | ✅ `@nexusts/resilience` | Retry + Circuit Breaker + Bulkhead, 공유 명명 레지스트리, exponential-jitter 백오프. v0.7.0 출시. **새 의존성 0.** |
 
 **헤드라인**: NexusTS v0.7.6는 **모든** AdonisJS v6 battery를
@@ -70,9 +70,9 @@ tracing, metrics, gRPC, resilience)에서 AdonisJS가 battery로
 
 ---
 
-## 2. v0.3 → v0.8.3에서 해소된 항목
+## 2. v0.3 → v0.8.4에서 해소된 항목
 
-v0.3~v0.8.3 마일스톤이 v0.2 분석에서 식별된 모든
+v0.3~v0.8.4 마일스톤이 v0.2 분석에서 식별된 모든
 "누락된 battery" 격차를 해소했다. 총 **35개** AdonisJS 스타일 배터리가
 출시되었다.
 
@@ -315,10 +315,10 @@ NexusTS의 쿠키 기반 세션은 본질적으로 stateless이므로 다중 리
 
 ---
 
-## 8. 정직한 평가 (v0.8.3)
+## 8. 정직한 평가 (v0.8.4)
 
-v0.8.3 릴리스는 **모든 AdonisJS v6 battery 격차를 해소**.
-AdonisJS에서 NexusTS v0.8.3로 마이그레이션하는 팀:
+v0.8.4 릴리스는 **모든 AdonisJS v6 battery 격차를 해소**.
+AdonisJS에서 NexusTS v0.8.4로 마이그레이션하는 팀:
 
 - **모든** first-party battery에 NexusTS에 동등한 것 있음.
 - GraphQL (code-first `autoSchema: true`).
@@ -337,7 +337,7 @@ AdonisJS에서 NexusTS v0.8.3로 마이그레이션하는 팀:
 - **Inspector** — 디버깅 전용; 낮은 우선순위.
 - **Admin panel** — 낮은 우선순위.
 
-AdonisJS v6 vs NexusTS v0.8.3 차별점:
+AdonisJS v6 vs NexusTS v0.8.4 차별점:
 
 - **Bun 네이티브** — 빠른 시작, 빠른 I/O, 적은 의존성.
 - **모듈별 번들** — 필요한 것만 import.
@@ -346,7 +346,7 @@ AdonisJS v6 vs NexusTS v0.8.3 차별점:
 - **기본 ORM = Drizzle** — Bun에서 Drizzle가 더 뛰어난 성능.
 - **Cloudflare Workers** — NexusTS가 Workers에 더 친화적.
 
-v0.8.3 이후 NexusTS는 오늘 AdonisJS 사용자가 사용 가능한 모든 것에
+v0.8.4 이후 NexusTS는 오늘 AdonisJS 사용자가 사용 가능한 모든 것에
 대한 **실현 가능한 대안**.
 
 ---

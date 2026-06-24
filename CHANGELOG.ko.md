@@ -21,6 +21,44 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.8.4] — 2026-06-24
+
+### 추가
+
+- **Inertia 스캐폴드 템플릿**: `nx init`/`nx new` 명령이 Inertia
+  React/Vue 페이지 컴포넌트(`resources/js/Pages/Welcome.tsx` 또는
+  `Welcome.vue`)와 클라이언트 진입점(`resources/js/app.tsx`/`app.ts`),
+  SSR 어댑터 설정을 자동 생성합니다.
+- **`InertiaConfig.scripts`**: HTML shell에 클라이언트 `<script>` 태그를
+  주입하는 새 설정 옵션. 스캐폴드가 `scripts: ['/static/app.js']`로
+  자동 설정합니다.
+
+### 수정
+
+- **Inertia v3 프로토콜 호환**: 초기 페이지 데이터를 v2 방식
+  `<div id="app" data-page="...">` 대신
+  `<script data-page="app" type="application/json">`로 내장합니다.
+- **Inertia SSR 어댑터 설정**: `container.resolve()` (모듈 provider가
+  자식 컨테이너에 있어 실패) 대신 모듈 provider에서 직접
+  `new Inertia()`를 생성하도록 수정.
+- **`--no-interaction` 플래그**: `parseArgs`가 `flags.interaction = false`로
+  저장하지만 `flagBool`이 `flags["no-interaction"]`을 확인하여 작동하지
+  않던 문제 수정.
+- **CLI 입력 검증**: 플래그 값이 허용된 옵션 목록에 없으면 비대화형
+  모드에서 오류와 함께 종료, 대화형 모드에서 재입력.
+- **`mergePackageJson()`**: Inertia 뷰 엔진으로 전환 시
+  `build:frontend` 스크립트와 `dev` 스크립트를 자동 추가.
+
+### 변경
+
+- **CLI 스캐폴드 리팩토링**: `init.ts`/`new.ts`의 템플릿 생성 로직을
+  `packages/cli/src/core/scaffold.ts`로 추출, ~400줄 중복 제거.
+- **Inertia 의존성**: `@inertiajs/react` → `^3.0.0`,
+  `@inertiajs/vue3` → `^3.0.0`.
+- **모든 분석 문서**: 기준 버전 v0.8.4로 업데이트.
+
+---
+
 ## [0.8.3] — 2026-06-24
 
 ### 수정

@@ -30,13 +30,11 @@ export class AppModule {}
 
 ```ts
 // app/schedule/tasks/cleanup.task.ts
-import { Inject, Injectable } from '@nexusts/core';
-import { Cron, Interval, ScheduleService } from '@nexusts/schedule';
+import { Injectable } from '@nexusts/core';
+import { Cron, Interval } from '@nexusts/schedule';
 
 @Injectable()
 export class CleanupTask {
-  constructor(@Inject(ScheduleService.TOKEN) private schedule: ScheduleService) {}
-
   @Cron('0 * * * *')                     // 매시
   async hourly() {
     await deleteStaleSessions();
@@ -49,18 +47,17 @@ export class CleanupTask {
 }
 ```
 
+**자동 스캔이 내장되어 있다.** `ScheduleModule`은 부트 시 모든
+provider 인스턴스에서 `@Cron` / `@Interval` / `@Timeout` 데코레이터를
+자동으로 감지한다. `scanForSchedulers`나 `start()` 호출이 필요 없다:
+
 ```ts
-// app/main.ts
+// app/main.ts — 스케줄 관련 코드 전혀 없음
 import { Application } from '@nexusts/core';
-import { ScheduleService, scanForSchedulers } from '@nexusts/schedule';
 import { AppModule } from './app.module.js';
-import { CleanupTask } from './schedule/tasks/cleanup.task.js';
 
-const app = new Application(AppModule);
-const schedule = app.container.resolve(ScheduleService);
-
-await scanForSchedulers(new CleanupTask(), schedule);
-schedule.start();    // 틱 루프 시작
+const app = new Application(AppModule, { logging: true });
+await app.listen();
 ```
 
 ---
@@ -79,7 +76,7 @@ schedule.start();    // 틱 루프 시작
 | `@monthly` | 0 0 1 ** |
 | `@weekly` | 0 0 ** 0 |
 | `@daily`, `@midnight` | 0 0 ** * |
-| `@hourly` | 0 ** ** |
+| `@hourly` | 0 **** |
 | `@every 1h30m` | 90분마다 |
 | `@every 30s` | 30초마다 |
 
@@ -191,11 +188,14 @@ export default {
 
 ## 6. 라이프사이클
 
-`ScheduleService.start()`는 인프로세스 틱을 시작한다. 등록된 각 작업은 `setInterval`(interval/timeout)을 받거나 다음 cron 매치에서 디스패치된다. `stop()`은 모든 것을 정리한다.
+스케줄러는 `Application.bootstrap()` 중에 자동으로 시작된다.
+별도의 `start()` 호출이 필요 없다. 각 등록된 작업은
+`setInterval`(interval/timeout)을 받거나 다음 cron 매치에서
+디스패치된다. `stop()`으로 정리한다:
 
 ```ts
-schedule.start();
-// ... 앱 실행 ...
+// 수동 제어 (자동 시작을 원하지 않는 경우)
+const schedule = app.container.resolve(ScheduleService);
 await schedule.stop();
 ```
 
@@ -242,6 +242,7 @@ nx make:schedule DailyDigest
 ```
 
 `@Cron` / `@Interval` / `@Timeout` 핸들러를 받을 준비가 된 스켈레톤 클래스와 함께 `app/schedule/tasks/<name>.task.ts`를 생성한다.
+데코레이터는 부트 시 자동 감지되므로 별도의 수동 등록이 필요 없다.
 
 ---
 

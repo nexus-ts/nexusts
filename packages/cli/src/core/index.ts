@@ -10,6 +10,7 @@ export * from "./loose-json.js";
 export * from "./prompts.js";
 export * from "./template.js";
 export { VERSION } from "./version.js";
+export { ensureDirectories, computeDeps, buildPackageJson, generateProjectFiles } from "./scaffold.js";
 
 /**
  * The CLI command contract. Every command module exports a default

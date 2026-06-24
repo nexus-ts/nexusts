@@ -4,27 +4,17 @@
  * Unlike `nx new <name>` — which requires a fresh, empty directory —
  * `nx init` is non-destructive: it skips files that already exist,
  * preserves the user's existing `package.json` (only adding the
- * `nexusjs` dependency if missing), and merges its `tsconfig.json`
+ * nexusjs dependency if missing), and merges its `tsconfig.json`
  * additions into the user's existing config.
- *
- * The matching pattern from other ecosystems:
- *   - `bun init` / `npm init`  → init in the current directory
- *   - `cargo init`             → init in the current directory
- *   - `nx new <name>`          → create a fresh project in a new dir
  *
  * Typical use case: the user already ran `bun init` (or has an
  * existing app) and now wants to add NexusTS to it without losing
  * their existing setup.
  *
- *   $ bun init
- *   $ bun add nexusjs
- *   $ nx init
- *   $ bun run dev
- *
  * Flags:
  *   --target <dir>    Scaffold into <dir> instead of the cwd
  *   --style <name>    Routing style (nest|adonis|functional)
-	*   --view <name>     View engine (rendu|edge|eta|inertia|none)
+ *   --view <name>     View engine (rendu|edge|eta|inertia|none)
  *   --orm <name>      ORM driver (drizzle|prisma|kysely|none)
  *   --db <name>       Database driver (bun-sqlite|node-sqlite|libsql|postgres|mysql|none)
  *   --frontend <name> Inertia frontend (react|vue|svelte|solid)
@@ -33,12 +23,12 @@
  *   --no-interaction  Disable interactive prompts
  */
 
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import type { Command, CommandContext } from "../core/index.js";
-import { flagBool, logger, render, select } from "../core/index.js";
+import { flagBool, logger, select } from "../core/index.js";
+import { ensureDirectories, computeDeps, buildPackageJson, generateProjectFiles } from "../core/index.js";
 import { parseJsonLoose } from "../core/index.js";
-import { templates } from "../templates/index.js";
 
 type WriteMode = "write" | "skip" | "merge-pkg" | "merge-tsconfig";
 
@@ -50,191 +40,119 @@ interface PlanEntry {
 export const initCommand: Command = {
 	name: "init",
 	aliases: ["i"],
-	summary: "Initialize nx.config.ts + app scaffold in the current directory",
+	summary: "Initialize NexusTS in an existing directory",
 	description:
-		"Non-destructive scaffold: adds nx.config.ts, app/*, and merges NexusTS into the existing package.json and tsconfig.json. Skips files that already exist (unless --force).",
+		"Scaffolds a new NexusTS project in the current or target directory. Non-destructive: skips existing files, merges package.json and tsconfig.json.",
 	examples: [
 		"nx init",
-		"nx init ./my-existing-app",
+		"nx init ./my-app",
 		"nx init --style nest --view inertia --orm drizzle --db bun-sqlite",
 		"nx init --force",
 	],
 	flags: [
 		{ name: "target", description: "Target directory (default: cwd)" },
-		{
-			name: "style",
-			description: "Routing style (nest|adonis|functional|mixed)",
-		},
+		{ name: "style", description: "Routing style (nest|adonis|functional)" },
 		{ name: "view", description: "View engine (rendu|edge|eta|inertia|none)" },
 		{ name: "orm", description: "ORM driver (drizzle|prisma|kysely|none)" },
-		{
-			name: "db",
-			description:
-				"Database driver (bun-sqlite|node-sqlite|libsql|postgres|mysql|none)",
-		},
+		{ name: "db", description: "Database driver (bun-sqlite|node-sqlite|libsql|postgres|mysql|none)" },
 		{
 			name: "frontend",
 			description: "Inertia frontend (react|vue|svelte|solid)",
 		},
 		{ name: "no-ssr", description: "Disable Inertia SSR" },
-		{ name: "force", description: "Overwrite files that already exist" },
-		{ name: "no-interaction", description: "Disable interactive prompts" },
+		{ name: "force", description: "Overwrite existing files" },
+		{ name: "no-interaction", description: "Skip interactive prompts" },
 	],
 	async run(ctx: CommandContext): Promise<number> {
 		const interactive = !flagBool(ctx.flags, "no-interaction", false);
 		const force = flagBool(ctx.flags, "force", false);
+
 		const target = resolve(
 			ctx.cwd,
 			(ctx.flags["target"] as string | undefined) ?? ".",
 		);
-
-		if (!existsSync(target)) {
-			logger.error(`Target directory does not exist: ${target}`);
-			logger.info(
-				`Run \`nx new <name>\` to create a fresh project, or \`mkdir -p ${target}\` first.`,
-			);
-			return 1;
-		}
-
-		// Interactive prompts (only if not provided via flags and interactive mode)
 		const routing =
 			(ctx.flags["style"] as string | undefined) ??
-			(await select("Routing style", ["nest", "adonis", "functional"], {
-				interactive,
-				default: "nest",
-			}));
+			(interactive
+				? await select("Routing style", ["nest", "adonis", "functional"], { default: "nest" })
+				: "nest");
 		const view =
 			(ctx.flags["view"] as string | undefined) ??
-			(await select("View engine", ["rendu", "edge", "eta", "inertia", "none"], {
-				interactive,
-				default: "rendu",
-			}));
+			(interactive
+				? await select("View engine", ["rendu", "edge", "eta", "inertia", "none"], {
+						default: "rendu",
+					})
+				: "rendu");
 		const orm =
 			(ctx.flags["orm"] as string | undefined) ??
-			(await select("ORM driver", ["drizzle", "prisma", "kysely", "none"], {
-				interactive,
-				default: "drizzle",
-			}));
+			(interactive
+				? await select("ORM driver", ["drizzle", "prisma", "kysely", "none"], { default: "drizzle" })
+				: "drizzle");
 		const db =
 			(ctx.flags["db"] as string | undefined) ??
-			(await select(
-				"Database driver",
-				["bun-sqlite", "node-sqlite", "libsql", "postgres", "mysql", "none"],
-				{
-					interactive,
-					default: "bun-sqlite",
-				},
-			));
+			(interactive
+				? await select("Database driver", ["bun-sqlite", "node-sqlite", "libsql", "postgres", "mysql", "none"], {
+						default: "bun-sqlite",
+					})
+				: "bun-sqlite");
 		const frontend =
 			(ctx.flags["frontend"] as string | undefined) ??
-			(await select("Inertia frontend", ["react", "vue", "svelte", "solid"], {
-				interactive,
-				default: "react",
-			}));
+			(interactive
+				? await select("Inertia frontend", ["react", "vue", "svelte", "solid"], {
+						default: "react",
+					})
+				: "react");
 		const ssr = !flagBool(ctx.flags, "no-ssr", false);
+		const name = target.split("/").pop() ?? "nexus-app";
+		const dbUrl = db === "bun-sqlite" || db === "node-sqlite" ? "app.db" : "";
 
-		// Build the plan: which files to write / skip / merge
 		const plan: PlanEntry[] = [
-			{ path: "nx.config.ts", mode: "write" },
 			{ path: "package.json", mode: "merge-pkg" },
 			{ path: "tsconfig.json", mode: "merge-tsconfig" },
-			{ path: "public/.gitkeep", mode: "write" },
-			...view === "inertia"
-				? [{ path: `resources/js/Pages/Welcome.${frontend === "vue" ? "vue" : "tsx"}`, mode: "write" as const },
-				   { path: `resources/js/app.${frontend === "vue" ? "ts" : "tsx"}`, mode: "write" as const }]
-				: view !== "none"
-					? [{ path: "resources/views/welcome.html", mode: "write" as const }]
-					: [],
 			{ path: ".env", mode: "skip" },
 			{ path: ".env.local", mode: "skip" },
 			{ path: ".gitignore", mode: "skip" },
-			...orm === "drizzle" ? [{ path: "drizzle.config.ts", mode: "write" as const }] : [],
+			{ path: "nx.config.ts", mode: "write" },
+			{ path: "public/.gitkeep", mode: "write" },
 			{ path: "app/main.ts", mode: "write" },
 			{ path: "app/app.module.ts", mode: "write" },
 			{ path: "app/controllers/home.controller.ts", mode: "write" },
 			{ path: "README.md", mode: "write" },
+			...view === "inertia"
+				? [
+						{ path: `resources/js/Pages/Welcome.${frontend === "vue" ? "vue" : "tsx"}`, mode: "write" as const },
+						{ path: `resources/js/app.${frontend === "vue" ? "ts" : "tsx"}`, mode: "write" as const },
+					]
+				: view !== "none"
+					? [{ path: "resources/views/welcome.html", mode: "write" as const }]
+					: [],
+			...(orm === "drizzle" ? [{ path: "drizzle.config.ts", mode: "write" as const }] : []),
 		];
 
 		const created: string[] = [];
 		const skipped: string[] = [];
 		const merged: string[] = [];
 
-		// Ensure directories exist
-		mkdirSync(resolve(target, "app/controllers"), { recursive: true });
-		mkdirSync(resolve(target, "public"), { recursive: true });
-		if (view === "inertia") {
-			mkdirSync(resolve(target, "resources/js/Pages"), { recursive: true });
-		} else if (view !== "none") {
-			mkdirSync(resolve(target, "resources/views"), { recursive: true });
-		}
+		ensureDirectories(target, view);
 
 		for (const entry of plan) {
 			const abs = resolve(target, entry.path);
 			const exists = existsSync(abs);
 
 			if (entry.mode === "merge-pkg") {
-				// Build deps based on context
-				const coreDeps: Record<string, string> = {
-					"@nexusts/core": "*",
-					"reflect-metadata": "^0.2.2",
-					hono: "^4.6.0",
-					zod: "^3.23.8",
-				};
-				const devDeps: Record<string, string> = {};
-				if (orm === "drizzle") {
-					coreDeps["@nexusts/drizzle"] = "*";
-					coreDeps["drizzle-orm"] = "^0.45.0";
-					// Add database driver for non-bun-sqlite dialects
-					if (db === "postgres") coreDeps["pg"] = "^8.13.0";
-					if (db === "mysql") coreDeps["mysql2"] = "^3.11.0";
-					if (db === "sqlite" || db === "node-sqlite" || db === "bun-sqlite") coreDeps["better-sqlite3"] = "^12.0.0";
-					devDeps["drizzle-kit"] = "^0.31.0";
-				}
-				if (view !== "none") {
-					coreDeps["@nexusts/static"] = "*";
-				}
-				if (view === "inertia") {
-					if (frontend === "vue") {
-						coreDeps["@inertiajs/vue"] = "^2.0.0";
-						coreDeps["vue"] = "^3.5.0";
-					} else {
-						coreDeps["@inertiajs/react"] = "^2.0.0";
-						coreDeps["react"] = "^19.0.0";
-						coreDeps["react-dom"] = "^19.0.0";
-					}
-				}
-
+				const { deps, devDeps } = computeDeps(view, orm, db, frontend);
 				if (exists) {
-					mergePackageJson(abs, coreDeps, devDeps);
+					mergePackageJson(abs, deps, devDeps);
 					merged.push(entry.path);
 				} else {
-					const pkgJson: Record<string, any> = {
-						name: target.split("/").pop() ?? "nexus-app",
-						version: "0.1.0",
-						type: "module",
-						private: true,
-						scripts: {
-							dev: "bun --hot app/main.ts",
-							build: "bun run build.ts",
-							start: "bun app/main.ts",
-							test: "vitest",
-							nx: "nx",
-						},
-						dependencies: coreDeps,
-					};
-					if (orm === "drizzle") {
-						pkgJson.devDependencies = {
-							"drizzle-kit": "^0.31.0",
-						};
-					}
-					writeFileSync(abs, JSON.stringify(pkgJson, null, 2));
+					const pkgJson = buildPackageJson(name, deps, devDeps, view, frontend);
+					writeFileSync(abs, JSON.stringify(pkgJson, null, 2) + "\n");
 					created.push(entry.path);
 				}
 				continue;
 			}
 
 			if (entry.mode === "merge-tsconfig") {
-				// Always merge: never clobber an existing tsconfig.json.
 				if (exists) {
 					mergeTsconfig(abs, {
 						experimentalDecorators: true,
@@ -254,305 +172,87 @@ export const initCommand: Command = {
 				continue;
 			}
 
-			const content = renderContent(entry.path, {
-				routing,
-				view,
-				viewPaths: view === "none" ? "" : "resources/views",
-				orm,
-				dbDriver: db,
-				dbUrl: db === "bun-sqlite" || db === "node-sqlite" ? "app.db" : "",
-				inertiaFrontend: frontend,
-				inertiaSSR: ssr,
-				inertiaVersion: "1.0.0",
-				targetName: target.split("/").pop() ?? "nexus-app",
-			});
-			writeFileSync(abs, content);
 			created.push(entry.path);
+		}
+
+		// Generate remaining project files via scaffold
+		const scaffoldOpts = { target, name, routing, view, orm, db, frontend, ssr, dbUrl };
+		const scaffoldFiles = generateProjectFiles(target, scaffoldOpts);
+		for (const f of scaffoldFiles) {
+			if (!plan.some((p) => p.path === f)) {
+				created.push(f);
+			}
 		}
 
 		// Report
 		logger.success(`initialized NexusTS in ${target}`);
 		logger.blank();
-		if (created.length) {
-			logger.heading("Created");
-			for (const f of created) logger.info(`  + ${f}`);
-		}
-		if (merged.length) {
-			logger.heading("Merged into existing files");
-			for (const f of merged) logger.info(`  ~ ${f}`);
-		}
-		if (skipped.length) {
-			logger.heading("Skipped (already exist; use --force to overwrite)");
-			for (const f of skipped) logger.info(`  - ${f}`);
-		}
-		logger.blank();
-		logger.heading("Next steps");
-		logger.info(`  cd ${target === ctx.cwd ? "." : target}`);
-		logger.info(`  bun install`);
-		logger.info(`  bun run dev`);
+		if (created.length) logger.heading("Created");
+		for (const f of created) logger.info(`  + ${f}`);
+		if (merged.length) logger.heading("Merged into existing files");
+		for (const f of merged) logger.info(`  ~ ${f}`);
+		if (skipped.length) logger.heading("Skipped (already exist; use --force to overwrite)");
+		for (const f of skipped) logger.info(`  - ${f}`);
 		logger.blank();
 
 		return 0;
 	},
 };
 
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
+function mergePackageJson(
+	path: string,
+	additions: Record<string, string>,
+	devAdditions: Record<string, string> = {},
+): void {
+	const raw = readFileSync(path, "utf8");
+	const pkg = parseJsonLoose<Record<string, unknown>>(raw);
+	let changed = false;
 
-interface RenderCtx {
-	routing: string;
-	view: string;
-	viewPaths: string;
-	orm: string;
-	dbDriver: string;
-	dbUrl: string;
-	inertiaFrontend: string;
-	inertiaSSR: boolean;
-	inertiaVersion: string;
-	targetName: string;
-	// Index signature so RenderCtx is assignable to RenderObject.
-	[key: string]: string | number | boolean | undefined | null;
-}
+	if (!pkg["type"]) { pkg["type"] = "module"; changed = true; }
+	if (!pkg["private"]) { pkg["private"] = true; changed = true; }
 
-function renderContent(path: string, ctx: RenderCtx): string {
-	switch (path) {
-		case "nx.config.ts":
-			return render(templates.project["nx.config.ts"], ctx);
-		case "public/.gitkeep":
-			return "";
-		case "resources/views/welcome.html":
-			return `<h1>Welcome to ${ctx.targetName}</h1>\n<p>This is a sample Rendu template.</p>\n<p>Founded <?= year ?>.</p>\n`;
-		case "resources/js/Pages/Welcome.tsx":
-			return `import { useState } from "react";
-
-export default function Welcome({ name }: { name: string }) {
-  const [count, setCount] = useState(0);
-  return (
-    <main style={{ fontFamily: "system-ui, sans-serif", maxWidth: 560, margin: "2em auto" }}>
-      <h1>Hello, {name}!</h1>
-      <p>Counter: <strong>{count}</strong></p>
-      <button onClick={() => setCount((c) => c + 1)} style={{ padding: "0.5em 1em" }}>
-        +1
-      </button>
-    </main>
-  );
-}
-`;
-		case "resources/js/Pages/Welcome.vue":
-			return `<template>
-  <main style="font-family: system-ui, sans-serif; max-width: 560px; margin: 2em auto">
-    <h1>Hello, {{ name }}!</h1>
-    <p>Counter: <strong>{{ count }}</strong></p>
-    <button @click="count++" style="padding: 0.5em 1em">+1</button>
-  </main>
-</template>
-
-<script setup lang="ts">
-defineProps<{ name: string }>();
-import { ref } from "vue";
-const count = ref(0);
-</script>
-`;
-		case "resources/js/app.tsx":
-			return `import { createInertiaApp } from "@inertiajs/react";
-import { createRoot } from "react-dom/client";
-import Welcome from "./Pages/Welcome.js";
-
-createInertiaApp({
-  resolve: (name: string) => {
-    if (name === "Welcome") return Welcome;
-    throw new Error("Unknown page: " + name);
-  },
-  setup({ el, App, props }: any) {
-    createRoot(el).render(<App {...props} />);
-  },
-});
-`;
-		case "resources/js/app.ts":
-			return `import { createInertiaApp } from "@inertiajs/vue";
-import { createApp, h } from "vue";
-import Welcome from "./Pages/Welcome.vue";
-
-createInertiaApp({
-  resolve: (name: string) => {
-    if (name === "Welcome") return Welcome;
-    throw new Error("Unknown page: " + name);
-  },
-  setup({ el, App, props }: any) {
-    createApp({ render: () => h(App, props) }).mount(el);
-  },
-});
-`;
-		case "resources/views/welcome.html":
-			return `<h1>Welcome to ${ctx.targetName}</h1>\n<p>This is a sample Rendu template.</p>\n<p>Founded <?= year ?>.</p>\n`;
-		case ".gitignore":
-			return `# NexusTS
-node_modules/
-app.db
-*.db
-.env.local
-dist/
-`;
-		case ".env":
-			return `# ──────────────────────────────────────────────────────
-# NexusTS — Environment Variables (committed to git)
-#
-# Shared defaults for all environments. Override locally via
-# .env.local (gitignored) or by environment via .env.{NODE_ENV}
-# (e.g. .env.production, .env.development).
-#
-# Uncomment the database config for your driver:
-# ──────────────────────────────────────────────────────
-
-# ── App ──
-NODE_ENV=development
-PORT=3000
-
-# ── Session secret (REQUIRED) ──
-# Generate with: openssl rand -base64 32
-SESSION_SECRET=change-me-in-production
-
-# ── Database: SQLite (default, zero config) ──
-DATABASE_URL=app.db
-
-# ── Database: PostgreSQL ──
-# DATABASE_URL=postgres://user:password@localhost:5432/myapp
-
-# ── Database: MySQL ──
-# DATABASE_URL=mysql://user:password@localhost:3306/myapp
-
-# ── Better Auth (if using nexusjs/auth) ──
-# BETTER_AUTH_SECRET=
-# BETTER_AUTH_URL=http://localhost:3000
-`;
-		case ".env.local":
-			return `# ──────────────────────────────────────────────────────
-# NexusTS — Local Overrides (DO NOT COMMIT to git)
-#
-# This file is gitignored. Use it for secrets and local
-# configuration that should never be checked in.
-# ──────────────────────────────────────────────────────
-
-# Override any value from .env here:
-# DATABASE_URL=postgres://user:password@localhost:5432/myapp
-# SESSION_SECRET=my-local-secret
-`;
-		case "drizzle.config.ts": {
-			const dialect = ctx.dbDriver === "bun-sqlite" || ctx.dbDriver === "node-sqlite" || ctx.dbDriver === "libsql"
-				? "sqlite"
-				: ctx.dbDriver === "postgres"
-					? "postgresql"
-					: "sqlite";
-			return render(templates.project["drizzle.config.ts"], {
-				dialect,
-				dbUrl: ctx.dbUrl || "app.db",
-			});
-		}
-		case "app/main.ts": {
-			const hasView = ctx.view !== "none";
-			const staticMw = hasView
-				? `import { StaticModule } from '@nexusts/static';\n`
-					+ `const staticMiddleware = StaticModule.mount({ root: './public', prefix: '/static' });\n`
-				: '';
-			const staticOpt = hasView ? '\n  middleware: [staticMiddleware],' : '';
-			const isInertia = ctx.view === "inertia";
-			const inertiaAdapter = ctx.inertiaFrontend === "vue" ? "Vue" : "React";
-			const inertiaMw = isInertia
-				? `import { Inertia, create${inertiaAdapter}Adapter } from '@nexusts/view';
-`
-				: '';
-			const inertiaSetup = isInertia
-				? `const inertia = app.container.resolve(Inertia.TOKEN) as Inertia;
-inertia.setSsrAdapter(create${inertiaAdapter}Adapter());
-`
-				: '';
-			return `import 'reflect-metadata';
-import { Application } from '@nexusts/core';
-${staticMw}${inertiaMw}import { AppModule } from './app.module.js';
-
-const app = new Application(AppModule, {
-  logging: true,
-  port: Number(process.env['PORT'] ?? 3000),${staticOpt}
-});
-
-${inertiaSetup}await app.listen();
-console.log('[nexus] Listening on http://localhost:' + (process.env['PORT'] ?? 3000));
-`;
-		}
-		case "app/app.module.ts": {
-			const hasOrm = ctx.orm === "drizzle";
-			const ormImport = hasOrm
-				? `import { DrizzleModule } from '@nexusts/drizzle';\n`
-				: '';
-			const forRootDialect = ctx.dbDriver === 'bun-sqlite' ? 'bun-sqlite' : 'sqlite';
-			const forRootFile = ctx.dbUrl || 'app.db';
-			const ormBlock = hasOrm
-				? '    DrizzleModule.forRoot({\n      dialect: \'' + forRootDialect + '\',\n      connection: { filename: \'' + forRootFile + '\' },\n      logging: true,\n    })'
-				: '';
-			return `${ormImport}import { Module } from '@nexusts/core';
-import { HomeController } from './controllers/home.controller.js';
-
-@Module({
-  imports: [${hasOrm ? `\n${ormBlock},\n` : ''}  ],
-  controllers: [HomeController],
-})
-export class AppModule {}
-`;
-		}
-		case "app/controllers/home.controller.ts": {
-			const isInertia = ctx.view === "inertia";
-			if (isInertia) {
-				return `import { Controller, Get, Inject } from '@nexusts/core';
-import { Inertia } from '@nexusts/view';
-
-@Controller('/')
-export class HomeController {
-  constructor(@Inject(Inertia.TOKEN) private inertia: Inertia) {}
-
-  @Get('/')
-  index() {
-    return this.inertia.render('Welcome', { name: 'NexusTS' });
-  }
-}
-`;
-			}
-			const hasView = ctx.view !== "none";
-			const body = hasView
-				? `{\n      view: 'welcome.html',\n      data: { year: new Date().getFullYear() },\n    }`
-				: `{ status: 200, body: { message: 'Hello from NexusTS!' } }`;
-			return `import { Controller, Get } from '@nexusts/core';
-
-@Controller('/')
-export class HomeController {
-  @Get('/')
-  index() {
-    return ${body};
-  }
-}
-`;
-		}
-		case "README.md":
-			return `# ${ctx.targetName}
-
-A NexusTS project.
-
-## Run
-
-\`\`\`bash
-bun install
-bun run dev
-\`\`\`
-
-## Scaffolding
-
-\`\`\`bash
-bunx nx make:crud Post
-\`\`\`
-`;
-		default:
-			throw new Error(`No render template for: ${path}`);
+	const SCRIPTS: Record<string, string> = {
+		dev: "bun --hot app/main.ts", build: "bun run build.ts",
+		start: "bun app/main.ts", test: "vitest", nx: "nx",
+	};
+	const existingScripts = (pkg["scripts"] as Record<string, string> | undefined) ?? {};
+	for (const [k, v] of Object.entries(SCRIPTS)) {
+		if (!(k in existingScripts)) { existingScripts[k] = v; changed = true; }
 	}
+	if (Object.keys(existingScripts).length > 0) pkg["scripts"] = existingScripts;
+
+	const deps = (pkg["dependencies"] as Record<string, string> | undefined) ?? {};
+	for (const [k, v] of Object.entries(additions)) {
+		if (!(k in deps)) { deps[k] = v; changed = true; }
+	}
+	pkg["dependencies"] = deps;
+
+	if (Object.keys(devAdditions).length > 0) {
+		const devDeps = (pkg["devDependencies"] as Record<string, string> | undefined) ?? {};
+		for (const [k, v] of Object.entries(devAdditions)) {
+			if (!(k in devDeps)) { devDeps[k] = v; changed = true; }
+		}
+		pkg["devDependencies"] = devDeps;
+	}
+
+	if (changed) writeFileSync(path, JSON.stringify(pkg, null, 2) + "\n");
+}
+
+function mergeTsconfig(path: string, additions: Record<string, boolean | string>): void {
+	const raw = readFileSync(path, "utf8");
+	const cfg = parseJsonLoose<{ compilerOptions?: Record<string, unknown>; include?: string[] }>(raw);
+	const co = (cfg.compilerOptions ?? {}) as Record<string, unknown>;
+	let changed = false;
+	for (const [k, v] of Object.entries(additions)) {
+		if (!(k in co)) { co[k] = v; changed = true; }
+	}
+	cfg.compilerOptions = co as Record<string, unknown>;
+	const include = cfg.include ?? [];
+	for (const g of ["app/**/*.ts", "nx.config.ts"]) {
+		if (!include.includes(g)) { include.push(g); changed = true; }
+	}
+	cfg.include = include;
+	if (changed) writeFileSync(path, JSON.stringify(cfg, null, 2) + "\n");
 }
 
 function defaultTsconfig(): string {
@@ -566,120 +266,11 @@ function defaultTsconfig(): string {
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "types": ["bun-types"]
+    "types": ["@types/bun"]
   },
   "include": ["app/**/*.ts", "nx.config.ts"]
 }
 `;
-}
-
-/**
- * Merge NexusTS fields into an existing package.json. Preserves all
- * existing fields; only adds what's missing.
- */
-function mergePackageJson(
-	path: string,
-	additions: Record<string, string>,
-	devAdditions: Record<string, string> = {},
-): void {
-	const raw = readFileSync(path, "utf8");
-	const pkg = parseJsonLoose<Record<string, unknown>>(raw);
-	let changed = false;
-
-	// Ensure type: "module"
-	if (!pkg["type"]) {
-		pkg["type"] = "module";
-		changed = true;
-	}
-
-	// Ensure private: true
-	if (!pkg["private"]) {
-		pkg["private"] = true;
-		changed = true;
-	}
-
-	// Merge scripts (only add missing ones, never overwrite)
-	const SCRIPTS: Record<string, string> = {
-		dev: "bun --hot app/main.ts",
-		build: "bun run build.ts",
-		start: "bun app/main.ts",
-		test: "vitest",
-		nx: "nx",
-	};
-	const existingScripts = (pkg["scripts"] as Record<string, string> | undefined) ?? {};
-	for (const [k, v] of Object.entries(SCRIPTS)) {
-		if (!(k in existingScripts)) {
-			existingScripts[k] = v;
-			changed = true;
-		}
-	}
-	if (Object.keys(existingScripts).length > 0) {
-		pkg["scripts"] = existingScripts;
-	}
-
-	// Merge dependencies
-	const deps = (pkg["dependencies"] as Record<string, string> | undefined) ?? {};
-	for (const [k, v] of Object.entries(additions)) {
-		if (!(k in deps)) {
-			deps[k] = v;
-			changed = true;
-		}
-	}
-	pkg["dependencies"] = deps;
-
-	// Merge devDependencies
-	if (Object.keys(devAdditions).length > 0) {
-		const devDeps = (pkg["devDependencies"] as Record<string, string> | undefined) ?? {};
-		for (const [k, v] of Object.entries(devAdditions)) {
-			if (!(k in devDeps)) {
-				devDeps[k] = v;
-				changed = true;
-			}
-		}
-		pkg["devDependencies"] = devDeps;
-	}
-
-	if (changed) {
-		writeFileSync(path, JSON.stringify(pkg, null, 2) + "\n");
-	}
-}
-
-/**
- * Merge NexusTS compiler options into an existing tsconfig.json.
- * Preserves all existing fields; only adds what's missing.
- */
-function mergeTsconfig(
-	path: string,
-	additions: Record<string, boolean | string>,
-): void {
-	const raw = readFileSync(path, "utf8");
-	const cfg = parseJsonLoose<{
-		compilerOptions?: Record<string, unknown>;
-		include?: string[];
-	}>(raw);
-	const co = (cfg.compilerOptions ?? {}) as Record<string, unknown>;
-	let changed = false;
-	for (const [k, v] of Object.entries(additions)) {
-		if (!(k in co)) {
-			co[k] = v;
-			changed = true;
-		}
-	}
-	// Also ensure src/**/*.ts and nx.config.ts are in `include`
-	const inc = (cfg.include ?? []) as string[];
-	if (!inc.includes("app/**/*.ts")) {
-		inc.push("app/**/*.ts");
-		changed = true;
-	}
-	if (!inc.includes("nx.config.ts")) {
-		inc.push("nx.config.ts");
-		changed = true;
-	}
-	if (changed) {
-		cfg.compilerOptions = co;
-		cfg.include = inc;
-		writeFileSync(path, JSON.stringify(cfg, null, 2) + "\n");
-	}
 }
 
 export default initCommand;

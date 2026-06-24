@@ -76,6 +76,13 @@ export interface InertiaConfig {
 	 * like the current user.
 	 */
 	sharedProps?: InertiaSharedProps;
+
+	/**
+	 * Client-side JavaScript bundles to load via `<script>` tags.
+	 * These are included in the HTML shell for first-page loads.
+	 * Example: `['/static/app.js']`
+	 */
+	scripts?: string[];
 }
 
 export type InertiaSharedProps =
@@ -144,4 +151,7 @@ export interface InertiaAdapter {
 	getSharedFor(c: Context): Promise<Record<string, any>>;
 	/** Configured SSR adapter, if any. */
 	ssr(): SsrAdapter | null;
+
+	/** Client-side script URLs to include in the HTML shell. */
+	scripts(): string[];
 }

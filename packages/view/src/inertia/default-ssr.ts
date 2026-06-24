@@ -48,6 +48,11 @@ export async function renderDefaultRoot(
 		}
 	}
 
+ const scripts = adapter.scripts();
+	const scriptTags = scripts
+		.map((s) => `<script type="module" src="${escapeAttr(s)}"></script>`)
+		.join("\n");
+
 	const html = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -58,6 +63,7 @@ ${headTags.join("\n")}
 </head>
 <body>
 <div id="app" data-page="${escapeAttr(JSON.stringify(page))}">${bodyHtml}</div>
+${scriptTags}
 </body>
 </html>`;
 

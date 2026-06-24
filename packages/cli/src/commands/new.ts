@@ -1,19 +1,19 @@
 /**
- * `nx new <name>` — scaffold a new project.
+ * `nx new <name>` — create a new NexusTS project in a fresh directory.
  *
- * Creates a fresh directory with `nx.config.ts`, `package.json`,
- * `tsconfig.json`, `app/main.ts`, and a README. Useful as a
- * starting point for kicking off a new app without `bun create`.
+ * Unlike `nx init` (which merges into existing files), `nx new` requires
+ * the target directory to not exist. It creates a complete project from
+ * scratch.
  *
- * This is intentionally minimal — it does not run `bun install`. After
- * generation, the user runs `bun install` themselves.
+ *   nx new my-app
+ *   nx new my-app --style nest --view inertia --orm drizzle --db bun-sqlite
  */
 
 import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import type { Command, CommandContext } from "../core/index.js";
-import { flagBool, logger, render, select } from "../core/index.js";
-import { templates } from "../templates/index.js";
+import { flagBool, logger, select } from "../core/index.js";
+import { ensureDirectories, computeDeps, buildPackageJson, generateProjectFiles } from "../core/index.js";
 
 export const newCommand: Command = {
 	name: "new",
@@ -23,31 +23,20 @@ export const newCommand: Command = {
 		"Generates a new project directory with nx.config.ts, tsconfig, package.json, and a starter app/main.ts.",
 	examples: [
 		"nx new my-app",
-		"nx new my-app --style nest --view rendu --orm drizzle --db bun-sqlite",
+		"nx new my-app --view inertia --frontend vue",
 	],
 	flags: [
-		{
-			name: "style",
-			description: "Routing style (nest|adonis|functional|mixed)",
-		},
+		{ name: "style", description: "Routing style (nest|adonis|functional)" },
 		{ name: "view", description: "View engine (rendu|edge|eta|inertia|none)" },
 		{ name: "orm", description: "ORM driver (drizzle|prisma|kysely|none)" },
-		{
-			name: "db",
-			description:
-				"Database driver (bun-sqlite|node-sqlite|libsql|postgres|mysql|none)",
-		},
-		{
-			name: "frontend",
-			description: "Inertia frontend (react|vue|svelte|solid)",
-		},
-		{ name: "no-ssr", description: "Disable Inertia SSR" },
-		{ name: "no-interaction", description: "Disable interactive prompts" },
+		{ name: "db", description: "Database driver" },
+		{ name: "frontend", description: "Inertia frontend (react|vue|svelte|solid)" },
+		{ name: "no-ssr", description: "Disable SSR" },
 	],
 	async run(ctx: CommandContext): Promise<number> {
 		const name = ctx.positional[0];
 		if (!name) {
-			logger.error("Usage: nx new <project-name>");
+			logger.error("Usage: nx new <name>");
 			return 1;
 		}
 
@@ -55,155 +44,45 @@ export const newCommand: Command = {
 		const target = resolve(ctx.cwd, name);
 
 		if (existsSync(target)) {
-			logger.error(`Directory already exists: ${target}`);
+			logger.error(`Directory "${name}" already exists.`);
 			return 1;
 		}
 
 		const routing =
 			(ctx.flags["style"] as string | undefined) ??
-			(await select("Routing style", ["nest", "adonis", "functional"], {
-				interactive,
-				default: "nest",
-			}));
-
+			(interactive
+				? await select("Routing style", ["nest", "adonis", "functional"], { default: "nest" })
+				: "nest");
 		const view =
 			(ctx.flags["view"] as string | undefined) ??
-			(await select("View engine", ["rendu", "edge", "eta", "inertia", "none"], {
-				interactive,
-				default: "rendu",
-			}));
-
+			(interactive
+				? await select("View engine", ["rendu", "edge", "eta", "inertia", "none"], { default: "rendu" })
+				: "rendu");
 		const orm =
 			(ctx.flags["orm"] as string | undefined) ??
-			(await select("ORM driver", ["drizzle", "prisma", "kysely", "none"], {
-				interactive,
-				default: "drizzle",
-			}));
-
+			(interactive
+				? await select("ORM driver", ["drizzle", "prisma", "kysely", "none"], { default: "drizzle" })
+				: "drizzle");
 		const db =
 			(ctx.flags["db"] as string | undefined) ??
-			(await select(
-				"Database driver",
-				["bun-sqlite", "node-sqlite", "libsql", "postgres", "mysql", "none"],
-				{
-					interactive,
-					default: "bun-sqlite",
-				},
-			));
-
+			(interactive
+				? await select("Database driver", ["bun-sqlite", "node-sqlite", "libsql", "postgres", "mysql", "none"], { default: "bun-sqlite" })
+				: "bun-sqlite");
 		const frontend =
 			(ctx.flags["frontend"] as string | undefined) ??
-			(await select("Inertia frontend", ["react", "vue", "svelte", "solid"], {
-				interactive,
-				default: "react",
-			}));
-
+			(interactive
+				? await select("Inertia frontend", ["react", "vue", "svelte", "solid"], { default: "react" })
+				: "react");
 		const ssr = !flagBool(ctx.flags, "no-ssr", false);
 
-		mkdirSync(resolve(target, "app"), { recursive: true });
-		if (view === "inertia") {
-			mkdirSync(resolve(target, "resources/js/Pages"), { recursive: true });
-		} else if (view !== "none") {
-			mkdirSync(resolve(target, "resources/views"), { recursive: true });
-		}
-		mkdirSync(resolve(target, "public"), { recursive: true });
+		mkdirSync(target, { recursive: true });
 
-		writeFileSync(resolve(target, "public/.gitkeep"), "");
+		const dbUrl = db === "bun-sqlite" || db === "node-sqlite" ? "app.db" : "";
 
-		if (view === "inertia") {
-			const isVue = frontend === "vue";
-			if (isVue) {
-				writeFileSync(resolve(target, "resources/js/Pages/Welcome.vue"),
-					`<template>\n  <main style="font-family: system-ui, sans-serif; max-width: 560px; margin: 2em auto">\n    <h1>Hello, {{ name }}!</h1>\n  </main>\n</template>\n\n<script setup lang="ts">\ndefineProps<{ name: string }>();\n</script>\n`);
-				writeFileSync(resolve(target, "resources/js/app.ts"),
-					`import { createInertiaApp } from "@inertiajs/vue";\nimport { createApp, h } from "vue";\nimport Welcome from "./Pages/Welcome.vue";\n\ncreateInertiaApp({\n  resolve: (name: string) => {\n    if (name === "Welcome") return Welcome;\n    throw new Error("Unknown page: " + name);\n  },\n  setup({ el, App, props }: any) {\n    createApp({ render: () => h(App, props) }).mount(el);\n  },\n});\n`);
-			} else {
-				writeFileSync(resolve(target, "resources/js/Pages/Welcome.tsx"),
-					`import { useState } from "react";\n\nexport default function Welcome({ name }: { name: string }) {\n  const [count, setCount] = useState(0);\n  return (\n    <main style={{ fontFamily: "system-ui, sans-serif", maxWidth: 560, margin: "2em auto" }}>\n      <h1>Hello, {name}!</h1>\n      <p>Counter: <strong>{count}</strong></p>\n      <button onClick={() => setCount((c) => c + 1)} style={{ padding: "0.5em 1em" }}>\n        +1\n      </button>\n    </main>\n  );\n}\n`);
-				writeFileSync(resolve(target, "resources/js/app.tsx"),
-					`import { createInertiaApp } from "@inertiajs/react";\nimport { createRoot } from "react-dom/client";\nimport Welcome from "./Pages/Welcome.js";\n\ncreateInertiaApp({\n  resolve: (name: string) => {\n    if (name === "Welcome") return Welcome;\n    throw new Error("Unknown page: " + name);\n  },\n  setup({ el, App, props }: any) {\n    createRoot(el).render(<App {...props} />);\n  },\n});\n`);
-			}
-		} else if (view !== "none") {
-			writeFileSync(
-				resolve(target, "resources/views/welcome.html"),
-				`<h1>Welcome to ${name}</h1>\n<p>This is a sample Rendu template.</p>\n<p>Founded <?= year ?>.</p>\n`,
-			);
-		}
+		// Create directories
+		ensureDirectories(target, view);
 
-		writeFileSync(resolve(target, ".env"), generateEnvFile());
-		writeFileSync(resolve(target, ".env.local"), generateEnvLocalFile());
-		writeFileSync(resolve(target, ".gitignore"), generateGitIgnore());
-
-		const code = render(templates.project["nx.config.ts"], {
-			routing,
-			view,
-			viewPaths: view === "none" ? "" : "resources/views",
-			orm,
-			dbDriver: db,
-			dbUrl: db === "bun-sqlite" || db === "node-sqlite" ? "app.db" : "",
-			inertiaFrontend: frontend,
-			inertiaSSR: ssr,
-			inertiaVersion: "1.0.0",
-		});
-		writeFileSync(resolve(target, "nx.config.ts"), code);
-
-		if (orm === "drizzle") {
-			const dialect = db === "bun-sqlite" || db === "node-sqlite" || db === "libsql"
-				? "sqlite"
-				: db === "postgres"
-					? "postgresql"
-					: "sqlite";
-			const drizzleConfig = render(templates.project["drizzle.config.ts"], {
-				dialect,
-				dbUrl: db === "bun-sqlite" || db === "node-sqlite" ? "app.db" : "",
-			});
-			writeFileSync(resolve(target, "drizzle.config.ts"), drizzleConfig);
-		}
-
-		const deps: Record<string, string> = {
-			"@nexusts/core": "*",
-			"reflect-metadata": "^0.2.2",
-			hono: "^4.6.0",
-			zod: "^3.23.8",
-		};
-		if (orm === "drizzle") {
-			deps["@nexusts/drizzle"] = "*";
-			deps["drizzle-orm"] = "^0.45.0";
-			if (db === "postgres") deps["pg"] = "^8.13.0";
-			if (db === "mysql") deps["mysql2"] = "^3.11.0";
-			if (db === "sqlite" || db === "node-sqlite" || db === "bun-sqlite") deps["better-sqlite3"] = "^12.0.0";
-		}
-		if (view !== "none") {
-			deps["@nexusts/static"] = "*";
-		}
-		if (view === "inertia") {
-			if (frontend === "vue") {
-				deps["@inertiajs/vue"] = "^2.0.0";
-				deps["vue"] = "^3.5.0";
-			} else {
-				deps["@inertiajs/react"] = "^2.0.0";
-				deps["react"] = "^19.0.0";
-				deps["react-dom"] = "^19.0.0";
-			}
-		}
-		const pkgJson: Record<string, any> = {
-			name,
-			version: "0.1.0",
-			type: "module",
-			scripts: {
-				dev: "bun --hot app/main.ts",
-				build: "bun run build.ts",
-				start: "bun app/main.ts",
-				test: "vitest",
-				nx: "nx",
-			},
-			dependencies: deps,
-		};
-		if (orm === "drizzle") {
-			pkgJson.devDependencies = { "drizzle-kit": "^0.31.0" };
-		}
-		writeFileSync(resolve(target, "package.json"), JSON.stringify(pkgJson, null, 2));
-
+		// Write tsconfig.json
 		writeFileSync(
 			resolve(target, "tsconfig.json"),
 			`{
@@ -216,115 +95,26 @@ export const newCommand: Command = {
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "types": ["bun-types"]
+    "types": ["@types/bun"]
   },
   "include": ["app/**/*.ts", "nx.config.ts"]
 }
 `,
 		);
 
-		const hasView = view !== "none";
-		const staticImport = hasView
-			? `import { StaticModule } from '@nexusts/static';\nconst staticMiddleware = StaticModule.mount({ root: './public', prefix: '/static' });\n`
-			: '';
-		const staticOption = hasView ? '\n  middleware: [staticMiddleware],' : '';
-		const isInertia = view === "inertia";
-		const inertiaAdapter = frontend === "vue" ? "Vue" : "React";
-		const inertiaImport = isInertia
-			? `import { Inertia, create${inertiaAdapter}Adapter } from '@nexusts/view';
-`
-			: '';
-		const inertiaSetup = isInertia
-			? `const inertia = app.container.resolve(Inertia.TOKEN) as Inertia;
-inertia.setSsrAdapter(create${inertiaAdapter}Adapter());
-`
-			: '';
-		writeFileSync(
-			resolve(target, "app/main.ts"),
-			`import 'reflect-metadata';
-import { Application } from '@nexusts/core';
-${staticImport}${inertiaImport}import { AppModule } from './app.module.js';
+		// Write package.json
+		const { deps, devDeps } = computeDeps(view, orm, db, frontend);
+		const pkgJson = buildPackageJson(name, deps, devDeps, view, frontend);
+		writeFileSync(resolve(target, "package.json"), JSON.stringify(pkgJson, null, 2) + "\n");
 
-const app = new Application(AppModule, {
-  logging: true,
-  port: Number(process.env['PORT'] ?? 3000),${staticOption}
-});
+		// Generate all project files
+		const opts = { target, name, routing, view, orm, db, frontend, ssr, dbUrl };
+		const files = generateProjectFiles(target, opts);
 
-${inertiaSetup}await app.listen();
-console.log('[nexus] Listening on http://localhost:' + (process.env['PORT'] ?? 3000));
-`,
-		);
-
-		const ormImport = orm === "drizzle"
-			? `import { DrizzleModule } from '@nexusts/drizzle';\n`
-			: '';
-		const forRootDialect = db === 'bun-sqlite' ? 'bun-sqlite' : 'sqlite';
-		const ormBlock = orm === "drizzle"
-			? `    DrizzleModule.forRoot({\n      dialect: '${forRootDialect}',\n      connection: { filename: 'app.db' },\n      logging: true,\n    })`
-			: '';
-		writeFileSync(
-			resolve(target, "app/app.module.ts"),
-			`${ormImport}import { Module } from '@nexusts/core';
-import { HomeController } from './controllers/home.controller.js';
-
-@Module({
-  imports: [${orm === "drizzle" ? `\n${ormBlock},\n` : ''}  ],
-  controllers: [HomeController],
-})
-export class AppModule {}
-`,
-		);
-
-		mkdirSync(resolve(target, "app/controllers"), { recursive: true });
-		const homeViewReturn = view === "inertia"
-			? `this.inertia.render('Welcome', { name: 'NexusTS' })`
-			: view !== "none"
-				? `{\n      view: 'welcome.html',\n      data: { year: new Date().getFullYear() },\n    }`
-				: `{ status: 200, body: { message: 'Hello from NexusTS!' } }`;
-		const homeImports = view === "inertia"
-			? `import { Controller, Get, Inject } from '@nexusts/core';
-import { Inertia } from '@nexusts/view';`
-			: `import { Controller, Get } from '@nexusts/core';`;
-		const homeCtor = view === "inertia"
-			? `
-  constructor(@Inject(Inertia.TOKEN) private inertia: Inertia) {}`
-			: '';
-		writeFileSync(
-			resolve(target, "app/controllers/home.controller.ts"),
-			`${homeImports}
-
-@Controller('/')
-export class HomeController {${homeCtor}
-  @Get('/')
-  index() {
-    return ${homeViewReturn};
-  }
-}
-`,
-		);
-
-		writeFileSync(
-			resolve(target, "README.md"),
-			`# ${name}
-
-A new NexusTS project.
-
-## Run
-
-\`\`\`bash
-bun install
-bun run dev
-\`\`\`
-
-## Scaffolding
-
-\`\`\`bash
-bunx nx make:crud Post
-\`\`\`
-`,
-		);
-
-		logger.success(`created ${target}`);
+		logger.success(`created ${name}`);
+		for (const f of files) logger.info(`  + ${f}`);
+		logger.info(`  + tsconfig.json`);
+		logger.info(`  + package.json`);
 		logger.blank();
 		logger.heading("Next steps");
 		logger.info(`  cd ${name}`);
@@ -335,60 +125,5 @@ bunx nx make:crud Post
 		return 0;
 	},
 };
-
-/** Generate the default .env file content. */
-function generateEnvFile(): string {
-	return `# ──────────────────────────────────────────────────────
-# NexusTS — Environment Variables (committed to git)
-#
-# Shared defaults for all environments. Override locally via
-# .env.local (gitignored) or by environment via .env.{NODE_ENV}
-# (e.g. .env.production, .env.development).
-#
-# Uncomment the database config for your driver:
-# ──────────────────────────────────────────────────────
-
-# ── App ──
-NODE_ENV=development
-PORT=3000
-
-# ── Session secret (REQUIRED) ──
-# Generate with: openssl rand -base64 32
-SESSION_SECRET=change-me-in-production
-
-# ── Database: SQLite (default, zero config) ──
-DATABASE_URL=app.db
-
-# ── Database: PostgreSQL ──
-# DATABASE_URL=postgres://user:password@localhost:5432/myapp
-
-# ── Database: MySQL ──
-# DATABASE_URL=mysql://user:password@localhost:3306/myapp
-`;
-}
-
-function generateEnvLocalFile(): string {
-	return `# ──────────────────────────────────────────────────────
-# NexusTS — Local Overrides (DO NOT COMMIT to git)
-#
-# This file is gitignored. Use it for secrets and local
-# configuration that should never be checked in.
-# ──────────────────────────────────────────────────────
-
-# Override any value from .env here:
-# DATABASE_URL=postgres://user:password@localhost:5432/myapp
-# SESSION_SECRET=my-local-secret
-`;
-}
-
-function generateGitIgnore(): string {
-	return `# NexusTS
-node_modules/
-app.db
-*.db
-.env.local
-dist/
-`;
-}
 
 export default newCommand;

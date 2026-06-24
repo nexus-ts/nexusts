@@ -203,6 +203,10 @@ export class Inertia implements InertiaAdapter {
 		return this.config.ssr ?? null;
 	}
 
+	scripts(): string[] {
+		return this.config.scripts ?? [];
+	}
+
 	async resolveVersion(): Promise<string | undefined> {
 		const v = this.config.version;
 		if (typeof v === "function") return await v();

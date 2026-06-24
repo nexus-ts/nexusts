@@ -173,6 +173,7 @@ export const initCommand: Command = {
 					hono: "^4.6.0",
 					zod: "^3.23.8",
 				};
+				const devDeps: Record<string, string> = {};
 				if (orm === "drizzle") {
 					coreDeps["@nexusts/drizzle"] = "*";
 					coreDeps["drizzle-orm"] = "^0.45.0";
@@ -180,14 +181,14 @@ export const initCommand: Command = {
 					if (db === "postgres") coreDeps["pg"] = "^8.13.0";
 					if (db === "mysql") coreDeps["mysql2"] = "^3.11.0";
 					if (db === "sqlite" || db === "node-sqlite" || db === "bun-sqlite") coreDeps["better-sqlite3"] = "^12.0.0";
-					// drizzle-kit goes to devDependencies, handled below
+					devDeps["drizzle-kit"] = "^0.31.0";
 				}
 				if (view !== "none") {
 					coreDeps["@nexusts/static"] = "*";
 				}
 
 				if (exists) {
-					mergePackageJson(abs, coreDeps);
+					mergePackageJson(abs, coreDeps, devDeps);
 					merged.push(entry.path);
 				} else {
 					const pkgJson: Record<string, any> = {
@@ -469,7 +470,11 @@ function defaultTsconfig(): string {
  * Merge NexusTS fields into an existing package.json. Preserves all
  * existing fields; only adds what's missing.
  */
-function mergePackageJson(path: string, additions: Record<string, string>): void {
+function mergePackageJson(
+	path: string,
+	additions: Record<string, string>,
+	devAdditions: Record<string, string> = {},
+): void {
 	const raw = readFileSync(path, "utf8");
 	const pkg = parseJsonLoose<Record<string, unknown>>(raw);
 	let changed = false;
@@ -514,6 +519,18 @@ function mergePackageJson(path: string, additions: Record<string, string>): void
 		}
 	}
 	pkg["dependencies"] = deps;
+
+	// Merge devDependencies
+	if (Object.keys(devAdditions).length > 0) {
+		const devDeps = (pkg["devDependencies"] as Record<string, string> | undefined) ?? {};
+		for (const [k, v] of Object.entries(devAdditions)) {
+			if (!(k in devDeps)) {
+				devDeps[k] = v;
+				changed = true;
+			}
+		}
+		pkg["devDependencies"] = devDeps;
+	}
 
 	if (changed) {
 		writeFileSync(path, JSON.stringify(pkg, null, 2) + "\n");

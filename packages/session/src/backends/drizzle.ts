@@ -24,7 +24,7 @@
  *     metadata     JSONB
  *   );
  */
-import type { DrizzleService } from "../../drizzle/drizzle.service.js";
+import type { DrizzleService } from "@nexusts/drizzle";
 import type {
 	SessionStorage,
 	SessionRecord,

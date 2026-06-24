@@ -16,7 +16,7 @@ import type { SseEvent, SseStreamController } from "./types.js";
 /** Minimal subset of Hono's `SSEStreamingApi` we depend on. */
 interface HonoSSEApi {
 	writeSSE(message: { id?: string; event?: string; data: string; retry?: number }): Promise<void>;
-	sleep(ms: number): Promise<void>;
+	sleep(ms: number): Promise<unknown>;
 	onAbort(callback: () => void): void;
 	close(): Promise<void>;
 	abort(): void;
@@ -87,7 +87,7 @@ export class SseStream implements SseStreamController {
 	}
 
 	/** Sleep for `ms` (preserves the open connection). */
-	sleep(ms: number): Promise<void> {
+	sleep(ms: number): Promise<unknown> {
 		return this.#api.sleep(ms);
 	}
 

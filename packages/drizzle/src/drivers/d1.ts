@@ -13,7 +13,7 @@ export const d1Driver: DriverFactory = async (config) => {
 
 	const db = drizzleMod.drizzle(conn.binding as any, {
 		schema: undefined,
-		logger: config.logging,
+		logger: config.logging as any,
 	});
 
 	const binding = conn.binding as any;

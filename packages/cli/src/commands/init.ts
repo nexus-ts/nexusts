@@ -139,7 +139,7 @@ export const initCommand: Command = {
 			{ path: "package.json", mode: "merge-pkg" },
 			{ path: "tsconfig.json", mode: "merge-tsconfig" },
 			{ path: "public/.gitkeep", mode: "write" },
-			...view !== "none" ? [{ path: "resources/views/welcome.html", mode: "write" }] : [],
+			...view !== "none" ? [{ path: "resources/views/welcome.html", mode: "write" as const }] : [],
 			{ path: ".env", mode: "skip" },
 			{ path: ".env.local", mode: "skip" },
 			{ path: ".gitignore", mode: "skip" },

@@ -73,7 +73,7 @@ export interface SseStreamController {
 	/** Register a callback to run on client disconnect (or `close()`). */
 	onClose(cb: () => void): void;
 	/** Sleep for `ms` milliseconds (preserves the connection). */
-	sleep(ms: number): Promise<void>;
+	sleep(ms: number): Promise<unknown>;
 }
 
 // ---------------------------------------------------------------------------

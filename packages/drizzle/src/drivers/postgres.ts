@@ -35,7 +35,7 @@ export const postgresDriver: DriverFactory = async (config) => {
 		pool = sql;
 		db = mod.drizzle(sql, {
 			schema: undefined,
-			logger: config.logging,
+			logger: config.logging as any,
 		});
 	} catch {
 		// Fallback to node-postgres
@@ -56,7 +56,7 @@ export const postgresDriver: DriverFactory = async (config) => {
 		});
 		db = drizzleMod.drizzle(pool, {
 			schema: undefined,
-			logger: config.logging,
+			logger: config.logging as any,
 		});
 	}
 

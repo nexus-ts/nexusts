@@ -24,7 +24,7 @@
  * counter-update + log-trim happens as a single SQL statement
  * (UPDATE with `WHERE` guard) so concurrent callers are safe.
  */
-import type { DrizzleService } from "../../drizzle/drizzle.service.js";
+import type { DrizzleService } from "@nexusts/drizzle";
 import type {
 	RateLimitKey,
 	RateLimitResult,

@@ -21,7 +21,7 @@ export const mysqlDriver: DriverFactory = async (config) => {
 
 	const db = drizzleMod.drizzle(pool, {
 		schema: undefined,
-		logger: config.logging,
+		logger: config.logging as any,
 	});
 
 	const rawExecutor: RawExecutor = {

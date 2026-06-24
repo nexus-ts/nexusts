@@ -16,7 +16,7 @@ export const sqliteDriver: DriverFactory = async (config) => {
 
 	const db = drizzleMod.drizzle(sqlite, {
 		schema: undefined,
-		logger: config.logging,
+		logger: config.logging as any,
 	});
 
 	const rawExecutor: RawExecutor = {
@@ -46,7 +46,9 @@ export const sqliteDriver: DriverFactory = async (config) => {
 		},
 		loadMigrator: async () => {
 			const mod = await import("drizzle-orm/better-sqlite3/migrator");
-			return (folder: string) => mod.migrate(db, { migrationsFolder: folder });
+			return async (folder: string) => {
+				await mod.migrate(db, { migrationsFolder: folder });
+			};
 		},
 	};
 };

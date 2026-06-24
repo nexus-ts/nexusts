@@ -34,7 +34,7 @@
  * removes every entry tagged 'users' in a single statement, regardless
  * of how many keys share the tag.
  */
-import type { DrizzleService } from "../../drizzle/drizzle.service.js";
+import type { DrizzleService } from "@nexusts/drizzle";
 import type { CacheSetOptions, CacheStore } from "../types.js";
 
 export interface DrizzleCacheOptions {

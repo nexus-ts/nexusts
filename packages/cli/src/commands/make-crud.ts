@@ -281,7 +281,7 @@ export const makeCrudCommand: Command = {
 		logger.info(
 			`3. ${noRepo ? "" : `Run \`bun nx db:generate & bun nx db:migrate\` (or your migration tool).`}`,
 		);
-		logger.info(`4. Start the dev server: \`bun --hot app/main.ts\`.`);
+		logger.info(`4. Start the dev server: \`bun run dev\`.`);
 		logger.blank();
 
 		return 0;

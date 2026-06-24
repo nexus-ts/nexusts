@@ -21,6 +21,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.7.8] — 2026-06-24
+
+### 변경
+
+- **저장소 이관**: `kabyeon/nexusts` → `nexus-ts/nexusts`.
+  모든 URL, 문서, package.json, git remote 업데이트.
+
+---
+
 ## [0.7.7] — 2026-06-24
 
 ### 추가
@@ -1054,6 +1063,7 @@ Feature-complete MVP. 프레임워크가 "v0.2 약속" 모듈을 모두 획득.
 
 ---
 
+[0.7.8]: https://github.com/nexus-ts/nexusts/compare/v0.7.7...v0.7.8
 [0.7.7]: https://github.com/nexus-ts/nexusts/compare/v0.7.6...v0.7.7
 [0.7.6]: https://github.com/nexus-ts/nexusts/compare/v0.7.5...v0.7.6
 [0.7.5]: https://github.com/nexus-ts/nexusts/compare/v0.7.4...v0.7.5

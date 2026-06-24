@@ -21,6 +21,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.7.8] — 2026-06-24
+
+### Changed
+
+- **Repository migrated** from `kabyeon/nexusts` to
+  `nexus-ts/nexusts`. All URLs updated across docs, package.json,
+  and git remote.
+
+---
+
 ## [0.7.7] — 2026-06-24
 
 ### Added
@@ -1392,6 +1402,7 @@ Initial release. **feature-complete MVP core.**
 
 ---
 
+[0.7.8]: https://github.com/nexus-ts/nexusts/compare/v0.7.7...v0.7.8
 [0.7.7]: https://github.com/nexus-ts/nexusts/compare/v0.7.6...v0.7.7
 [0.7.6]: https://github.com/nexus-ts/nexusts/compare/v0.7.5...v0.7.6
 [0.7.5]: https://github.com/nexus-ts/nexusts/compare/v0.7.4...v0.7.5

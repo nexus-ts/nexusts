@@ -1,6 +1,6 @@
 {
   "name": "@nexusts/crypto",
-  "version": "0.7.7",
+  "version": "0.7.8",
   "description": "AES-256-GCM encryption + HMAC + scrypt/argon2",
   "type": "module",
   "main": "./dist/index.js",

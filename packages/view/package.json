@@ -1,6 +1,6 @@
 {
   "name": "@nexusts/view",
-  "version": "0.7.7",
+  "version": "0.7.8",
   "description": "View engines (Rendu, Edge, Eta) + Inertia.js v3 adapter",
   "type": "module",
   "main": "./dist/index.js",

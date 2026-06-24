@@ -52,18 +52,20 @@ export class CleanupTask {
 }
 ```
 
+**Auto-scanning is built-in.** `ScheduleModule` automatically detects
+all `@Cron` / `@Interval` / `@Timeout` decorators on every resolved
+provider at boot time. No manual `scanForSchedulers` or `start()`
+call needed:
+
 ```ts
-// app/main.ts
+// app/main.ts — no schedule boilerplate needed
 import { Application } from '@nexusts/core';
-import { ScheduleService, scanForSchedulers } from '@nexusts/schedule';
 import { AppModule } from './app.module.js';
-import { CleanupTask } from './schedule/tasks/cleanup.task.js';
 
-const app = new Application(AppModule);
-const schedule = app.container.resolve(ScheduleService);
-
-await scanForSchedulers(new CleanupTask(), schedule);
-schedule.start();    // begin the tick loop
+const app = new Application(AppModule, {
+  logging: true,
+});
+await app.listen();
 ```
 
 ---
@@ -82,7 +84,7 @@ schedule.start();    // begin the tick loop
 | `@monthly` | 0 0 1 ** |
 | `@weekly` | 0 0 ** 0 |
 | `@daily`, `@midnight` | 0 0 ** * |
-| `@hourly` | 0 ** ** |
+| `@hourly` | 0 **** |
 | `@every 1h30m` | every 90 minutes |
 | `@every 30s` | every 30 seconds |
 
@@ -200,13 +202,14 @@ or run the work from a request handler.
 
 ## 6. Lifecycle
 
-`ScheduleService.start()` begins the in-process tick. Each registered
-task gets a `setInterval` (interval/timeout) or is dispatched on the
-next cron match. `stop()` clears everything:
+The scheduler starts automatically during `Application.bootstrap()`.
+No manual `start()` call is needed. Each registered task gets a
+`setInterval` (interval/timeout) or is dispatched on the next cron
+match. `stop()` clears everything:
 
 ```ts
-schedule.start();
-// ... app runs ...
+// Manual control (if auto-start is not desired)
+const schedule = app.container.resolve(ScheduleService);
 await schedule.stop();
 ```
 
@@ -254,7 +257,8 @@ nx make:schedule DailyDigest
 ```
 
 Generates `app/schedule/tasks/<name>.task.ts` with a skeleton class
-ready for `@Cron` / `@Interval` / `@Timeout` handlers.
+ready for `@Cron` / `@Interval` / `@Timeout` handlers. The decorators
+are auto-detected at boot — no manual registration needed.
 
 ---
 

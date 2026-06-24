@@ -21,32 +21,32 @@
  *   bun add @opentelemetry/semantic-conventions
  */
 
+export { getTraceOptions, Trace, type TraceOptions } from "./decorators/index.js";
 export {
-	TracingService,
-	TRACING_SERVICE_TOKEN,
-	InMemorySpanRecorder,
-	setTracingService,
-	getTracingService,
-} from "./service.js";
-export { TracingModule, TRACING_CONFIG_TOKEN } from "./module.js";
-export {
-	tracingMiddleware,
 	injectOutgoingTraceparent,
+	tracingMiddleware,
 } from "./hono-instrumentation.js";
+export { TRACING_CONFIG_TOKEN, TracingModule } from "./module.js";
 export {
-	parseTraceParent,
-	formatTraceParent,
-	extractB3Context,
-	inject as injectContextHeaders,
+	B3_SAMPLED_HEADER,
+	B3_SPAN_ID_HEADER,
+	B3_TRACE_ID_HEADER,
 	extract as extractContextHeaders,
+	extractB3Context,
+	formatTraceParent,
+	inject as injectContextHeaders,
+	type ParsedTraceParent,
+	parseTraceParent,
 	TRACE_PARENT_HEADER,
 	TRACE_STATE_HEADER,
-	B3_TRACE_ID_HEADER,
-	B3_SPAN_ID_HEADER,
-	B3_SAMPLED_HEADER,
-	type ParsedTraceParent,
 } from "./propagation.js";
-export { Trace, getTraceOptions, type TraceOptions } from "./decorators/index.js";
+export {
+	getTracingService,
+	InMemorySpanRecorder,
+	setTracingService,
+	TRACING_SERVICE_TOKEN,
+	TracingService,
+} from "./service.js";
 export type {
 	ActiveSpan,
 	FinishedSpan,

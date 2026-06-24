@@ -4,22 +4,22 @@
  */
 import type { DrizzleConfig } from "../types.js";
 import type { DrizzleDriverResult } from "./base.js";
-import { postgresDriver } from "./postgres.js";
-import { mysqlDriver } from "./mysql.js";
-import { sqliteDriver } from "./sqlite.js";
 import { bunSqliteDriver } from "./bun-sqlite.js";
 import { d1Driver } from "./d1.js";
+import { mysqlDriver } from "./mysql.js";
+import { postgresDriver } from "./postgres.js";
+import { sqliteDriver } from "./sqlite.js";
 
-export { postgresDriver } from "./postgres.js";
-export { mysqlDriver } from "./mysql.js";
-export { sqliteDriver } from "./sqlite.js";
-export { bunSqliteDriver } from "./bun-sqlite.js";
-export { d1Driver } from "./d1.js";
 export type {
+	DriverFactory,
 	DrizzleDriverResult,
 	RawExecutor,
-	DriverFactory,
 } from "./base.js";
+export { bunSqliteDriver } from "./bun-sqlite.js";
+export { d1Driver } from "./d1.js";
+export { mysqlDriver } from "./mysql.js";
+export { postgresDriver } from "./postgres.js";
+export { sqliteDriver } from "./sqlite.js";
 
 export async function resolveDriver(
 	config: DrizzleConfig,

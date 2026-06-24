@@ -22,8 +22,8 @@
  */
 
 import { Module } from "@nexusts/core";
-import { MetricsService, METRICS_SERVICE_TOKEN } from "./service.js";
 import { MetricsController } from "./controller.js";
+import { METRICS_SERVICE_TOKEN, MetricsService } from "./service.js";
 import type { MetricsConfig } from "./types.js";
 
 @Module({
@@ -193,7 +193,6 @@ function registerDefaultMetrics(service: MetricsService): void {
 		help: "Number of active handles.",
 		labelNames: [],
 		collect: () => {
-			// @ts-ignore - Bun may or may not expose this
 			const handles = (process as any)._getActiveHandles?.() ?? [];
 			processActiveHandles.set(handles.length);
 		},
@@ -204,7 +203,6 @@ function registerDefaultMetrics(service: MetricsService): void {
 		help: "Number of active requests.",
 		labelNames: [],
 		collect: () => {
-			// @ts-ignore - Bun may or may not expose this
 			const reqs = (process as any)._getActiveRequests?.() ?? [];
 			processActiveRequests.set(reqs.length);
 		},

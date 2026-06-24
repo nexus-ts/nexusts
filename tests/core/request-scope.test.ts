@@ -9,17 +9,17 @@
  */
 
 import "reflect-metadata";
-import { describe, it, expect } from "vitest";
 import { Hono } from "hono";
-import { DIContainer } from "../../src/core/di/container.js";
+import { describe, expect, it } from "vitest";
 import { Inject, Injectable } from "../../src/core/decorators/index.js";
+import { DIContainer } from "../../src/core/di/container.js";
 import { requestScopeMiddleware } from "../../src/core/di/request-middleware.js";
 import {
-	RequestScopeStorage,
-	REQUEST,
 	getRequest,
 	getRequestScope,
 	getRequestState,
+	REQUEST,
+	RequestScopeStorage,
 	setRequestState,
 } from "../../src/core/di/request-scope.js";
 

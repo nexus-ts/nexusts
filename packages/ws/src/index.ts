@@ -45,30 +45,30 @@
  *   server.on('upgrade', (req, socket, head) => handleUpgrade(req, socket, head));
  */
 
-export { WebSocketService, WEBSOCKET_SERVICE_TOKEN } from "./service.js";
 export { WebSocketClientImpl } from "./client.js";
-export { WebSocketModule } from "./module.js";
-export { BunWsAdapter } from "./runtime/bun.js";
-export { NodeWsAdapter } from "./runtime/node.js";
-export type { NodeWsServer } from "./runtime/node.js";
-export { detectRuntime, type WsRuntime } from "./runtime/index.js";
 export {
-	WebSocketGateway,
-	OnWebSocketOpen,
-	OnWebSocketMessage,
-	OnWebSocketClose,
-	OnWebSocketError,
 	getGatewayPath,
 	getLifecycleHandlers,
+	OnWebSocketClose,
+	OnWebSocketError,
+	OnWebSocketMessage,
+	OnWebSocketOpen,
+	WebSocketGateway,
 } from "./decorators.js";
+export { WebSocketModule } from "./module.js";
+export { BunWsAdapter } from "./runtime/bun.js";
+export { detectRuntime, type WsRuntime } from "./runtime/index.js";
+export type { NodeWsServer } from "./runtime/node.js";
+export { NodeWsAdapter } from "./runtime/node.js";
+export type { GatewayClass, WebSocketGatewayOptions } from "./runtime/types.js";
+export { WEBSOCKET_SERVICE_TOKEN, WebSocketService } from "./service.js";
 export type {
 	WebSocketClient,
 	WebSocketConfig,
 	WsClientData,
+	WsDecodeOptions,
 	WsLifecycle,
 	WsLifecycleHandlers,
 	WsMessage,
 	WsReadyState,
-	WsDecodeOptions,
 } from "./types.js";
-export type { WebSocketGatewayOptions, GatewayClass } from "./runtime/types.js";

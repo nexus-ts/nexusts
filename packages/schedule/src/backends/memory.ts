@@ -10,17 +10,17 @@
  * with Cron Triggers.
  */
 
+import { CronExpression as CronExpr, nextCron } from "../cron-parser.js";
 import type {
-	ScheduleRegistry,
-	ScheduleHandler,
-	ScheduledTask,
 	CronExpression,
 	CronOptions,
+	ScheduledTask,
 	ScheduleEvent,
 	ScheduleEventListener,
+	ScheduleHandler,
+	ScheduleRegistry,
 	TaskKind,
 } from "../types.js";
-import { CronExpression as CronExpr, nextCron } from "../cron-parser.js";
 
 interface InternalTask {
 	id: string;

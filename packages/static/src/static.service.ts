@@ -5,10 +5,10 @@
  * native filesystem (Bun.file() on Bun, node:fs elsewhere).
  */
 
-import type { Context, MiddlewareHandler } from "hono";
 import { createReadStream } from "node:fs";
-import { stat, open } from "node:fs/promises";
-import { resolve as pathResolve, normalize, join, sep } from "node:path";
+import { open, stat } from "node:fs/promises";
+import { join, normalize, resolve as pathResolve, sep } from "node:path";
+import type { Context, MiddlewareHandler } from "hono";
 
 /** Configuration for `serveStatic`. */
 export interface ServeStaticOptions {

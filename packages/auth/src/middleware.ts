@@ -17,8 +17,8 @@
  *   app.use('/api/*', authMiddleware(auth, { mode: 'required' }));
  */
 
-import type { Context, MiddlewareHandler, Next } from "hono";
 import type { Auth } from "better-auth";
+import type { Context, MiddlewareHandler } from "hono";
 import type { AuthVariables } from "./types.js";
 
 export type AuthMiddlewareMode = "optional" | "required" | "scoped";
@@ -48,7 +48,7 @@ export function authMiddleware(
 		protectedPaths,
 		ignoredPaths,
 		onUnauthenticated = defaultUnauthenticated,
-		onForbidden = defaultForbidden,
+		onForbidden: _onForbidden = defaultForbidden,
 	} = options;
 
 	const ignored = toMatcher(ignoredPaths);

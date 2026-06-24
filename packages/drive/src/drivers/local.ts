@@ -7,12 +7,12 @@
  */
 import {
 	mkdir,
+	readdir,
 	readFile,
+	rename,
 	stat,
 	unlink,
 	writeFile,
-	readdir,
-	rename,
 } from "node:fs/promises";
 import { dirname, join, normalize, resolve, sep } from "node:path";
 import type {
@@ -158,7 +158,7 @@ async function walk(
 ): Promise<string[]> {
 	const out: string[] = [];
 	const full = join(root, dir);
-	let entries;
+	let entries!: import('node:fs').Dirent[];
 	try {
 		entries = await readdir(full, { withFileTypes: true });
 	} catch {

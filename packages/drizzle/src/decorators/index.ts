@@ -1,11 +1,12 @@
 /**
  * Decorators barrel.
  */
-export {
-	Table,
-	Column,
-	PrimaryKey,
-	getTableMeta,
-	readTableMeta,
-} from "./columns.js";
+
 export type { ColumnMetadata, TableMetadata } from "../types.js";
+export {
+	Column,
+	getTableMeta,
+	PrimaryKey,
+	readTableMeta,
+	Table,
+} from "./columns.js";

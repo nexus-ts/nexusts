@@ -11,9 +11,9 @@
 import "reflect-metadata";
 import { Hono } from "hono";
 import type { ApplicationContainer } from "../di/container.js";
+import { requestScopeMiddleware } from "../di/request-middleware.js";
 import { errorHandler, logger } from "./middleware.js";
 import { createRouter, type NexusRouter } from "./router.js";
-import { requestScopeMiddleware } from "../di/request-middleware.js";
 
 export interface NexusServerOptions {
 	/** Enable request logging (default: true). */

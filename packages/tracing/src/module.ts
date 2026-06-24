@@ -28,8 +28,8 @@
 
 import { Inject, Injectable, Module } from "@nexusts/core";
 import type { MiddlewareHandler } from "hono";
-import { TracingService, TRACING_SERVICE_TOKEN, setTracingService } from "./service.js";
 import { tracingMiddleware } from "./hono-instrumentation.js";
+import { setTracingService, TRACING_SERVICE_TOKEN, TracingService } from "./service.js";
 import type { TracingConfig } from "./types.js";
 
 export const TRACING_CONFIG_TOKEN = Symbol.for("nexus:TracingConfig");

@@ -19,8 +19,8 @@
 
 import "reflect-metadata";
 import { Module, setScheduleScanner } from "@nexusts/core";
-import { ScheduleService } from "./schedule.service.js";
 import { scanProviderForSchedules } from "./scanner.js";
+import { ScheduleService } from "./schedule.service.js";
 import type { ScheduleConfig } from "./types.js";
 
 // Register the scanner hook once at module load time.

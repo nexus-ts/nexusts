@@ -64,7 +64,6 @@ export class NodeRedisAdapter implements RedisClient {
 	private async getClient(): Promise<IORedisLike> {
 		if (this.client) return this.client;
 		try {
-			// @ts-ignore - optional peer dep
 			const mod = await import("ioredis");
 			const Ctor = (mod as any).default ?? (mod as any);
 			if (typeof Ctor !== "function") {

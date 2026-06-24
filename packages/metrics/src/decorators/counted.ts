@@ -27,7 +27,7 @@ export interface CountedOptions {
  * called, using the service from the global registry.
  */
 export function Counted(metricName: string, options: CountedOptions = {}) {
-	return function (_target: object, _propertyKey: string | symbol, descriptor: PropertyDescriptor) {
+	return (_target: object, _propertyKey: string | symbol, descriptor: PropertyDescriptor) => {
 		const original = descriptor.value as (...args: unknown[]) => unknown;
 		if (typeof original !== "function") {
 			throw new Error(`@Counted() can only be applied to methods, got ${typeof original}`);

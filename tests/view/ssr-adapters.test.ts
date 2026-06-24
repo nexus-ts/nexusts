@@ -10,13 +10,13 @@
  *   2. Call a per-engine render function with `(component, props)`.
  *   3. Return `{ html, head }`.
  */
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
+import type { SsrAdapter, SsrRenderResult } from "@/view/inertia";
 import {
+	asRegistry,
 	ComponentRegistry,
 	createRegistry,
-	asRegistry,
 } from "@/view/inertia/ssr/registry";
-import type { SsrAdapter, SsrRenderResult } from "@/view/inertia";
 
 describe("ComponentRegistry", () => {
 	it("registers and resolves components", () => {

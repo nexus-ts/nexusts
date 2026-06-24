@@ -16,21 +16,21 @@
  */
 
 import { Inject, Injectable } from '@nexusts/core';
-import type {
-	QueueBackend,
-	QueueConfig,
-	JobHandler,
-	WorkerHandle,
-	AddedJob,
-	AddOptions,
-	QueueEvent,
-	QueueEventListener,
-} from './types.js';
 import {
-	MemoryQueueBackend,
 	BullMQBackend,
 	CloudflareQueueBackend,
+	MemoryQueueBackend,
 } from './backends/index.js';
+import type {
+	AddedJob,
+	AddOptions,
+	JobHandler,
+	QueueBackend,
+	QueueConfig,
+	QueueEvent,
+	QueueEventListener,
+	WorkerHandle,
+} from './types.js';
 
 @Injectable()
 export class QueueService {

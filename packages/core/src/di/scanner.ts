@@ -9,9 +9,9 @@
  * its providers to ALL modules automatically without explicit import.
  */
 import { METADATA_KEY } from "../constants.js";
+import { isGlobalModule } from "../decorators/global.js";
 import type { ApplicationContainer, DIContainer } from "./container.js";
 import type { InjectionToken, ModuleOptions, Provider, Type } from "./tokens.js";
-import { isGlobalModule } from "../decorators/global.js";
 
 interface ScanResult {
 	/** The original module class constructor. */

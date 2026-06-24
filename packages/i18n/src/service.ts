@@ -37,14 +37,14 @@
  */
 
 import type {
+	CurrencyFormatOptions,
+	DateFormatOptions,
 	Locale,
 	MessageCatalog,
 	MessageDict,
-	TranslateArgs,
-	PluralCategory,
-	CurrencyFormatOptions,
-	DateFormatOptions,
 	NumberFormatOptions,
+	PluralCategory,
+	TranslateArgs,
 } from "./types.js";
 
 const DEFAULT_PLURAL_CATEGORIES: PluralCategory[] = [

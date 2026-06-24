@@ -27,11 +27,11 @@
  * ```
  */
 import "reflect-metadata";
-import { HttpException } from "./http-exception.js";
 import {
-	EXCEPTION_FILTERS_METADATA,
 	CONTROLLER_EXCEPTION_FILTERS_METADATA,
+	EXCEPTION_FILTERS_METADATA,
 } from "../constants.js";
+import { HttpException } from "./http-exception.js";
 
 // Re-export HttpException so consumers get it from the barrel.
 export { HttpException };

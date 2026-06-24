@@ -11,7 +11,7 @@
  * `traceparent` is still parsed for the response.
  */
 
-import { SpanKind, SpanStatusCode, trace, type Context } from "@opentelemetry/api";
+import { type Context, SpanKind, SpanStatusCode, trace } from "@opentelemetry/api";
 import type { MiddlewareHandler } from "hono";
 import type { TracingService } from "./service.js";
 
@@ -19,7 +19,7 @@ export function tracingMiddleware(service: TracingService): MiddlewareHandler {
 	return async (c, next) => {
 		const incoming = c.req.raw.headers;
 		const flat: Record<string, string> = {};
-		incoming.forEach((v, k) => (flat[k] = v));
+		incoming.forEach((v, k) => { flat[k] = v; });
 		const extractedCtx: Context = service.extractContext(flat);
 
 		const method = c.req.method;

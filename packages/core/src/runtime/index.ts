@@ -6,5 +6,5 @@
  * Node-specific modules (http, etc.) on Cloudflare Workers, which fail.
  */
 export * from "./bun.js";
-export * from "./node.js";
 export * from "./cloudflare.js";
+export * from "./node.js";

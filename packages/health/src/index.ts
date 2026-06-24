@@ -31,13 +31,13 @@
  * Status code: 200 when all 'up', 503 when any 'down'.
  */
 
-export * from "./types.js";
-export { HealthCheckService } from "./health.service.js";
 export { HealthController } from "./health.controller.js";
 export { HealthModule } from "./health.module.js";
+export { HealthCheckService } from "./health.service.js";
 export {
-	MemoryHealthIndicator,
+	CustomPingIndicator,
 	DiskHealthIndicator,
 	HttpHealthIndicator,
-	CustomPingIndicator,
+	MemoryHealthIndicator,
 } from "./indicators/index.js";
+export * from "./types.js";

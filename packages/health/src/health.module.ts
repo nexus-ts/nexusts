@@ -22,8 +22,8 @@
 
 import "reflect-metadata";
 import { Module } from "@nexusts/core";
-import { HealthCheckService } from "./health.service.js";
 import { HealthController } from "./health.controller.js";
+import { HealthCheckService } from "./health.service.js";
 import type { HealthConfig } from "./types.js";
 
 @Module({

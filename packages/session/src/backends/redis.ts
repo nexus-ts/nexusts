@@ -25,12 +25,12 @@
 
 import type { RedisClient } from "@nexusts/redis";
 import type {
-	SessionStorage,
-	SessionRecord,
-	SessionData,
 	CreateSessionOptions,
-	UpdateSessionOptions,
+	SessionData,
 	SessionQuery,
+	SessionRecord,
+	SessionStorage,
+	UpdateSessionOptions,
 } from "../types.js";
 
 const DEFAULT_KEY_PREFIX = "session:";

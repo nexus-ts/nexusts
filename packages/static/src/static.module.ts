@@ -19,8 +19,8 @@
 
 import "reflect-metadata";
 import { Module } from "@nexusts/core";
-import { StaticService } from "./static.service.js";
 import type { ServeStaticOptions } from "./static.service.js";
+import { StaticService } from "./static.service.js";
 
 @Module({
 	providers: [

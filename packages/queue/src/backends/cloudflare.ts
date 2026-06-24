@@ -20,15 +20,15 @@
  */
 
 import type {
-	QueueBackend,
-	JobHandler,
-	WorkerHandle,
-	WorkerOptions,
 	AddedJob,
 	AddOptions,
+	JobContext,
+	JobHandler,
+	QueueBackend,
 	QueueEvent,
 	QueueEventListener,
-	JobContext,
+	WorkerHandle,
+	WorkerOptions,
 } from "../types.js";
 
 // ---------------------------------------------------------------------------

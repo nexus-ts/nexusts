@@ -13,7 +13,7 @@
  */
 
 import { randomUUID } from "node:crypto";
-import type { WsMessage, WsReadyState, WsClientData } from "./types.js";
+import type { WsClientData, WsMessage, WsReadyState } from "./types.js";
 
 /** Minimal interface that the wrapper needs from the underlying WSContext. */
 export interface UnderlyingWs {

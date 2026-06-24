@@ -7,12 +7,13 @@
  * The first available driver is loaded at boot. The migrator path
  * follows whichever driver was selected.
  */
+
+import type { DrizzleConfig, PostgresConnectionOptions } from "../types.js";
 import type {
-	DrizzleDriverResult,
 	DriverFactory,
+	DrizzleDriverResult,
 	RawExecutor,
 } from "./base.js";
-import type { DrizzleConfig, PostgresConnectionOptions } from "../types.js";
 
 export const postgresDriver: DriverFactory = async (config) => {
 	const conn = config.connection as PostgresConnectionOptions;

@@ -3,9 +3,9 @@
  */
 
 import "reflect-metadata";
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { DrizzleService } from "../../src/drizzle/index.js";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { DrizzleCacheStore } from "../../src/cache/stores/drizzle.js";
+import { DrizzleService } from "../../src/drizzle/index.js";
 
 let hasBunSqlite = false;
 try {

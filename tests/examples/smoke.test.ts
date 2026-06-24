@@ -19,11 +19,12 @@
  * need a published package. This lets us test against the in-tree
  * code we're about to release.
  */
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { spawn, type ChildProcess } from "node:child_process";
-import { readFile, readdir, stat, writeFile, rm, mkdir, symlink } from "node:fs/promises";
+
+import { type ChildProcess, spawn } from "node:child_process";
 import { existsSync } from "node:fs";
+import { mkdir, readdir, readFile, rm, stat, symlink, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 const EXAMPLES_DIR = path.resolve(__dirname, "../../examples");
 const START_PORT = 14_000;   // keep clear of the 3xxx block used by manual testing

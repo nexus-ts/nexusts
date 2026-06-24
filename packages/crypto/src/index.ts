@@ -53,16 +53,16 @@
  */
 
 export { EncryptionService } from "./encryption.js";
-export { HashService, hash, verify, scryptHash, scryptVerify } from "./hash.js";
+export { HashService, hash, scryptHash, scryptVerify, verify } from "./hash.js";
 export { CryptoModule, ENCRYPTION_SERVICE_TOKEN, HASH_SERVICE_TOKEN } from "./module.js";
 export type {
+	EncryptedValue,
 	EncryptionConfig,
 	EncryptOptions,
-	HashConfig,
-	HashOptions,
 	HashAlgorithm,
-	HmacConfig,
-	EncryptedValue,
-	SignedValue,
+	HashConfig,
 	HashedPassword,
+	HashOptions,
+	HmacConfig,
+	SignedValue,
 } from "./types.js";

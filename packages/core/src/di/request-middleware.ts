@@ -15,10 +15,10 @@
 import type { MiddlewareHandler } from "hono";
 import { DIContainer } from "./container.js";
 import {
-	RequestScopeStorage,
+	type HonoContext,
 	REQUEST,
 	REQUEST_SCOPE,
-	type HonoContext,
+	RequestScopeStorage,
 } from "./request-scope.js";
 
 /**

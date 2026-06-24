@@ -11,7 +11,8 @@
  */
 
 import "reflect-metadata";
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
+import { Application } from "../../src/core/application.js";
 import { EncryptionService } from "../../src/crypto/encryption.js";
 import { HashService } from "../../src/crypto/hash.js";
 import {
@@ -19,7 +20,6 @@ import {
 	ENCRYPTION_SERVICE_TOKEN,
 	HASH_SERVICE_TOKEN,
 } from "../../src/crypto/index.js";
-import { Application } from "../../src/core/application.js";
 
 const KEY = "a".repeat(64);
 

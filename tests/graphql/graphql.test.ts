@@ -9,8 +9,9 @@
  *  - Validation error path (invalid query → 400 with `errors[]`).
  *  - Missing `graphql` package → clear error.
  */
-import { afterEach, beforeAll, describe, expect, it } from "vitest";
+
 import { Hono } from "hono";
+import { afterEach, beforeAll, describe, expect, it } from "vitest";
 import "reflect-metadata";
 
 let GraphQLService: any;

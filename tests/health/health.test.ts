@@ -3,15 +3,15 @@
  */
 
 import "reflect-metadata";
-import { describe, it, expect } from "vitest";
 import { Application } from "@core/application";
-import { Module } from "@core/decorators/module";
 import { Controller } from "@core/decorators/controller";
 import { Get } from "@core/decorators/http-methods";
+import { Module } from "@core/decorators/module";
+import { describe, expect, it } from "vitest";
 import {
 	HealthCheckService,
-	HealthModule,
 	type HealthIndicator,
+	HealthModule,
 } from "../../src/health/index.js";
 import type { HealthIndicatorResult } from "../../src/health/types.js";
 

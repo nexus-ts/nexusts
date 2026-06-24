@@ -2,4 +2,4 @@
  * Decorator barrel.
  */
 export { Upload } from "./upload.js";
-export { UploadedFile, getUploadedFile, getUploadedFiles } from "./uploaded-file.js";
+export { getUploadedFile, getUploadedFiles, UploadedFile } from "./uploaded-file.js";

@@ -16,14 +16,14 @@
  */
 
 import { Inject, Injectable } from "@nexusts/core";
-import type {
-	AuthUser,
-	AuthSessionRecord,
-	AuthSession,
-	AuthConfig,
-} from "./types.js";
-import { createAuth, type NexusAuth } from "./auth.js";
 import type { SessionService } from "@nexusts/session";
+import { createAuth, type NexusAuth } from "./auth.js";
+import type {
+	AuthConfig,
+	AuthSession,
+	AuthSessionRecord,
+	AuthUser,
+} from "./types.js";
 
 @Injectable()
 export class AuthService {

@@ -10,7 +10,7 @@
  * Format reference: https://www.w3.org/TR/trace-context/#traceparent-header
  */
 
-import { propagation, context, type Context } from "@opentelemetry/api";
+import { type Context, context, propagation } from "@opentelemetry/api";
 
 /* ------------------------------------------------------------------ *
  * Header constants

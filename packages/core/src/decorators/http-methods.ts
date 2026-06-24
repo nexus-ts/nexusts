@@ -18,7 +18,7 @@
  * ```
  */
 import "reflect-metadata";
-import { HTTP_METHODS, METADATA_KEY, type HttpMethod } from "../constants.js";
+import { HTTP_METHODS, type HttpMethod, METADATA_KEY } from "../constants.js";
 import type { RouteMetadata } from "../di/tokens.js";
 
 function defineRoute(method: HttpMethod, path: string): MethodDecorator {
@@ -58,5 +58,5 @@ export function getRoutes(target: any): RouteMetadata[] {
 	return Reflect.getMetadata(METADATA_KEY.ROUTES, target) ?? [];
 }
 
-export { HTTP_METHODS };
 export type { RouteMetadata };
+export { HTTP_METHODS };

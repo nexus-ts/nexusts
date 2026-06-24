@@ -7,9 +7,9 @@
  */
 
 import "reflect-metadata";
-import { describe, it, expect, beforeEach } from "vitest";
-import { UploadService } from "../../src/upload/upload.service.js";
+import { beforeEach, describe, expect, it } from "vitest";
 import { UploadError } from "../../src/upload/types.js";
+import { UploadService } from "../../src/upload/upload.service.js";
 
 function makeMockContext(parts: Record<string, unknown>) {
 	const stored: Record<string, unknown> = {};

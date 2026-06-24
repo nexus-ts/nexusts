@@ -15,7 +15,7 @@
  * as a safe default — explicit is better than implicit.
  */
 import "reflect-metadata";
-import { pushResolverField, getResolverTypeName } from "./resolver.js";
+import { getResolverTypeName, pushResolverField } from "./resolver.js";
 
 const ARGS_KEY = Symbol.for("nexus:GraphQL:MethodArgs");
 

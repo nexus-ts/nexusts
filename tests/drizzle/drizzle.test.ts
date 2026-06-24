@@ -4,7 +4,7 @@
  */
 
 import "reflect-metadata";
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { DrizzleService, RawQuery } from "../../src/drizzle/index.js";
 
 let hasBunSqlite = false;

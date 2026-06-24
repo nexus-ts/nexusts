@@ -9,18 +9,18 @@
 
 import { Inject, Injectable } from '@nexusts/core';
 import {
-	NexusEventEmitter,
 	compilePattern,
+	NexusEventEmitter,
 } from './emitter.js';
 import type {
+	EmitResult,
+	EmitterEvent,
+	EmitterEventListener,
 	EventEmitter,
 	EventListener,
 	EventName,
-	EmitResult,
-	ListenerOptions,
 	EventsConfig,
-	EmitterEvent,
-	EmitterEventListener,
+	ListenerOptions,
 } from './types.js';
 
 @Injectable()

@@ -26,7 +26,7 @@ export interface TimedOptions {
  * histogram. Async methods are timed across their full await.
  */
 export function Timed(metricName: string, options: TimedOptions = {}) {
-	return function (_target: object, _propertyKey: string | symbol, descriptor: PropertyDescriptor) {
+	return (_target: object, _propertyKey: string | symbol, descriptor: PropertyDescriptor) => {
 		const original = descriptor.value as (...args: unknown[]) => unknown;
 		if (typeof original !== "function") {
 			throw new Error(`@Timed() can only be applied to methods, got ${typeof original}`);

@@ -21,6 +21,12 @@
  *   async criticalCall() { ... }
  */
 import "reflect-metadata";
+
+// Use `import type` for the service to avoid a circular import:
+// `resilience.service.ts` → `decorators/index.ts` → `resilience.service.ts`.
+// At runtime, the dependency is set via `setResilienceService()` so
+// only the *type* needs to be visible at type-check time.
+import type { ResilienceService } from "../resilience.service.js";
 import type {
 	BulkheadConfig,
 	CircuitBreakerConfig,
@@ -28,12 +34,6 @@ import type {
 	RetryConfig,
 } from "../types.js";
 import { RESILIENCE_META } from "../types.js";
-
-// Use `import type` for the service to avoid a circular import:
-// `resilience.service.ts` → `decorators/index.ts` → `resilience.service.ts`.
-// At runtime, the dependency is set via `setResilienceService()` so
-// only the *type* needs to be visible at type-check time.
-import type { ResilienceService } from "../resilience.service.js";
 
 // Per-method metadata kinds. Each decorator stores its own
 // payload under a separate key so a method can have e.g. `@Retry`

@@ -29,10 +29,10 @@
  */
 
 import { Inject, Module } from "@nexusts/core";
-import { WebSocketService, WEBSOCKET_SERVICE_TOKEN } from "./service.js";
-import type { WebSocketConfig } from "./types.js";
 import { detectRuntime } from "./runtime/index.js";
 import type { GatewayClass } from "./runtime/types.js";
+import { WEBSOCKET_SERVICE_TOKEN, WebSocketService } from "./service.js";
+import type { WebSocketConfig } from "./types.js";
 
 @Module({
 	providers: [

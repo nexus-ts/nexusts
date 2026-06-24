@@ -4,7 +4,7 @@
  * Decorate a controller method to describe the operation in the spec.
  */
 import "reflect-metadata";
-import { OPENAPI_META, type ApiOperationOptions } from "../types.js";
+import { type ApiOperationOptions, OPENAPI_META } from "../types.js";
 
 export function ApiOperation(options: ApiOperationOptions): MethodDecorator {
 	return (target: object, propertyKey: string | symbol) => {

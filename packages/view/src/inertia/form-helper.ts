@@ -93,7 +93,8 @@ export class InertiaFormBuilder {
 
 	/** Add a single error to a field. */
 	withError(field: string, message: string): this {
-		(this.errorMap[field] ??= []).push(message);
+		this.errorMap[field] ??= [];
+		this.errorMap[field].push(message);
 		return this;
 	}
 

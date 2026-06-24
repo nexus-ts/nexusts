@@ -2,13 +2,13 @@
  * Tests for exception filters and HttpException.
  */
 import "reflect-metadata";
-import { describe, it, expect } from "vitest";
 import {
-	HttpException,
-	createExceptionFilter,
 	createDefaultExceptionFilter,
+	createExceptionFilter,
 	executeExceptionFilters,
+	HttpException,
 } from "@nexusts/core";
+import { describe, expect, it } from "vitest";
 
 
 /** Minimal execution context shape for testing. */

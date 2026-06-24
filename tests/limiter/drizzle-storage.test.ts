@@ -3,7 +3,7 @@
  */
 
 import "reflect-metadata";
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { DrizzleService } from "../../src/drizzle/index.js";
 import { DrizzleRateLimitStorage } from "../../src/limiter/backends/drizzle.js";
 import { LimiterService } from "../../src/limiter/limiter.service.js";

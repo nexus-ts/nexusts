@@ -2,9 +2,9 @@
  * Unit tests for the DI container.
  */
 import 'reflect-metadata';
-import { describe, it, expect } from 'vitest';
+import { Inject, Injectable } from '@core/decorators/injectable';
 import { DIContainer } from '@core/di/container';
-import { Injectable, Inject } from '@core/decorators/injectable';
+import { describe, expect, it } from 'vitest';
 
 describe('DIContainer', () => {
   it('resolves a class provider with constructor injection (via @Inject)', () => {

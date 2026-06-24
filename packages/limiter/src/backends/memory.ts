@@ -8,8 +8,8 @@
  * Not cluster-safe. For multi-pod deployments use `RedisStorage`.
  */
 import type {
-	RateLimitStorage,
 	RateLimitKey,
+	RateLimitStorage,
 	RateLimitStrategy,
 } from "../types.js";
 

@@ -14,14 +14,14 @@
 
 import { AsyncLocalStorage } from "node:async_hooks";
 import { Inject, Injectable } from "@nexusts/core";
+import { NullTransport, PinoTransport, PrettyTransport } from "./transports/index.js";
 import type {
+	LogContext,
+	LoggerOptions,
 	LogLevel,
 	LogRecord,
 	LogTransport,
-	LoggerOptions,
-	LogContext,
 } from "./types.js";
-import { PinoTransport, PrettyTransport, NullTransport } from "./transports/index.js";
 
 const LEVEL_RANK: Record<LogLevel, number> = {
 	trace: 10,

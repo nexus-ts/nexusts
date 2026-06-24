@@ -3,13 +3,13 @@
  */
 
 import "reflect-metadata";
-import { describe, it, expect, beforeEach } from "vitest";
 import { Hono } from "hono";
-import { LimiterService } from "../../src/limiter/limiter.service.js";
-import { LimiterMiddleware } from "../../src/limiter/limiter.middleware.js";
+import { beforeEach, describe, expect, it } from "vitest";
 import { MemoryRateLimitStorage } from "../../src/limiter/backends/memory.js";
-import { durationToMs } from "../../src/limiter/types.js";
+import { LimiterMiddleware } from "../../src/limiter/limiter.middleware.js";
+import { LimiterService } from "../../src/limiter/limiter.service.js";
 import type { RateLimitRule } from "../../src/limiter/types.js";
+import { durationToMs } from "../../src/limiter/types.js";
 
 describe("durationToMs", () => {
 	it("converts shorthand", () => {

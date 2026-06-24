@@ -17,8 +17,8 @@
  *   for metrics, audit logging, etc.
  */
 
-import type { WebSocketClient, WsMessage, WsClientData } from "./types.js";
-import { WebSocketClientImpl } from "./client.js";
+import type { WebSocketClientImpl } from "./client.js";
+import type { WebSocketClient, WsClientData, WsMessage } from "./types.js";
 
 export const WEBSOCKET_SERVICE_TOKEN = Symbol.for("nexus:WebSocketService");
 

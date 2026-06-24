@@ -22,8 +22,8 @@
  */
 import "reflect-metadata";
 import {
-	INTERCEPTORS_METADATA,
 	CONTROLLER_INTERCEPTORS_METADATA,
+	INTERCEPTORS_METADATA,
 } from "../constants.js";
 
 // ============================================================================

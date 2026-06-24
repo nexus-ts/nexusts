@@ -17,8 +17,8 @@
  *   g.set(42);
  */
 
-import type { GaugeOptions, Gauge as IGauge, MetricSample } from "./types.js";
 import { escapeLabelValue, renderLabels } from "./counter.js";
+import type { GaugeOptions, Gauge as IGauge, MetricSample } from "./types.js";
 
 export class GaugeImpl implements IGauge {
 	readonly name: string;

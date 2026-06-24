@@ -10,6 +10,7 @@
  * (instantiated by the container) and the abstract type to request.
  */
 import type { HttpMethod } from "../constants.js";
+
 export type { HttpMethod } from "../constants.js";
 
 export type InjectionToken<T = unknown> =

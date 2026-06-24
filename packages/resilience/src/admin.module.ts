@@ -23,7 +23,7 @@
  * module resolves `ResilienceService.TOKEN` through the shared DI parent
  * container that both modules register into.
  */
-import { Controller, Get, Post, Param, Inject, Module } from "@nexusts/core";
+import { Controller, Get, Inject, Module, Param, Post } from "@nexusts/core";
 import { ResilienceService } from "./resilience.service.js";
 
 export interface ResilienceAdminConfig {

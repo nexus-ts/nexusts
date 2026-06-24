@@ -5,7 +5,7 @@
  * Multiple `@ApiResponse` calls accumulate.
  */
 import "reflect-metadata";
-import { OPENAPI_META, type ApiResponseOptions } from "../types.js";
+import { type ApiResponseOptions, OPENAPI_META } from "../types.js";
 
 export function ApiResponse(
 	status: number | string,

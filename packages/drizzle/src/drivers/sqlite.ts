@@ -3,8 +3,9 @@
  *
  * For edge / Workers, use `bun-sqlite` or `d1` instead.
  */
-import type { DriverFactory, RawExecutor } from "./base.js";
+
 import type { SqliteConnectionOptions } from "../types.js";
+import type { DriverFactory, RawExecutor } from "./base.js";
 
 export const sqliteDriver: DriverFactory = async (config) => {
 	const conn = config.connection as SqliteConnectionOptions;

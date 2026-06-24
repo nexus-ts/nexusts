@@ -37,5 +37,5 @@
  *   - MIME-type inference for common formats
  */
 
-export { StaticService, type ServeStaticOptions } from "./static.service.js";
 export { StaticModule } from "./static.module.js";
+export { type ServeStaticOptions, StaticService } from "./static.service.js";

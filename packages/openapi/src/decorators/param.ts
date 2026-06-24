@@ -5,7 +5,7 @@
  * Use this when you want to override the schema or add a description.
  */
 import "reflect-metadata";
-import { OPENAPI_META, type ApiParamOptions } from "../types.js";
+import { type ApiParamOptions, OPENAPI_META } from "../types.js";
 
 export function ApiParam(options: ApiParamOptions): MethodDecorator {
 	return (target: object, propertyKey: string | symbol) => {

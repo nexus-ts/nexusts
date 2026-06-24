@@ -1,19 +1,19 @@
-import { Inject, Injectable, OnApplicationInit } from '@nexusts/core';
+import { Inject, Injectable, type OnApplicationInit } from '@nexusts/core';
+import {
+	CloudflareSchedulesBackend,
+	MemorySchedulesBackend,
+} from './backends/index.js';
 import { __setScheduleService } from './scanner.js';
 import type {
-	ScheduleRegistry,
-	ScheduleConfig,
 	CronExpression,
 	CronOptions,
+	ScheduleConfig,
 	ScheduledTask,
-	ScheduleHandler,
 	ScheduleEvent,
 	ScheduleEventListener,
+	ScheduleHandler,
+	ScheduleRegistry,
 } from './types.js';
-import {
-	MemorySchedulesBackend,
-	CloudflareSchedulesBackend,
-} from './backends/index.js';
 
 
 

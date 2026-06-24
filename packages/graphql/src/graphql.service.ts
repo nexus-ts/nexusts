@@ -13,15 +13,15 @@
  * throw a clear error from the first attempt.
  */
 import "reflect-metadata";
+import { getRegisteredResolvers, getResolverFields } from "./decorators/index.js";
+import { normalizeGQLType } from "./decorators/type-mapper.js";
 import type {
+	FieldResolver,
 	GraphQLConfig,
 	GraphQLContext,
 	GraphQLExecutionResult,
-	FieldResolver,
 	ResolverMap,
 } from "./types.js";
-import { getRegisteredResolvers, getResolverFields } from "./decorators/index.js";
-import { normalizeGQLType } from "./decorators/type-mapper.js";
 
 interface GraphQLJs {
 	parse: (s: string) => unknown;
@@ -351,9 +351,7 @@ function wrapSchemaWithResolvers(schema: any, resolvers: ResolverMap): any {
 				typeof resolver === "function"
 					? (resolver as FieldResolver)
 					: ((resolver as { resolve: FieldResolver }).resolve as FieldResolver);
-			field.resolve = function (parent: any, args: any, ctx: any, info: any) {
-				return fn(parent, args, ctx, info);
-			};
+			field.resolve = (parent: any, args: any, ctx: any, info: any) => fn(parent, args, ctx, info);
 		}
 	}
 	return schema;

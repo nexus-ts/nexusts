@@ -7,13 +7,13 @@
  * for Inertia XHR requests (JSON) and first-page loads (HTML shell).
  */
 import type { Context } from "hono";
+import { renderDefaultRoot } from "./default-ssr.js";
+import { isInertiaHelper } from "./helpers.js";
 import type {
 	InertiaAdapter,
-	InertiaRequestInfo,
 	InertiaPage,
+	InertiaRequestInfo,
 } from "./types.js";
-import { isInertiaHelper } from "./helpers.js";
-import { renderDefaultRoot } from "./default-ssr.js";
 
 /** Discriminator: the router detects InertiaResponse by this tag. */
 export const INERTIA_RESPONSE_TAG = "__nexus_inertia_response__";
@@ -104,7 +104,8 @@ export class InertiaResponse {
 					case "deferred": {
 						const d = helper as any;
 						const group: string = d.group ?? "default";
-						(deferredProps[group] ??= []).push(key);
+						deferredProps[group] ??= [];
+						deferredProps[group].push(key);
 						// Placeholder: must be `null` per spec.
 						resolved[key] = null;
 						break;

@@ -34,23 +34,23 @@
  *   }
  */
 
-export * from "./types.js";
 export {
-	MemorySessionStorage,
-	CookieSessionStorage,
-	RedisSessionStorage,
 	CloudflareKVSessionStorage,
-	encodeSessionCookie,
+	CookieSessionStorage,
 	decodeSessionCookie,
+	encodeSessionCookie,
+	MemorySessionStorage,
 	type MemoryStorageOptions,
+	RedisSessionStorage,
 	type RedisSessionStorageConfig,
 } from "./backends/index.js";
-export { SessionService } from "./session.service.js";
-export { SessionModule } from "./session.module.js";
 export {
 	Session,
-	UnauthenticatedError,
 	SessionForbiddenError,
 	type SessionOptions,
+	UnauthenticatedError,
 } from "./decorators/current-session.js";
-export { sessionMiddleware, type SessionMiddlewareOptions } from "./session-middleware.js";
+export { SessionModule } from "./session.module.js";
+export { SessionService } from "./session.service.js";
+export { type SessionMiddlewareOptions, sessionMiddleware } from "./session-middleware.js";
+export * from "./types.js";

@@ -27,7 +27,7 @@
  */
 
 import { Module } from "@nexusts/core";
-import { GrpcService, GRPC_SERVICE_TOKEN } from "./service.js";
+import { GRPC_SERVICE_TOKEN, GrpcService } from "./service.js";
 import type { GrpcConfig } from "./types.js";
 
 @Module({

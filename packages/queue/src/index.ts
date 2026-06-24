@@ -48,18 +48,18 @@
  *   }
  */
 
-export * from "./types.js";
-export {
-	MemoryQueueBackend,
-	BullMQBackend,
-	CloudflareQueueBackend,
-} from "./backends/index.js";
 export type { BullMQBackendOptions } from "./backends/bullmq.js";
 export type { CloudflareBackendOptions } from "./backends/cloudflare.js";
-export { QueueService } from "./queue.service.js";
-export { QueueModule } from "./queue.module.js";
 export {
-	OnQueueReady,
+	BullMQBackend,
+	CloudflareQueueBackend,
+	MemoryQueueBackend,
+} from "./backends/index.js";
+export {
 	getQueueReadyHooks,
 	invokeQueueReadyHooks,
+	OnQueueReady,
 } from "./decorators/on-queue-ready.js";
+export { QueueModule } from "./queue.module.js";
+export { QueueService } from "./queue.service.js";
+export * from "./types.js";

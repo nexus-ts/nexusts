@@ -14,16 +14,16 @@
  */
 
 import "reflect-metadata";
-import { describe, it, expect } from "vitest";
 import { Hono } from "hono";
+import { describe, expect, it } from "vitest";
+import { Application } from "../../src/core/application.js";
 import {
-	I18nService,
+	CurrentLocale,
 	I18N_SERVICE_TOKEN,
 	I18nModule,
+	I18nService,
 	i18nMiddleware,
-	CurrentLocale,
 } from "../../src/i18n/index.js";
-import { Application } from "../../src/core/application.js";
 
 describe("I18nService — basic translation", () => {
 	const svc = new I18nService({

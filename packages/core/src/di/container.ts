@@ -14,6 +14,7 @@
  */
 import "reflect-metadata";
 import { METADATA_KEY } from "../constants.js";
+import { RequestScopeStorage } from "./request-scope.js";
 import type {
 	FactoryProvider,
 	InjectionToken,
@@ -22,7 +23,6 @@ import type {
 	Type,
 	ValueProvider,
 } from "./tokens.js";
-import { RequestScopeStorage } from "./request-scope.js";
 
 interface ProviderRecord {
 	token: InjectionToken<any>;

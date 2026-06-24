@@ -2,26 +2,26 @@
  * Tests for lifecycle hooks.
  */
 import "reflect-metadata";
-import { describe, it, expect } from "vitest";
-import {
-	hasOnModuleInit,
-	hasOnApplicationInit,
-	hasOnModuleDestroy,
-	hasBeforeApplicationDestroy,
-	hasOnApplicationDestroy,
-	callOnModuleInit,
-	callOnApplicationInit,
-	callOnModuleDestroy,
-	callBeforeApplicationDestroy,
-	callOnApplicationDestroy,
-} from "@nexusts/core";
 import type {
-	OnModuleInit,
-	OnApplicationInit,
-	OnModuleDestroy,
 	BeforeApplicationDestroy,
 	OnApplicationDestroy,
+	OnApplicationInit,
+	OnModuleDestroy,
+	OnModuleInit,
 } from "@nexusts/core";
+import {
+	callBeforeApplicationDestroy,
+	callOnApplicationDestroy,
+	callOnApplicationInit,
+	callOnModuleDestroy,
+	callOnModuleInit,
+	hasBeforeApplicationDestroy,
+	hasOnApplicationDestroy,
+	hasOnApplicationInit,
+	hasOnModuleDestroy,
+	hasOnModuleInit,
+} from "@nexusts/core";
+import { describe, expect, it } from "vitest";
 
 describe("hasOnModuleInit", () => {
 	it("returns true when object implements the hook", () => {

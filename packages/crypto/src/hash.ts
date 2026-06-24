@@ -18,7 +18,7 @@
  * parameters.
  */
 
-import { scrypt as scryptCb, randomBytes, timingSafeEqual } from "node:crypto";
+import { randomBytes, scrypt as scryptCb, timingSafeEqual } from "node:crypto";
 
 // scrypt's callback signature is (err, derivedKey) but it takes
 // (password, salt, keylen, options) before the callback, so we
@@ -36,7 +36,8 @@ function scrypt(
 		});
 	});
 }
-import type { HashConfig, HashOptions, HashedPassword } from "./types.js";
+
+import type { HashConfig, HashedPassword, HashOptions } from "./types.js";
 
 const PREFIX_SCRYPT = "$scrypt$";
 const PREFIX_ARGON2 = "$argon2";
@@ -209,7 +210,7 @@ async function loadArgon2(): Promise<Argon2Module> {
 		return _argon2;
 	}
 	try {
-		// @ts-ignore - optional peer dep
+		// @ts-expect-error - optional peer dep
 		const mod = await import("@node-rs/argon2");
 		_argon2 = (mod as any).default ?? (mod as any);
 		if (!_argon2) throw new Error("invalid argon2 module");

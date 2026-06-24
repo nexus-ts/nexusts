@@ -5,8 +5,9 @@
  * adapter when targeting Node-compatible servers, but Bun's native
  * adapter is significantly faster — only use this on actual Node.
  */
-import type { Hono } from "hono";
+
 import { createServer } from "node:http";
+import type { Hono } from "hono";
 
 export function nodeAdapter(app: Hono, port: number = 3000): any {
 	const server = createServer(async (req, res) => {
@@ -44,7 +45,7 @@ export function nodeAdapter(app: Hono, port: number = 3000): any {
 
 			const honoRes = await app.fetch(new Request(url, init));
 			res.statusCode = honoRes.status;
-			honoRes.headers.forEach((v, k) => res.setHeader(k, v));
+			honoRes.headers.forEach((v, k) => { res.setHeader(k, v); });
 			const buf = Buffer.from(await honoRes.arrayBuffer());
 			res.end(buf);
 		} catch (err) {

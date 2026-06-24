@@ -3,14 +3,14 @@
  */
 
 import "reflect-metadata";
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { readdir, rm } from "node:fs/promises";
-import { join } from "node:path";
 import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import {
+	FileTransport,
 	MailService,
 	NullTransport,
-	FileTransport,
 } from "../../src/mail/index.js";
 import type { MailMessage } from "../../src/mail/types.js";
 

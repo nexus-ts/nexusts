@@ -8,9 +8,10 @@
  * The default adapter is Rendu because it works on every runtime —
  * Cloudflare Workers, Bun, Deno, and Node — without extra dependencies.
  */
-import { RenduAdapter } from "./rendu.js";
+
 import { EdgeAdapter } from "./edge.js";
 import { EtaAdapter } from "./eta.js";
+import { RenduAdapter } from "./rendu.js";
 import type { ViewAdapter, ViewContext } from "./types.js";
 
 export type { ViewAdapter, ViewContext, ViewOptions } from "./types.js";

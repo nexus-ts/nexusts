@@ -12,23 +12,23 @@
  */
 
 import "reflect-metadata";
-import { describe, it, expect, beforeEach } from "vitest";
 import { Hono } from "hono";
+import { beforeEach, describe, expect, it } from "vitest";
+import type { UnderlyingWs } from "../../src/ws/client.js";
 import {
-	WebSocketService,
-	WebSocketClientImpl,
-	WebSocketGateway,
-	OnWebSocketOpen,
-	OnWebSocketMessage,
-	OnWebSocketClose,
-	OnWebSocketError,
+	BunWsAdapter,
+	detectRuntime,
 	getGatewayPath,
 	getLifecycleHandlers,
-	detectRuntime,
-	BunWsAdapter,
 	NodeWsAdapter,
+	OnWebSocketClose,
+	OnWebSocketError,
+	OnWebSocketMessage,
+	OnWebSocketOpen,
+	WebSocketClientImpl,
+	WebSocketGateway,
+	WebSocketService,
 } from "../../src/ws/index.js";
-import type { UnderlyingWs } from "../../src/ws/client.js";
 
 /* ------------------------------------------------------------------ *
  * Mock underlying WebSocket
@@ -303,7 +303,7 @@ describe("End-to-end (BunWsAdapter + simulated client)", () => {
 		service.register(client);
 
 		// Simulate a message event
-		const adapter = new BunWsAdapter(service, {
+		const _adapter = new BunWsAdapter(service, {
 			json: true,
 		});
 		// Re-implement the message handler inline (since we can't easily simulate Hono's WSEvents).

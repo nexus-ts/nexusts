@@ -16,9 +16,9 @@
 
 import { Inject, Injectable } from "@nexusts/core";
 import type {
+	ConfigOptions,
 	ConfigSchema,
 	InferConfig,
-	ConfigOptions,
 	LoadedConfig,
 } from "./types.js";
 

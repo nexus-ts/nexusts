@@ -142,7 +142,7 @@ export class CloudflareKVAdapter implements RedisClient {
 /** Convert a Redis-style glob (`*`, `?`, `[abc]`) to a KV prefix. */
 function globToPrefix(glob: string, keyPrefix: string): string {
 	// Everything up to the first glob meta-character.
-	const meta = /[*?\[]/.exec(glob);
+	const meta = /[*?[]/.exec(glob);
 	const base = meta ? glob.slice(0, meta.index) : glob;
 	return (keyPrefix ?? "") + base;
 }

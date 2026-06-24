@@ -3,13 +3,13 @@
  * listen/shutdown, and the bootstrap() / shutdown() flow.
  */
 import "reflect-metadata";
-import { describe, it, expect, vi } from "vitest";
-import { Hono } from "hono";
 import {
-	Application, Module, Controller, Get,
-	OnModuleInit, OnModuleDestroy,
-	Injectable,
+	Application, Controller, Get,
+	Injectable,Module, type OnModuleDestroy,
+	type OnModuleInit, 
 } from "@nexusts/core";
+import { Hono } from "hono";
+import { describe, expect, it, vi } from "vitest";
 
 // ---------------------------------------------------------------------------
 // Application creates a server that can be tested via Hono's fetch

@@ -10,18 +10,18 @@
  */
 
 import "reflect-metadata";
-import { describe, it, expect, beforeEach } from "vitest";
 import { Application } from "@core/application";
-import { Module } from "@core/decorators/module";
 import { Controller } from "@core/decorators/controller";
 import { Get } from "@core/decorators/http-methods";
-import { Injectable, Inject } from "@core/decorators/injectable";
+import { Inject, Injectable } from "@core/decorators/injectable";
+import { Module } from "@core/decorators/module";
+import { beforeEach, describe, expect, it } from "vitest";
 import {
-	QueueService,
-	QueueModule,
+	invokeQueueReadyHooks,
 	MemoryQueueBackend,
 	OnQueueReady,
-	invokeQueueReadyHooks,
+	QueueModule,
+	QueueService,
 } from "../../src/queue/index.js";
 import type { QueueEvent } from "../../src/queue/types.js";
 

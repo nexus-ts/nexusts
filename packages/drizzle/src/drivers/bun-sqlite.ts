@@ -1,8 +1,9 @@
 /**
  * Bun's native `bun:sqlite` driver. Zero deps, fastest possible SQLite.
  */
-import type { DriverFactory, RawExecutor } from "./base.js";
+
 import type { SqliteConnectionOptions } from "../types.js";
+import type { DriverFactory, RawExecutor } from "./base.js";
 
 export const bunSqliteDriver: DriverFactory = async (config) => {
 	const conn = config.connection as SqliteConnectionOptions;

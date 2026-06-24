@@ -47,7 +47,6 @@ export class EtaAdapter implements ViewAdapter {
 			// user never uses `.eta` files, Eta isn't loaded.
 			let Eta: any;
 			try {
-				// @ts-ignore — eta is an optional peer dep
 				Eta = require("eta").Eta;
 			} catch (e) {
 				throw new Error(

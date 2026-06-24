@@ -2,14 +2,14 @@
  * Tests for interceptors.
  */
 import "reflect-metadata";
-import { describe, it, expect } from "vitest";
+import type { ExecutionContext } from "@nexusts/core";
 import {
-	createInterceptor,
 	composeInterceptors,
+	createInterceptor,
 	LoggingInterceptor,
 	TimeoutInterceptor,
 } from "@nexusts/core";
-import type { ExecutionContext } from "@nexusts/core";
+import { describe, expect, it } from "vitest";
 
 describe("createInterceptor", () => {
 	it("creates an interceptor class from a function", async () => {

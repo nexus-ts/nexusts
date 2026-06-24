@@ -41,8 +41,8 @@ type BetterAuthInstance = ReturnType<typeof betterAuth>;
  * @returns A `better-auth` Auth instance.
  */
 export function createAuth(config: AuthConfig = {}): BetterAuthInstance {
-	const secret = config.secret ?? process.env["BETTER_AUTH_SECRET"];
-	const baseURL = config.baseUrl ?? process.env["BETTER_AUTH_URL"];
+	const secret = config.secret ?? process.env.BETTER_AUTH_SECRET;
+	const baseURL = config.baseUrl ?? process.env.BETTER_AUTH_URL;
 
 	if (!secret) {
 		throw new Error(
@@ -113,7 +113,7 @@ export function createAuth(config: AuthConfig = {}): BetterAuthInstance {
 							| "strict"
 							| "none",
 						secure:
-							config.cookieSecure ?? process.env["NODE_ENV"] === "production",
+							config.cookieSecure ?? process.env.NODE_ENV === "production",
 						...(config.cookieDomain ? { domain: config.cookieDomain } : {}),
 					},
 				},

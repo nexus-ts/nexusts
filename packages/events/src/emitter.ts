@@ -19,15 +19,15 @@
  */
 
 import type {
-	EventName,
-	EventPriority,
-	EventListener,
-	ListenerOptions,
 	EmitResult,
-	EventEmitter,
 	EmitterEvent,
 	EmitterEventListener,
+	EventEmitter,
+	EventListener,
+	EventName,
+	EventPriority,
 	EventsConfig,
+	ListenerOptions,
 } from "./types.js";
 
 interface InternalListener {

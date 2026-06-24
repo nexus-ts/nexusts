@@ -3,10 +3,10 @@
  */
 
 import "reflect-metadata";
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { DrizzleService } from "../../src/drizzle/index.js";
-import { SessionService } from "../../src/session/index.js";
 import { DrizzleSessionStorage } from "../../src/session/backends/drizzle.js";
+import { SessionService } from "../../src/session/index.js";
 
 let hasBunSqlite = false;
 try {

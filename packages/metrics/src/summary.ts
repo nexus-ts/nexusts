@@ -17,8 +17,8 @@
  *   s.observe(1024);
  */
 
-import type { SummaryOptions, Summary as ISummary, MetricSample } from "./types.js";
 import { escapeLabelValue, renderLabels } from "./counter.js";
+import type { Summary as ISummary, MetricSample, SummaryOptions } from "./types.js";
 
 /** Default percentiles. */
 export const DEFAULT_PERCENTILES = [0.5, 0.9, 0.99];

@@ -74,10 +74,10 @@ export function computeBackoff(
 			raw = initialDelay * attempt;
 			break;
 		case "exponential":
-			raw = initialDelay * Math.pow(multiplier, attempt - 1);
+			raw = initialDelay * multiplier ** (attempt - 1);
 			break;
 		case "exponential-jitter": {
-			const base = initialDelay * Math.pow(multiplier, attempt - 1);
+			const base = initialDelay * multiplier ** (attempt - 1);
 			// ±50% jitter — full jitter (AWS-style).
 			raw = Math.random() * base;
 			break;

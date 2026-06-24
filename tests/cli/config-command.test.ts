@@ -15,10 +15,10 @@
  */
 
 import "reflect-metadata";
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { mkdtemp, readFile, rm, stat } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { configCommand } from "../../src/cli/commands/config.js";
 import type { CommandContext } from "../../src/cli/core/index.js";
 

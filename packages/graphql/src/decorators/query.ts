@@ -18,9 +18,9 @@
  *   }
  */
 import "reflect-metadata";
-import { pushResolverField } from "./resolver.js";
-import { getMethodArgs } from "./arg.js";
 import type { ResolverClassRecord } from "../types.js";
+import { getMethodArgs } from "./arg.js";
+import { pushResolverField } from "./resolver.js";
 
 type OperationKind = "query" | "mutation" | "subscription";
 
@@ -33,8 +33,7 @@ type OperationKind = "query" | "mutation" | "subscription";
  * code-first schemas that use `autoSchema: true`).
  */
 function makeOperationDecorator(kind: OperationKind) {
-	return function (name?: string, opts?: { returns?: string }) {
-		return (
+	return (name?: string, opts?: { returns?: string }) => (
 			target: object,
 			propertyKey: string | symbol,
 			_descriptor: TypedPropertyDescriptor<any>,
@@ -50,7 +49,6 @@ function makeOperationDecorator(kind: OperationKind) {
 					.map((a) => ({ name: a.name, type: a.type })),
 			});
 		};
-	};
 }
 
 export const Query = makeOperationDecorator("query");

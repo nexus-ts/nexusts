@@ -13,22 +13,22 @@
  */
 
 import "reflect-metadata";
-import { describe, it, expect, beforeEach } from "vitest";
 import { Application } from "@core/application";
-import { Module } from "@core/decorators/module";
 import { Controller } from "@core/decorators/controller";
 import { Get } from "@core/decorators/http-methods";
-import { Injectable, Inject } from "@core/decorators/injectable";
+import { Inject, Injectable } from "@core/decorators/injectable";
+import { Module } from "@core/decorators/module";
+import { beforeEach, describe, expect, it } from "vitest";
 import {
-	parseCron,
-	nextCron,
-	ScheduleService,
-	ScheduleModule,
-	MemorySchedulesBackend,
 	Cron,
 	Interval,
-	Timeout,
+	MemorySchedulesBackend,
+	nextCron,
+	parseCron,
+	ScheduleModule,
+	ScheduleService,
 	scanForSchedulers,
+	Timeout,
 } from "../../src/schedule/index.js";
 
 describe("parseCron — aliases", () => {

@@ -3,9 +3,9 @@
  */
 
 import "reflect-metadata";
-import { describe, it, expect } from "vitest";
-import { DrizzleHealthIndicator } from "../../src/health/indicators/drizzle.js";
+import { describe, expect, it } from "vitest";
 import { DrizzleService } from "../../src/drizzle/index.js";
+import { DrizzleHealthIndicator } from "../../src/health/indicators/drizzle.js";
 
 describe("DrizzleHealthIndicator", () => {
 	it("reports up when the probe succeeds", async () => {

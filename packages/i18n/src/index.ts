@@ -41,19 +41,19 @@
  *   }
  */
 
-export { I18nService, I18N_SERVICE_TOKEN } from "./service.js";
-export { I18nModule } from "./module.js";
-export { i18nMiddleware } from "./middleware.js";
 export { CurrentLocale } from "./decorators.js";
+export { i18nMiddleware } from "./middleware.js";
+export { I18nModule } from "./module.js";
+export { I18N_SERVICE_TOKEN, I18nService } from "./service.js";
 export type {
-	Locale,
-	MessageDict,
-	MessageCatalog,
-	TranslateArgs,
-	I18nConfig,
-	DetectOptions,
-	DateFormatOptions,
-	NumberFormatOptions,
 	CurrencyFormatOptions,
+	DateFormatOptions,
+	DetectOptions,
+	I18nConfig,
+	Locale,
+	MessageCatalog,
+	MessageDict,
+	NumberFormatOptions,
 	PluralCategory,
+	TranslateArgs,
 } from "./types.js";

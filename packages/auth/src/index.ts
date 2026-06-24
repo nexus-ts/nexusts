@@ -33,21 +33,21 @@
  *   }
  */
 
-export * from "./types.js";
-export { createAuth } from "./auth.js";
-export type { NexusAuth } from "./auth.js";
-export { AuthService } from "./auth.service.js";
 export { AuthController } from "./auth.controller.js";
+export type { NexusAuth } from "./auth.js";
+export { createAuth } from "./auth.js";
 export { AuthModule } from "./auth.module.js";
-export {
-	authMiddleware,
-	authHandler,
-	type AuthMiddlewareMode,
-	type AuthMiddlewareOptions,
-} from "./middleware.js";
+export { AuthService } from "./auth.service.js";
 export {
 	CurrentUser,
-	UnauthenticatedError,
-	ForbiddenError,
 	type CurrentUserOptions,
+	ForbiddenError,
+	UnauthenticatedError,
 } from "./decorators/current-user.js";
+export {
+	type AuthMiddlewareMode,
+	type AuthMiddlewareOptions,
+	authHandler,
+	authMiddleware,
+} from "./middleware.js";
+export * from "./types.js";

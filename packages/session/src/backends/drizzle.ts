@@ -26,13 +26,13 @@
  */
 import type { DrizzleService } from "@nexusts/drizzle";
 import type {
-	SessionStorage,
-	SessionRecord,
-	SessionData,
 	CreateSessionOptions,
-	UpdateSessionOptions,
-	SessionQuery,
+	SessionData,
 	SessionMetadata,
+	SessionQuery,
+	SessionRecord,
+	SessionStorage,
+	UpdateSessionOptions,
 } from "../types.js";
 
 export interface DrizzleSessionOptions {

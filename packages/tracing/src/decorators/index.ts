@@ -1,1 +1,1 @@
-export { Trace, getTraceOptions, type TraceOptions } from "./trace.js";
+export { getTraceOptions, Trace, type TraceOptions } from "./trace.js";

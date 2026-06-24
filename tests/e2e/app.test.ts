@@ -6,15 +6,15 @@
  * on a TCP port — we use the Hono app's `fetch` method directly.
  */
 import 'reflect-metadata';
-import { describe, it, expect, beforeEach } from 'vitest';
-import { z } from 'zod';
 import { Application } from '@core/application';
-import { Module } from '@core/decorators/module';
 import { Controller } from '@core/decorators/controller';
-import { Get, Post, Delete } from '@core/decorators/http-methods';
+import { Delete, Get, Post } from '@core/decorators/http-methods';
+import { Inject, Injectable } from '@core/decorators/injectable';
+import { Module } from '@core/decorators/module';
 import { Body, Param } from '@core/decorators/params';
-import { Injectable, Inject } from '@core/decorators/injectable';
 import { Validate } from '@core/decorators/validate';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { z } from 'zod';
 
 @Injectable()
 class CounterService {

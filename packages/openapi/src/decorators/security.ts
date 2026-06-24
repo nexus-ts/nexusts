@@ -3,7 +3,7 @@
  * for an operation or controller.
  */
 import "reflect-metadata";
-import { OPENAPI_META, type ApiSecurityOptions } from "../types.js";
+import { type ApiSecurityOptions, OPENAPI_META } from "../types.js";
 
 export function ApiSecurity(name: string, scopes: string[] = []): ClassDecorator & MethodDecorator {
 	return (

@@ -29,7 +29,7 @@
 
 import "reflect-metadata";
 import type { EventService } from "../event.service.js";
-import type { EventName, ListenerOptions, EventListener } from "../types.js";
+import type { EventListener, EventName, ListenerOptions } from "../types.js";
 
 const ON_EVENT_META = "nexus:events:on-event";
 

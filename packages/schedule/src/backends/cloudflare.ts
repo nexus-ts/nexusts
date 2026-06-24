@@ -16,13 +16,13 @@
  */
 
 import type {
-	ScheduleRegistry,
-	ScheduleHandler,
-	ScheduledTask,
 	CronExpression,
 	CronOptions,
+	ScheduledTask,
 	ScheduleEvent,
 	ScheduleEventListener,
+	ScheduleHandler,
+	ScheduleRegistry,
 } from "../types.js";
 
 interface InternalTask {

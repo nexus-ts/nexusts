@@ -6,10 +6,10 @@
  */
 
 import "reflect-metadata";
-import { describe, it, expect, beforeEach } from "vitest";
 import { Hono } from "hono";
-import { UploadService } from "../../src/upload/upload.service.js";
+import { beforeEach, describe, expect, it } from "vitest";
 import { uploadMiddleware } from "../../src/upload/upload.middleware.js";
+import { UploadService } from "../../src/upload/upload.service.js";
 
 function makeApp(svc: UploadService, fields: Array<{ fieldName: string; maxFiles: number; required: boolean }>) {
 	const app = new Hono();

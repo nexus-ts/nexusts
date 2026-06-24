@@ -35,7 +35,7 @@ interface GatewayMetadata {
  *   class ChatGateway { ... }
  */
 export function WebSocketGateway(path: string): ClassDecorator {
-	return function (target: Function) {
+	return (target: Function) => {
 		const ctor = target as unknown as { prototype: object };
 		const proto = ctor.prototype ?? (target as unknown as object);
 		// Collect lifecycle handlers from method-level decorators.
@@ -63,11 +63,11 @@ export function getGatewayPath(target: object): string | undefined {
  * ------------------------------------------------------------------ */
 
 function makeLifecycleDecorator(lifecycle: WsLifecycle) {
-	return function (
+	return (
 		_target: object,
 		propertyKey: string | symbol,
 		descriptor: PropertyDescriptor,
-	) {
+	) => {
 		const fn = descriptor.value as Function & { [LIFECYCLE_KEY]?: Record<string, string> };
 		if (typeof fn !== "function") return descriptor;
 		fn[LIFECYCLE_KEY] = fn[LIFECYCLE_KEY] ?? {};

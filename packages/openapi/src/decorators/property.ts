@@ -17,7 +17,7 @@
  * TypeScript reflection of the property's design:type metadata.
  */
 import "reflect-metadata";
-import { OPENAPI_META, type ApiPropertyOptions } from "../types.js";
+import { type ApiPropertyOptions, OPENAPI_META } from "../types.js";
 
 export function ApiProperty(options: ApiPropertyOptions = {}): PropertyDecorator {
 	return (target: object, propertyKey: string | symbol) => {

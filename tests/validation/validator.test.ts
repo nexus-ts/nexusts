@@ -2,13 +2,13 @@
  * Validation pipeline tests.
  */
 import "reflect-metadata";
-import { describe, it, expect } from "vitest";
-import { z } from "zod";
 import {
-	validateRequest,
-	ValidationError,
 	formatValidationError,
+	ValidationError,
+	validateRequest,
 } from "@core/validation/validator";
+import { describe, expect, it } from "vitest";
+import { z } from "zod";
 
 describe("Validation", () => {
 	it("returns parsed values when validation passes", () => {

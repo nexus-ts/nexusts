@@ -8,21 +8,21 @@
  * `drizzle-orm` (verified at runtime by Node.js `require`).
  */
 import "reflect-metadata";
-import { describe, it, expect } from "vitest";
-import {
-	Entity,
-	getEntityTable,
-	generateMigrations,
-	pushSchema,
-	eq, ne, and, or, sql, asc, desc,
-	like, ilike, inArray, isNull,
-	not, notLike, notIlike,
-	relations,
-	between, notBetween,
-	count, sum, avg, min, max,
-	lt, lte,
-} from "@nexusts/drizzle";
 import type { DrizzleRepository, DrizzleService } from "@nexusts/drizzle";
+import {and, asc, avg, 
+	between, 
+	count, desc,
+	Entity,
+	eq, 
+	generateMigrations,
+	getEntityTable,ilike, inArray, isNull,
+	like, 
+	lt, lte,max,min, ne, 
+	not, notBetween,notIlike,notLike, or, 
+	pushSchema,
+	relations,sql, sum, 
+} from "@nexusts/drizzle";
+import { describe, expect, it } from "vitest";
 
 // ---------------------------------------------------------------------------
 // Operator re-exports (verify what esbuild CAN resolve through the alias)

@@ -4,7 +4,7 @@
  * `@ApiBody` decorators take precedence.
  */
 import "reflect-metadata";
-import { OPENAPI_META, type ApiBodyOptions } from "../types.js";
+import { type ApiBodyOptions, OPENAPI_META } from "../types.js";
 
 export function ApiBody(options: ApiBodyOptions): MethodDecorator {
 	return (target: object, propertyKey: string | symbol) => {

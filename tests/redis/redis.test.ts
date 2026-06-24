@@ -15,22 +15,22 @@
  */
 
 import "reflect-metadata";
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
+import { RedisCacheStore } from "../../src/cache/stores/redis.js";
+import { Application } from "../../src/core/application.js";
 import {
 	createRedisClient,
 	detectRedisRuntime,
 	MemoryRedisAdapter,
-	RedisClient,
-	RedisModule,
 	REDIS_CLIENT_TOKEN,
+	type RedisClient,
+	RedisModule,
 } from "../../src/redis/index.js";
 import {
-	RedisSessionStorage,
 	CloudflareKVSessionStorage,
+	RedisSessionStorage,
 	SessionService,
 } from "../../src/session/index.js";
-import { RedisCacheStore } from "../../src/cache/stores/redis.js";
-import { Application } from "../../src/core/application.js";
 
 describe("detectRedisRuntime", () => {
 	it("returns a known adapter", () => {

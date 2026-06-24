@@ -7,8 +7,8 @@
  */
 import "reflect-metadata";
 import {
-	DRIZZLE_TABLE_META,
 	type ColumnMetadata,
+	DRIZZLE_TABLE_META,
 	type TableMetadata,
 } from "../types.js";
 

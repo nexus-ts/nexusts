@@ -1,8 +1,9 @@
 /**
  * MySQL driver. Uses `mysql2/promise` under the hood.
  */
-import type { DriverFactory, RawExecutor } from "./base.js";
+
 import type { MysqlConnectionOptions } from "../types.js";
+import type { DriverFactory, RawExecutor } from "./base.js";
 
 export const mysqlDriver: DriverFactory = async (config) => {
 	const conn = config.connection as MysqlConnectionOptions;

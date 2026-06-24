@@ -19,8 +19,9 @@
  * The middleware does NOT enforce a specific redirect strategy — the
  * `InertiaFormBuilder` handles that at the action level (303 + PRG).
  */
-import type { Context, Next } from "hono";
+
 import type { Middleware } from "@nexusts/core";
+import type { Context, Next } from "hono";
 
 export interface InertiaFormMiddlewareOptions {
 	/**

@@ -11,10 +11,10 @@
  */
 
 import type { Hono } from "hono";
+import { WebSocketClientImpl } from "../client.js";
 import { getGatewayPath, getLifecycleHandlers } from "../decorators.js";
 import type { WebSocketService } from "../service.js";
-import { WebSocketClientImpl } from "../client.js";
-import type { WebSocketGatewayOptions, GatewayClass } from "./types.js";
+import type { GatewayClass, WebSocketGatewayOptions } from "./types.js";
 
 /** Adapter that wires `@WebSocketGateway` classes to Bun's WebSocket. */
 export class BunWsAdapter {
@@ -35,7 +35,6 @@ export class BunWsAdapter {
 	 */
 	async install(app: Hono, gateways: GatewayClass[]): Promise<{ websocket: BunWebSocketConfig }> {
 		// Lazy-import Hono's Bun adapter to keep Node builds from breaking.
-		// @ts-ignore - bun adapter is Bun-only
 		const { createBunWebSocket } = await import("hono/bun");
 		const { upgradeWebSocket, websocket } = createBunWebSocket();
 

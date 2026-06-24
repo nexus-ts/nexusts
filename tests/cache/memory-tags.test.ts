@@ -3,7 +3,7 @@
  */
 
 import "reflect-metadata";
-import { describe, it, expect, beforeEach } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import { MemoryStore } from "../../src/cache/stores/memory.js";
 
 describe("MemoryStore invalidateByTag", () => {

@@ -30,11 +30,11 @@
  *   }
  */
 
-export * from "./types.js";
-export { Logger } from "./logger.service.js";
 export { LoggerModule } from "./logger.module.js";
+export { Logger } from "./logger.service.js";
 export {
+	NullTransport,
 	PinoTransport,
 	PrettyTransport,
-	NullTransport,
 } from "./transports/index.js";
+export * from "./types.js";

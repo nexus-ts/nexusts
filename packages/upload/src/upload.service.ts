@@ -21,8 +21,8 @@
 import { Inject, Injectable } from "@nexusts/core";
 import {
 	UPLOAD_STORAGE_KEY,
-	UploadError,
 	type UploadConfig,
+	UploadError,
 	type UploadedFile,
 } from "./types.js";
 

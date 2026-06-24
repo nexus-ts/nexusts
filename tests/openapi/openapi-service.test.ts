@@ -4,18 +4,18 @@
  */
 
 import "reflect-metadata";
-import { describe, it, expect, beforeEach } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import * as z from "zod/v3";
-import { OpenAPIService } from "../../src/openapi/openapi.service.js";
 import {
-	ApiTags,
-	ApiOperation,
-	ApiResponse,
-	ApiParam,
-	ApiQuery,
 	ApiBody,
 	ApiExclude,
+	ApiOperation,
+	ApiParam,
+	ApiQuery,
+	ApiResponse,
+	ApiTags,
 } from "../../src/openapi/decorators/index.js";
+import { OpenAPIService } from "../../src/openapi/openapi.service.js";
 
 function makeRoute(
 	target: any,

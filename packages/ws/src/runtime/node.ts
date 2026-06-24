@@ -26,10 +26,10 @@
  */
 
 import type { Hono } from "hono";
+import { WebSocketClientImpl } from "../client.js";
 import { getGatewayPath, getLifecycleHandlers } from "../decorators.js";
 import type { WebSocketService } from "../service.js";
-import { WebSocketClientImpl } from "../client.js";
-import type { WebSocketGatewayOptions, GatewayClass } from "./types.js";
+import type { GatewayClass, WebSocketGatewayOptions } from "./types.js";
 
 /** Adapter that wires `@WebSocketGateway` classes to a `ws.WebSocketServer`. */
 export class NodeWsAdapter {
@@ -51,7 +51,6 @@ export class NodeWsAdapter {
 		let WS: typeof import("ws");
 		try {
 			WS = (await import("ws")).default ? await import("ws") : (await import("ws"));
-			// @ts-ignore - ws exports shape varies
 			const WebSocketServer = (WS as any).WebSocketServer ?? (WS as any).Server ?? (WS as any).default?.WebSocketServer;
 			if (!WebSocketServer) throw new Error("no WebSocketServer export");
 		} catch (err) {
@@ -74,7 +73,6 @@ export class NodeWsAdapter {
 			});
 		}
 
-		// @ts-ignore - WS is dynamically imported
 		const wss = new (WS as any).WebSocketServer({ noServer: true });
 		const opts = this.options;
 		const service = this.service;

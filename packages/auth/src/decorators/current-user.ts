@@ -21,9 +21,8 @@
  */
 
 import "reflect-metadata";
-import { createParamDecorator } from "@nexusts/core";
-import { PARAM_TYPES } from "@nexusts/core";
-import type { AuthUser, AuthSessionRecord } from "../types.js";
+import { createParamDecorator, PARAM_TYPES } from "@nexusts/core";
+import type { AuthSessionRecord, AuthUser } from "../types.js";
 
 export interface CurrentUserOptions {
 	/**

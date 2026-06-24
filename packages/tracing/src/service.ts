@@ -29,14 +29,14 @@
  */
 
 import {
-	context as otelContext,
-	propagation,
-	SpanStatusCode,
-	SpanKind,
-	trace,
 	type Context,
 	type Span as OtelSpan,
+	context as otelContext,
+	propagation,
+	SpanKind,
+	SpanStatusCode,
 	type Tracer,
+	trace,
 } from "@opentelemetry/api";
 import type {
 	ActiveSpan,
@@ -302,11 +302,11 @@ export class TracingService {
 		// dynamically so users who don't trace don't need them.
 		let NodeSDK: any, OTLPTraceExporter: any, Resource: any, SemanticResourceAttributes: any;
 		try {
-			// @ts-ignore - optional peer dep
+			// @ts-expect-error - optional peer dep
 			({ NodeSDK } = await import("@opentelemetry/sdk-node"));
-			// @ts-ignore - optional peer dep
+			// @ts-expect-error - optional peer dep
 			({ OTLPTraceExporter } = await import("@opentelemetry/exporter-trace-otlp-http"));
-			// @ts-ignore - optional peer dep
+			// @ts-expect-error - optional peer dep
 			({ Resource } = await import("@opentelemetry/resources"));
 			const semconv = await import("@opentelemetry/semantic-conventions");
 			SemanticResourceAttributes = (semconv as any).SemanticResourceAttributes ?? semconv;

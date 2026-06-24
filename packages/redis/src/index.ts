@@ -29,23 +29,23 @@
  */
 
 export {
-	createRedisClient,
-	detectRedisRuntime,
 	BunRedisAdapter,
 	CloudflareKVAdapter,
+	createRedisClient,
+	detectRedisRuntime,
 	MemoryRedisAdapter,
 	NodeRedisAdapter,
 } from "./adapters/index.js";
-export { RedisModule, REDIS_CLIENT_TOKEN } from "./module.js";
+export { REDIS_CLIENT_TOKEN, RedisModule } from "./module.js";
 export type {
+	KVNamespaceLike,
 	RedisAdapterKind,
 	RedisClient,
 	RedisConfig,
+	RedisCursor,
+	RedisKey,
 	RedisScanOptions,
 	RedisScanResult,
 	RedisSetOptions,
 	RedisValue,
-	RedisKey,
-	RedisCursor,
-	KVNamespaceLike,
 } from "./types.js";

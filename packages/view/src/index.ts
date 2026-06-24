@@ -27,45 +27,45 @@
  * a different engine globally.
  */
 
+export { EdgeAdapter } from "./edge.js";
+export { EtaAdapter } from "./eta.js";
+export { renderDefaultRoot } from "./inertia/default-ssr.js";
+export { InertiaFormBuilder } from "./inertia/form-helper.js";
+export { inertiaFormMiddleware } from "./inertia/form-middleware.js";
+export {
+	always,
+	deepMerge,
+	defer,
+	merge,
+	once,
+	optional,
+} from "./inertia/helpers.js";
+export { Inertia } from "./inertia/inertia-adapter.js";
+export type { ReactSsrOptions } from "./inertia/ssr/react-adapter.js";
+export { createReactAdapter } from "./inertia/ssr/react-adapter.js";
+export {
+	asRegistry,
+	ComponentRegistry,
+	createRegistry,
+} from "./inertia/ssr/registry.js";
+export type { VueSsrOptions } from "./inertia/ssr/vue-adapter.js";
+export { createVueAdapter } from "./inertia/ssr/vue-adapter.js";
+export type {
+	InertiaConfig,
+	InertiaPage,
+	InertiaSharedProps,
+	SsrAdapter,
+	SsrRenderResult,
+} from "./inertia/types.js";
+export { RenduAdapter } from "./rendu.js";
 export type {
 	ViewAdapter,
 	ViewContext,
 	ViewOptions,
 } from "./types.js";
-export { RenduAdapter } from "./rendu.js";
-export { EdgeAdapter } from "./edge.js";
-export { EtaAdapter } from "./eta.js";
-export { Inertia } from "./inertia/inertia-adapter.js";
 export {
-	defer,
-	always,
-	optional,
-	merge,
-	deepMerge,
-	once,
-} from "./inertia/helpers.js";
-export { InertiaFormBuilder } from "./inertia/form-helper.js";
-export { inertiaFormMiddleware } from "./inertia/form-middleware.js";
-export { renderDefaultRoot } from "./inertia/default-ssr.js";
-export type {
-	SsrAdapter,
-	SsrRenderResult,
-	InertiaConfig,
-	InertiaPage,
-	InertiaSharedProps,
-} from "./inertia/types.js";
-export { createReactAdapter } from "./inertia/ssr/react-adapter.js";
-export { createVueAdapter } from "./inertia/ssr/vue-adapter.js";
-export {
-	ComponentRegistry,
-	createRegistry,
-	asRegistry,
-} from "./inertia/ssr/registry.js";
-export type { ReactSsrOptions } from "./inertia/ssr/react-adapter.js";
-export type { VueSsrOptions } from "./inertia/ssr/vue-adapter.js";
-export {
-	renderView,
-	loadTemplate,
-	setViewPaths,
 	getViewPaths,
+	loadTemplate,
+	renderView,
+	setViewPaths,
 } from "./view-engine.js";

@@ -21,8 +21,8 @@
  * detects `AsyncFunction` and uses `withSpan` / `withSpanSync` accordingly.
  */
 
-import type { ActiveSpan, SpanOptions } from "../types.js";
 import { getTracingService } from "../service.js";
+import type { ActiveSpan, SpanOptions } from "../types.js";
 
 export type TraceOptions =
 	| string
@@ -39,7 +39,7 @@ const TRACE_KEY = Symbol.for("nexus:trace:options");
  * right instance.
  */
 export function Trace(opts?: TraceOptions) {
-	return function (target: object, propertyKey: string | symbol, descriptor: PropertyDescriptor) {
+	return (target: object, propertyKey: string | symbol, descriptor: PropertyDescriptor) => {
 		const original = descriptor.value as (...args: unknown[]) => unknown;
 		if (typeof original !== "function") {
 			throw new Error(`@Trace() can only be applied to methods, got ${typeof original}`);

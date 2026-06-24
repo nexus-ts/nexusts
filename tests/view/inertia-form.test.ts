@@ -11,13 +11,13 @@
  * - Multiple errors on the same field accumulate
  */
 import 'reflect-metadata';
-import { describe, it, expect, beforeEach } from 'vitest';
 import { Application } from '@core/application';
-import { Module } from '@core/decorators/module';
 import { Controller } from '@core/decorators/controller';
 import { Get, Post } from '@core/decorators/http-methods';
 import { Inject } from '@core/decorators/injectable';
+import { Module } from '@core/decorators/module';
 import { Body } from '@core/decorators/params';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { Inertia } from '@/view/inertia';
 
 @Controller('/users')

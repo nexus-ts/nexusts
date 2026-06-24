@@ -7,12 +7,12 @@
  */
 
 import type {
-	SessionStorage,
-	SessionRecord,
-	SessionData,
 	CreateSessionOptions,
-	UpdateSessionOptions,
+	SessionData,
 	SessionQuery,
+	SessionRecord,
+	SessionStorage,
+	UpdateSessionOptions,
 } from "../types.js";
 
 export interface MemoryStorageOptions {

@@ -10,23 +10,23 @@
  */
 
 import "reflect-metadata";
-import { describe, it, expect, beforeAll, beforeEach } from "vitest";
-import { Hono } from "hono";
 import { Application } from "@core/application";
-import { Module } from "@core/decorators/module";
 import { Controller } from "@core/decorators/controller";
 import { Get } from "@core/decorators/http-methods";
+import { Module } from "@core/decorators/module";
+import { Hono } from "hono";
+import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 import {
-	createAuth,
-	AuthService,
 	AuthModule,
+	AuthService,
 	authMiddleware,
 	CurrentUser,
+	createAuth,
 } from "../../src/auth/index.js";
 import type {
+	AuthConfig,
 	AuthUser,
 	AuthVariables,
-	AuthConfig,
 } from "../../src/auth/types.js";
 
 const AUTH_CONFIG: AuthConfig = {

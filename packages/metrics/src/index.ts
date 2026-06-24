@@ -23,31 +23,31 @@
  *   class AppModule {}
  */
 
+export { MetricsController } from "./controller.js";
 export { CounterImpl } from "./counter.js";
+export { Counted, type CountedOptions, Timed, type TimedOptions } from "./decorators/index.js";
 export { GaugeImpl } from "./gauge.js";
-export { HistogramImpl, DEFAULT_BUCKETS } from "./histogram.js";
-export { SummaryImpl, DEFAULT_PERCENTILES } from "./summary.js";
+export { DEFAULT_BUCKETS, HistogramImpl } from "./histogram.js";
+export { MetricsModule } from "./module.js";
 export { MetricsRegistry } from "./registry.js";
 export {
-	MetricsService,
-	METRICS_SERVICE_TOKEN,
-	setMetricsService,
 	getMetricsService,
+	METRICS_SERVICE_TOKEN,
+	MetricsService,
+	setMetricsService,
 } from "./service.js";
-export { MetricsModule } from "./module.js";
-export { MetricsController } from "./controller.js";
-export { Counted, Timed, type CountedOptions, type TimedOptions } from "./decorators/index.js";
+export { DEFAULT_PERCENTILES, SummaryImpl } from "./summary.js";
 export type {
 	Counter,
 	CounterOptions,
+	ExpositionFormat,
+	ExpositionResult,
 	Gauge,
 	GaugeOptions,
 	Histogram,
 	HistogramOptions,
-	Summary,
-	SummaryOptions,
 	MetricSample,
 	MetricsConfig,
-	ExpositionFormat,
-	ExpositionResult,
+	Summary,
+	SummaryOptions,
 } from "./types.js";

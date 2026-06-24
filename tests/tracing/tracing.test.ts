@@ -19,17 +19,17 @@
  */
 
 import "reflect-metadata";
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
+import { Trace } from "../../src/tracing/decorators/trace.js";
 import {
-	TracingService,
+	extractB3Context,
+	formatTraceParent,
 	InMemorySpanRecorder,
 	parseTraceParent,
-	formatTraceParent,
-	extractB3Context,
 	TRACING_SERVICE_TOKEN,
+	TracingService,
 } from "../../src/tracing/index.js";
-import { Trace } from "../../src/tracing/decorators/trace.js";
-import { setTracingService, getTracingService } from "../../src/tracing/service.js";
+import { getTracingService, setTracingService } from "../../src/tracing/service.js";
 
 describe("InMemorySpanRecorder", () => {
 	it("starts empty", () => {

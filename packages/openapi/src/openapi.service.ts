@@ -12,12 +12,12 @@
 import "reflect-metadata";
 import { Inject, Injectable } from "@nexusts/core";
 import type {
+	OPENAPI_META as _OM,
 	ApiOperationOptions,
 	ApiParamOptions,
 	ApiPropertyOptions,
 	ApiResponseOptions,
 	JSONSchema,
-	OPENAPI_META as _OM,
 	OpenAPIConfig,
 	OpenAPIDocument,
 	OpenAPIMediaType,
@@ -284,8 +284,11 @@ export class OpenAPIService {
 	private extractPathParams(path: string): string[] {
 		const out: string[] = [];
 		const re = /:([A-Za-z0-9_]+)/g;
-		let m: RegExpExecArray | null;
-		while ((m = re.exec(path)) !== null) out.push(m[1]!);
+		let m = re.exec(path);
+		while (m !== null) {
+			out.push(m[1]!);
+			m = re.exec(path);
+		}
 		return out;
 	}
 

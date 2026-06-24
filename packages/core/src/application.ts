@@ -13,20 +13,18 @@
  * is a separate concern with its own module. Application composes them.
  */
 import "reflect-metadata";
+import type { ViewAdapter } from "@nexusts/view";
+import { Inertia, type InertiaConfig, RenduAdapter, setViewPaths as setViewPathsModule } from "@nexusts/view";
 import { ApplicationContainer } from "./di/container.js";
 import { ModuleScanner } from "./di/scanner.js";
-import { NexusServer, type NexusServerOptions } from "./http/server.js";
-import type { ViewAdapter } from "@nexusts/view";
-import { RenduAdapter } from "@nexusts/view";
-import { setViewPaths as setViewPathsModule } from "@nexusts/view";
 import type { Type } from "./di/tokens.js";
-import { Inertia, type InertiaConfig } from "@nexusts/view";
+import { NexusServer, type NexusServerOptions } from "./http/server.js";
 import {
-	callOnModuleInit,
-	callOnApplicationInit,
-	callOnModuleDestroy,
 	callBeforeApplicationDestroy,
 	callOnApplicationDestroy,
+	callOnApplicationInit,
+	callOnModuleDestroy,
+	callOnModuleInit,
 } from "./lifecycle/index.js";
 
 // Globally-registered hook for scanning schedule decorators at boot.
@@ -42,7 +40,8 @@ let _scheduleScanner: ((instance: unknown) => void) | null = null;
 export function setScheduleScanner(fn: ((instance: unknown) => void) | null): void {
 	_scheduleScanner = fn;
 }
-import { DIContainer } from "./di/container.js";
+
+import type { DIContainer } from "./di/container.js";
 
 export interface ApplicationOptions extends NexusServerOptions {
 	/** Default view adapter. Defaults to Rendu. */

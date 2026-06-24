@@ -1,10 +1,10 @@
 export {
-	MemorySchedulesBackend,
-	type MemoryBackendOptions,
-	CronExpr,
-} from "./memory.js";
-export {
-	CloudflareSchedulesBackend,
 	type CloudflareScheduledEvent,
+	CloudflareSchedulesBackend,
 	type CloudflareSchedulesOptions,
 } from "./cloudflare.js";
+export {
+	CronExpr,
+	type MemoryBackendOptions,
+	MemorySchedulesBackend,
+} from "./memory.js";

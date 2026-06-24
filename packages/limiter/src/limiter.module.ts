@@ -15,9 +15,9 @@
  */
 import "reflect-metadata";
 import { Module } from "@nexusts/core";
-import { LimiterService } from "./limiter.service.js";
-import { LimiterMiddleware } from "./limiter.middleware.js";
 import { MemoryRateLimitStorage } from "./backends/memory.js";
+import { LimiterMiddleware } from "./limiter.middleware.js";
+import { LimiterService } from "./limiter.service.js";
 import type { LimiterConfig } from "./types.js";
 
 @Module({

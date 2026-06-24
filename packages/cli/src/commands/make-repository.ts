@@ -3,7 +3,7 @@
  */
 
 import { mkdirSync } from "node:fs";
-import { resolve, dirname } from "node:path";
+import { dirname, resolve } from "node:path";
 import type { Command, CommandContext } from "../core/index.js";
 import { logger, nameVariants, render, writeFile } from "../core/index.js";
 import { templates } from "../templates/index.js";

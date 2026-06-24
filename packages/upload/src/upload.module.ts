@@ -18,9 +18,9 @@
  */
 import "reflect-metadata";
 import { Module } from "@nexusts/core";
-import { UploadService } from "./upload.service.js";
 import type { UploadConfig } from "./types.js";
 import { uploadMiddleware } from "./upload.middleware.js";
+import { UploadService } from "./upload.service.js";
 
 @Module({
 	providers: [

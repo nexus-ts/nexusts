@@ -15,24 +15,24 @@
  */
 
 import "reflect-metadata";
-import { describe, it, expect, beforeEach } from "vitest";
 import { Hono } from "hono";
+import { beforeEach, describe, expect, it } from "vitest";
+import { Counted, Timed } from "../../src/metrics/decorators/index.js";
 import {
-	MetricsService,
+	CounterImpl,
+	DEFAULT_BUCKETS,
+	DEFAULT_PERCENTILES,
+	GaugeImpl,
+	HistogramImpl,
 	METRICS_SERVICE_TOKEN,
 	MetricsController,
 	MetricsRegistry,
-	CounterImpl,
-	GaugeImpl,
-	HistogramImpl,
+	MetricsService,
 	SummaryImpl,
-	DEFAULT_BUCKETS,
-	DEFAULT_PERCENTILES,
 } from "../../src/metrics/index.js";
-import { Counted, Timed } from "../../src/metrics/decorators/index.js";
 import {
-	setMetricsService,
 	getMetricsService,
+	setMetricsService,
 } from "../../src/metrics/service.js";
 
 beforeEach(() => {

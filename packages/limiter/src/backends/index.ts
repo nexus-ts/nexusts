@@ -1,8 +1,9 @@
 /**
  * Storage backend barrel.
  */
-export { MemoryRateLimitStorage } from "./memory.js";
+
 export {
-	DrizzleRateLimitStorage,
 	type DrizzleRateLimitOptions,
+	DrizzleRateLimitStorage,
 } from "./drizzle.js";
+export { MemoryRateLimitStorage } from "./memory.js";

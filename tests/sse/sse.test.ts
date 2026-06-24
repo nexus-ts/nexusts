@@ -3,10 +3,10 @@
  */
 
 import "reflect-metadata";
-import { describe, it, expect, beforeEach, vi } from "vitest";
 import { Hono } from "hono";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { getLastEventId, sse } from "../../src/sse/sse.js";
 import { SseStream } from "../../src/sse/sse-stream.js";
-import { sse, getLastEventId } from "../../src/sse/sse.js";
 
 // ---------------------------------------------------------------------------
 // Mock HonoSSEApi

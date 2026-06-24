@@ -2,13 +2,13 @@
  * Tests for HTTP guards.
  */
 import "reflect-metadata";
-import { describe, it, expect } from "vitest";
 import {
 	AuthGuard,
-	RolesGuard,
 	createHttpGuard,
 	executeHttpGuards,
+	RolesGuard,
 } from "@nexusts/core";
+import { describe, expect, it } from "vitest";
 
 
 describe("createHttpGuard", () => {

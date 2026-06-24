@@ -15,9 +15,9 @@
  *   const rows = await db.select().from(users).all();
  */
 import { Inject, Injectable } from "@nexusts/core";
-import type { DrizzleConfig, MigrateResult, MigrationRecord } from "./types.js";
-import { resolveDriver, type RawExecutor } from "./drivers/index.js";
+import { type RawExecutor, resolveDriver } from "./drivers/index.js";
 import { RawQuery } from "./raw-query.js";
+import type { DrizzleConfig, MigrateResult, MigrationRecord } from "./types.js";
 
 @Injectable()
 export class DrizzleService {

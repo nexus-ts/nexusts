@@ -20,24 +20,24 @@
  * - `inertia.back()` → 302 + Location: back
  */
 import 'reflect-metadata';
-import { describe, it, expect, beforeEach } from 'vitest';
-import { z } from 'zod';
 import { Application } from '@core/application';
-import { Module } from '@core/decorators/module';
 import { Controller } from '@core/decorators/controller';
 import { Get, Post } from '@core/decorators/http-methods';
 import { Inject } from '@core/decorators/injectable';
+import { Module } from '@core/decorators/module';
+import { beforeEach, describe, expect, it } from 'vitest';
+
 import {
-  Inertia,
-  defer,
   always,
-  optional,
-  merge,
   deepMerge,
+  defer,
+  Inertia,
+  merge,
   once,
+  optional,
 } from '@/view/inertia';
 
-class Counter {
+class _Counter {
   n = 0;
   bump() { return ++this.n; }
 }

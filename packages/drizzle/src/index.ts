@@ -1,38 +1,37 @@
 /**
  * Public entry point for `nexusjs/drizzle`.
  */
-export * from "./types.js";
-export { DrizzleService } from "./drizzle.service.js";
-export { DrizzleModule } from "./drizzle.module.js";
-export { DrizzleModel } from "./model.js";
-export { DrizzleRepository } from "./repository/index.js";
+
 export {
-	Table,
 	Column,
-	PrimaryKey,
 	getTableMeta,
+	PrimaryKey,
 	readTableMeta,
+	Table,
 } from "./decorators/index.js";
-export { RawQuery } from "./raw-query.js";
-export {
-	resolveDriver,
-	postgresDriver,
-	mysqlDriver,
-	sqliteDriver,
-	bunSqliteDriver,
-	d1Driver,
-} from "./drivers/index.js";
 export type {
+	DriverFactory,
 	DrizzleDriverResult,
 	RawExecutor,
-	DriverFactory,
 } from "./drivers/index.js";
-
+export {
+	bunSqliteDriver,
+	d1Driver,
+	mysqlDriver,
+	postgresDriver,
+	resolveDriver,
+	sqliteDriver,
+} from "./drivers/index.js";
+export { DrizzleModule } from "./drizzle.module.js";
+export { DrizzleService } from "./drizzle.service.js";
 // Entity decorator (auto-injects table schema into repository)
 export { Entity, getEntityTable } from "./entity.decorator.js";
-
 // Migration helpers (programmatic drizzle-kit wrappers)
 export { generateMigrations, pushSchema } from "./migrations.js";
+export { DrizzleModel } from "./model.js";
+export { RawQuery } from "./raw-query.js";
+export { DrizzleRepository } from "./repository/index.js";
+export * from "./types.js";
 
 // Seeding factory
 export { Factory } from "./factory.js";
@@ -49,34 +48,14 @@ export type { FactoryDb } from "./factory.js";
 // runtime value is always available (verified at drizzle-orm ≥0.36).
 // ============================================================================
 
-// Comparison — short chain, always resolves.
+// Short chain — always resolves through TS.
 export {
-	eq, ne, gt, gte, lt, lte,
-	and, or,
-	like, ilike,
-	inArray, notInArray,
-	isNull, isNotNull,
-	sql, asc, desc,
+	and, asc, desc, eq, gt, gte, ilike,
+	inArray, isNotNull, isNull,
+	like, lt, lte, ne, notInArray, or, sql,
 } from "drizzle-orm";
 
-// Deep chain — available at runtime. @ts-expect-error because TS 5.9
-// hits the re-export depth limit through drizzle-orm's barrel files.
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-// @ts-expect-error — runtime export from drizzle-orm/sql/expressions/conditions
-export { not } from "drizzle-orm";
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-// @ts-expect-error — runtime export from drizzle-orm/sql/expressions/conditions
-export { notLike, notIlike } from "drizzle-orm";
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-// @ts-expect-error — runtime export from drizzle-orm/relations
-export { relations } from "drizzle-orm";
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-// @ts-expect-error — runtime export from drizzle-orm/sql/expressions/conditions
-export { between, notBetween } from "drizzle-orm";
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-// @ts-expect-error — runtime export from drizzle-orm/sql/functions/aggregate
-export { count, sum, avg, min, max } from "drizzle-orm";
+// Deep chain — runtime values verified at drizzle-orm ≥0.36.
+// TS may hit the re-export depth limit through the drizzle-orm barrel.
+// @ts-expect-error — barrel re-export depth limit for aggregate/condition helpers
+export { avg, between, count, max, min, not, notBetween, notIlike, notLike, relations, sum } from "drizzle-orm";

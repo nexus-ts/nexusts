@@ -23,15 +23,14 @@
  *   I18nModule.install(app, container);  // or via @Module middleware config
  */
 
-import { Module } from "@nexusts/core";
-import { Inject } from "@nexusts/core";
+import { Inject, Module } from "@nexusts/core";
 import "reflect-metadata";
 import type { Application } from "@nexusts/core";
-import {
-	I18nService,
-	I18N_SERVICE_TOKEN,
-} from "./service.js";
 import { i18nMiddleware } from "./middleware.js";
+import {
+	I18N_SERVICE_TOKEN,
+	I18nService,
+} from "./service.js";
 import type { I18nConfig, Locale, MessageCatalog } from "./types.js";
 
 @Module({

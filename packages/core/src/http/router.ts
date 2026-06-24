@@ -16,7 +16,6 @@
 import "reflect-metadata";
 import type { Hono } from "hono";
 import { PARAM_TYPES } from "../constants.js";
-import type { ApplicationContainer, DIContainer } from "../di/container.js";
 import {
 	getControllerMetadata,
 	isController,
@@ -24,38 +23,38 @@ import {
 import { getRoutes } from "../decorators/http-methods.js";
 import { getParamMetadata } from "../decorators/params.js";
 import { getValidationMetadata } from "../decorators/validate.js";
-import {
-	validateRequest,
-} from "../validation/validator.js";
+import type { ApplicationContainer, DIContainer } from "../di/container.js";
 import type { HttpMethod, RouteMetadata, Type } from "../di/tokens.js";
-
-// Guard, interceptor, and filter integration
 import {
-	type HttpGuard,
-	type HttpExecutionContext as GuardContext,
-	HttpExecutionContextImpl as GuardExecutionContextImpl,
-	executeHttpGuards,
-	getControllerGuards,
-	getRouteGuards,
-} from "../guards/index.js";
-
-import {
-	type Interceptor,
-	type ExecutionContext,
-	type ResolvedInterceptor,
-	HttpExecutionContextImpl as InterceptorContextImpl,
-	composeInterceptors,
-	getControllerInterceptors,
-	getRouteInterceptors,
-} from "../interceptors/index.js";
-
-import {
+	executeExceptionFilters,
 	type HttpExecutionContext as FilterContext,
 	HttpExecutionContextImpl as FilterContextImpl,
-	executeExceptionFilters,
 	getControllerExceptionFilters,
 	getRouteExceptionFilters,
 } from "../exception-filters/index.js";
+
+// Guard, interceptor, and filter integration
+import {
+	executeHttpGuards,
+	type HttpExecutionContext as GuardContext,
+	HttpExecutionContextImpl as GuardExecutionContextImpl,
+	getControllerGuards,
+	getRouteGuards,
+	type HttpGuard,
+} from "../guards/index.js";
+
+import {
+	composeInterceptors,
+	type ExecutionContext,
+	getControllerInterceptors,
+	getRouteInterceptors,
+	type Interceptor,
+	HttpExecutionContextImpl as InterceptorContextImpl,
+	type ResolvedInterceptor,
+} from "../interceptors/index.js";
+import {
+	validateRequest,
+} from "../validation/validator.js";
 
 export interface NexusRouter {
 	/** Register a controller class (Nest style). */

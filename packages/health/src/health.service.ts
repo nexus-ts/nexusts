@@ -7,19 +7,19 @@
  */
 
 import { Inject, Injectable } from "@nexusts/core";
-import type {
-	HealthCheckResult,
-	HealthCheckEntry,
-	HealthIndicator,
-	HealthIndicatorResult,
-	HealthCheckKind,
-	HealthConfig,
-} from "./types.js";
 import {
-	MemoryHealthIndicator,
 	DiskHealthIndicator,
 	HttpHealthIndicator,
+	MemoryHealthIndicator,
 } from "./indicators/index.js";
+import type {
+	HealthCheckEntry,
+	HealthCheckKind,
+	HealthCheckResult,
+	HealthConfig,
+	HealthIndicator,
+	HealthIndicatorResult,
+} from "./types.js";
 
 @Injectable()
 export class HealthCheckService {

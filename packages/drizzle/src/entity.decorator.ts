@@ -20,8 +20,8 @@
  * ```
  */
 import "reflect-metadata";
-import type { DrizzleRepository } from "./repository/index.js";
 import type { DrizzleService } from "./drizzle.service.js";
+import type { DrizzleRepository } from "./repository/index.js";
 
 /** Storage for entity → table metadata. */
 const ENTITY_TABLE_MAP = new Map<Function, any>();

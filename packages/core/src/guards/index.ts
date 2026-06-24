@@ -18,8 +18,8 @@
  */
 import "reflect-metadata";
 import {
-	HTTP_GUARDS_METADATA,
 	CONTROLLER_GUARDS_METADATA,
+	HTTP_GUARDS_METADATA,
 } from "../constants.js";
 
 // ============================================================================

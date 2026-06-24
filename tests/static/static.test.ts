@@ -3,11 +3,11 @@
  */
 
 import "reflect-metadata";
-import { describe, it, expect, beforeAll, afterAll } from "vitest";
-import { writeFile, mkdir, rm } from "node:fs/promises";
-import { join } from "node:path";
+import { mkdir, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { Hono } from "hono";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { StaticService } from "../../src/static/index.js";
 
 const root = join(tmpdir(), `nexus-static-test-${Date.now()}`);

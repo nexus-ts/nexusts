@@ -101,14 +101,29 @@ export const newCommand: Command = {
 		const ssr = !flagBool(ctx.flags, "no-ssr", false);
 
 		mkdirSync(resolve(target, "app"), { recursive: true });
-		if (view !== "none") {
+		if (view === "inertia") {
+			mkdirSync(resolve(target, "resources/js/Pages"), { recursive: true });
+		} else if (view !== "none") {
 			mkdirSync(resolve(target, "resources/views"), { recursive: true });
 		}
 		mkdirSync(resolve(target, "public"), { recursive: true });
 
 		writeFileSync(resolve(target, "public/.gitkeep"), "");
 
-		if (view !== "none") {
+		if (view === "inertia") {
+			const isVue = frontend === "vue";
+			if (isVue) {
+				writeFileSync(resolve(target, "resources/js/Pages/Welcome.vue"),
+					`<template>\n  <main style="font-family: system-ui, sans-serif; max-width: 560px; margin: 2em auto">\n    <h1>Hello, {{ name }}!</h1>\n  </main>\n</template>\n\n<script setup lang="ts">\ndefineProps<{ name: string }>();\n</script>\n`);
+				writeFileSync(resolve(target, "resources/js/app.ts"),
+					`import { createInertiaApp } from "@inertiajs/vue";\nimport { createApp, h } from "vue";\nimport Welcome from "./Pages/Welcome.vue";\n\ncreateInertiaApp({\n  resolve: (name: string) => {\n    if (name === "Welcome") return Welcome;\n    throw new Error("Unknown page: " + name);\n  },\n  setup({ el, App, props }: any) {\n    createApp({ render: () => h(App, props) }).mount(el);\n  },\n});\n`);
+			} else {
+				writeFileSync(resolve(target, "resources/js/Pages/Welcome.tsx"),
+					`import { useState } from "react";\n\nexport default function Welcome({ name }: { name: string }) {\n  const [count, setCount] = useState(0);\n  return (\n    <main style={{ fontFamily: "system-ui, sans-serif", maxWidth: 560, margin: "2em auto" }}>\n      <h1>Hello, {name}!</h1>\n      <p>Counter: <strong>{count}</strong></p>\n      <button onClick={() => setCount((c) => c + 1)} style={{ padding: "0.5em 1em" }}>\n        +1\n      </button>\n    </main>\n  );\n}\n`);
+				writeFileSync(resolve(target, "resources/js/app.tsx"),
+					`import { createInertiaApp } from "@inertiajs/react";\nimport { createRoot } from "react-dom/client";\nimport Welcome from "./Pages/Welcome.js";\n\ncreateInertiaApp({\n  resolve: (name: string) => {\n    if (name === "Welcome") return Welcome;\n    throw new Error("Unknown page: " + name);\n  },\n  setup({ el, App, props }: any) {\n    createRoot(el).render(<App {...props} />);\n  },\n});\n`);
+			}
+		} else if (view !== "none") {
 			writeFileSync(
 				resolve(target, "resources/views/welcome.html"),
 				`<h1>Welcome to ${name}</h1>\n<p>This is a sample Rendu template.</p>\n<p>Founded <?= year ?>.</p>\n`,
@@ -161,6 +176,16 @@ export const newCommand: Command = {
 		if (view !== "none") {
 			deps["@nexusts/static"] = "*";
 		}
+		if (view === "inertia") {
+			if (frontend === "vue") {
+				deps["@inertiajs/vue"] = "^2.0.0";
+				deps["vue"] = "^3.5.0";
+			} else {
+				deps["@inertiajs/react"] = "^2.0.0";
+				deps["react"] = "^19.0.0";
+				deps["react-dom"] = "^19.0.0";
+			}
+		}
 		const pkgJson: Record<string, any> = {
 			name,
 			version: "0.1.0",
@@ -203,18 +228,29 @@ export const newCommand: Command = {
 			? `import { StaticModule } from '@nexusts/static';\nconst staticMiddleware = StaticModule.mount({ root: './public', prefix: '/static' });\n`
 			: '';
 		const staticOption = hasView ? '\n  middleware: [staticMiddleware],' : '';
+		const isInertia = view === "inertia";
+		const inertiaAdapter = frontend === "vue" ? "Vue" : "React";
+		const inertiaImport = isInertia
+			? `import { Inertia, create${inertiaAdapter}Adapter } from '@nexusts/view';
+`
+			: '';
+		const inertiaSetup = isInertia
+			? `const inertia = app.container.resolve(Inertia.TOKEN) as Inertia;
+inertia.setSsrAdapter(create${inertiaAdapter}Adapter());
+`
+			: '';
 		writeFileSync(
 			resolve(target, "app/main.ts"),
 			`import 'reflect-metadata';
 import { Application } from '@nexusts/core';
-${staticImport}import { AppModule } from './app.module.js';
+${staticImport}${inertiaImport}import { AppModule } from './app.module.js';
 
 const app = new Application(AppModule, {
   logging: true,
   port: Number(process.env['PORT'] ?? 3000),${staticOption}
 });
 
-await app.listen();
+${inertiaSetup}await app.listen();
 console.log('[nexus] Listening on http://localhost:' + (process.env['PORT'] ?? 3000));
 `,
 		);
@@ -240,15 +276,25 @@ export class AppModule {}
 		);
 
 		mkdirSync(resolve(target, "app/controllers"), { recursive: true });
-		const homeViewReturn = view !== "none"
-			? `{\n      view: 'welcome.html',\n      data: { year: new Date().getFullYear() },\n    }`
-			: `{ status: 200, body: { message: 'Hello from NexusTS!' } }`;
+		const homeViewReturn = view === "inertia"
+			? `this.inertia.render('Welcome', { name: 'NexusTS' })`
+			: view !== "none"
+				? `{\n      view: 'welcome.html',\n      data: { year: new Date().getFullYear() },\n    }`
+				: `{ status: 200, body: { message: 'Hello from NexusTS!' } }`;
+		const homeImports = view === "inertia"
+			? `import { Controller, Get, Inject } from '@nexusts/core';
+import { Inertia } from '@nexusts/view';`
+			: `import { Controller, Get } from '@nexusts/core';`;
+		const homeCtor = view === "inertia"
+			? `
+  constructor(@Inject(Inertia.TOKEN) private inertia: Inertia) {}`
+			: '';
 		writeFileSync(
 			resolve(target, "app/controllers/home.controller.ts"),
-			`import { Controller, Get } from '@nexusts/core';
+			`${homeImports}
 
 @Controller('/')
-export class HomeController {
+export class HomeController {${homeCtor}
   @Get('/')
   index() {
     return ${homeViewReturn};

@@ -1,6 +1,6 @@
 {
   "name": "nexusts",
-  "version": "0.7.2",
+  "version": "0.7.3",
   "description": "NexusTS \u2014 Bun-native fullstack framework. Multi-package monorepo. See packages/* for individual modules.",
   "type": "module",
   "private": true,

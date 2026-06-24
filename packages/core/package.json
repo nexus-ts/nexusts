@@ -1,6 +1,6 @@
 {
   "name": "@nexusts/core",
-  "version": "0.7.2",
+  "version": "0.7.3",
   "description": "NexusTS core — MVC + DI + routing + validation + view engine. Install this and you have a working Bun-native app.",
   "type": "module",
   "main": "./dist/index.js",

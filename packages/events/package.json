@@ -1,6 +1,6 @@
 {
   "name": "@nexusts/events",
-  "version": "0.7.2",
+  "version": "0.7.3",
   "description": "Event emitter with wildcards, priorities, guards",
   "type": "module",
   "main": "./dist/index.js",

@@ -315,7 +315,7 @@ function makeHandler(
 	fn: (...args: unknown[]) => unknown,
 	instance: unknown,
 	streamType: GrpcStreamType,
-): (...args: unknown[]) => void {
+): Function {
 	switch (streamType) {
 		case "unary":
 			return makeUnaryHandler(fn, instance);

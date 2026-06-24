@@ -51,6 +51,6 @@ export class MemoryFlagBackend implements FeatureFlagBackend {
 			return hashFloat(`${flagName}:${id}`) < def.rollout;
 		}
 
-		return def.enabled !== false;
+		return def.enabled ?? true;
 	}
 }

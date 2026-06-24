@@ -24,8 +24,8 @@ jobs:
       fail-fast: false
       matrix:
         bun-version:
-          - "1.3.0"   # pinned minimum
-          - "latest"  # rolling latest
+          - "1.3.0" # pinned minimum
+          - "latest" # rolling latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -41,8 +41,9 @@ jobs:
           # Optional peer deps needed for type-check (installed in CI only)
           bun add -d \
             better-auth @faker-js/faker \
-            @opentelemetry/semantic-conventions \
+            @opentelemetry/api @opentelemetry/semantic-conventions \
             @grpc/grpc-js @grpc/proto-loader \
+            pino pino-pretty \
             2>/dev/null || true
 
       - name: Run tests

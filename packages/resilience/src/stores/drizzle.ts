@@ -41,13 +41,16 @@ export class DrizzleResilienceStore implements ResilienceStore {
 
 	async getSnapshot(name: string): Promise<CircuitSnapshot | null> {
 		await this.#ready;
-		const rows = await this.#db.rawQuery<{
+		const rows = (await this.#db.rawQuery(
+			`SELECT state, opened_at, failures, successes, updated_at FROM ${this.#table} WHERE name = ?`,
+			[name],
+		)) as Array<{
 			state: string;
 			opened_at: number;
 			failures: number;
 			successes: number;
 			updated_at: number;
-		}>(`SELECT state, opened_at, failures, successes, updated_at FROM ${this.#table} WHERE name = ?`, [name]);
+		}>;
 		const row = rows[0];
 		if (!row) return null;
 		return {

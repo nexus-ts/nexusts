@@ -1,5 +1,10 @@
 # NexusTS
 
+[![CI (Bun)](https://github.com/nexus-ts/nexusts/actions/workflows/ci.yml/badge.svg?label=Bun)](https://github.com/nexus-ts/nexusts/actions/workflows/ci.yml)
+[![CI (Node.js)](https://github.com/nexus-ts/nexusts/actions/workflows/ci.yml/badge.svg?label=Node.js+22)](https://github.com/nexus-ts/nexusts/actions/workflows/ci.yml)
+[![CI (Workers)](https://github.com/nexus-ts/nexusts/actions/workflows/ci-workers.yml/badge.svg)](https://github.com/nexus-ts/nexusts/actions/workflows/ci-workers.yml)
+[![Drizzle Dialects](https://github.com/nexus-ts/nexusts/actions/workflows/ci-drizzle.yml/badge.svg)](https://github.com/nexus-ts/nexusts/actions/workflows/ci-drizzle.yml)
+
 **Bun Native Fullstack Framework** — NestJS structure × Adonis productivity × Hono edge performance.
 
 > **v0.8.0 — ResilienceAdminModule + Eager applyResilience.** The

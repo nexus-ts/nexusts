@@ -1,0 +1,88 @@
+name: Drizzle Dialect CI
+
+# Runs dialect-specific Drizzle tests.
+# Triggered when drizzle package or its tests change.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "packages/drizzle/**"
+      - "tests/drizzle/**"
+      - ".github/workflows/ci-drizzle.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "packages/drizzle/**"
+      - "tests/drizzle/**"
+      - ".github/workflows/ci-drizzle.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: ci-drizzle-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ──────────────────────────────────────────────────────────────────────────
+  # bun-sqlite (no external service needed)
+  # ──────────────────────────────────────────────────────────────────────────
+  bun-sqlite:
+    name: "Dialect · bun-sqlite"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - run: bun install --no-frozen-lockfile
+      - name: Run bun-sqlite tests
+        run: bun x vitest run tests/drizzle/ --reporter verbose
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # PostgreSQL 16
+  # ──────────────────────────────────────────────────────────────────────────
+  postgres:
+    name: "Dialect · postgres"
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: nexus
+          POSTGRES_PASSWORD: nexus
+          POSTGRES_DB: nexus_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U nexus"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgres://nexus:nexus@localhost:5432/nexus_test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - run: bun install --no-frozen-lockfile
+      - name: Wait for Postgres
+        run: until pg_isready -h localhost -U nexus; do sleep 1; done
+      - name: Run postgres tests
+        run: bun x vitest run tests/drizzle/ --reporter verbose
+        env:
+          DRIZZLE_DIALECT: postgres
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # Factory tests — dialect-agnostic, always run
+  # ──────────────────────────────────────────────────────────────────────────
+  factory:
+    name: "Factory<T>"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - run: bun install --no-frozen-lockfile
+      - run: bun x vitest run tests/drizzle/factory.test.ts --reporter verbose

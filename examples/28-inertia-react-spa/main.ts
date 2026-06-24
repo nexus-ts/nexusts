@@ -17,7 +17,8 @@ import { Inertia } from "@nexusts/view";
  *   The client is bundled from `frontend/app.tsx` at boot by Bun
  *   and served at /static/app.js. There is NO SSR — the server
  *   emits an HTML shell with the page object embedded as
- *   `data-page` and the React client hydrates from there.
+ *   `<script data-page="app" type="application/json">` and the React
+ *   client hydrates from there.
  *
  *   This matches the Laravel + Inertia (CSR) recipe:
  *     - Controller returns an Inertia page

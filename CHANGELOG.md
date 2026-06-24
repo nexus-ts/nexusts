@@ -80,10 +80,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Logger user guide**: `docs/user-guide/logger.md` + `logger.ko.md` —
   comprehensive guide for the Logger module with Pino, pretty-print,
   request-scoped logging, and transport configuration.
+- **Logger: pino made a direct dependency** — users no longer need
+  to `bun add pino` separately. The logger just works out of the box.
+  `pino-pretty` remains optional for colorized dev output.
 - **CLI REPL improvements**:
   - `.help` hint added to the REPL banner
   - Version now dynamically read from package.json (`v0.7.4`)
   - Dynamic banner alignment (works with any version string length)
+  - `.routes` now shows handler class.method (e.g. `HomeController.index`)
+    matching `nx route:list` output
+  - `.services` no longer shows "(no services registered)"
+    (added `listProviders()` method to DIContainer)
+  - `.modules` now shows real module class names instead of `Object`
+    (stored `moduleClass` in ScanResult)
 
 ### Fixed
 
@@ -1295,7 +1304,11 @@ Initial release. **feature-complete MVP core.**
 
 ---
 
+[0.7.4]: https://github.com/kabyeon/nexusts/compare/v0.7.3...v0.7.4
+
 [0.7.3]: https://github.com/kabyeon/nexusts/compare/v0.7.0...v0.7.3
+[0.7.0]: https://github.com/kabyeon/nexusts/compare/v0.6.9...v0.7.0
+[0.6.9]: https://github.com/kabyeon/nexusts/compare/v0.6.8...v0.6.9
 [0.6.2]: https://github.com/kabyeon/@nexusts/compare/v0.6.1...v0.6.2
 [0.3.0]: https://github.com/kabyeon/@nexusts/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/kabyeon/@nexusts/compare/v0.1.0...v0.2.0

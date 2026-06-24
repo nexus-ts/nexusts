@@ -5,10 +5,18 @@
 - **Logger 사용자 가이드**: `docs/user-guide/logger.md` + `logger.ko.md` —
   Logger 모듈의 Pino, pretty-print, request-scoped logging, transport 설정
   가이드.
+- **Logger: pino 직접 의존성으로 변경** — 사용자가 `bun add pino`를
+  별도로 실행할 필요 없음. `@nexusts/logger` 설치만으로 바로 사용 가능.
+  `pino-pretty`는 컬러 출력용 선택 사항으로 유지.
 - **CLI REPL 개선**:
   - 배너에 `.help` 힌트 추가
   - 버전을 package.json에서 동적으로 읽도록 개선 (`v0.7.4`)
   - 버전 문자열 길이에 따라 자동 정렬 (어떤 버전이어도 표 깨짐 없음)
+  - `.routes`에 핸들러 클래스.메소드 출력 (예: `HomeController.index`),
+    `nx route:list`와 동일한 형식
+  - `.services`가 더 이상 "(no services registered)" 표시하지 않음
+    (`DIContainer`에 `listProviders()` 메서드 추가)
+  - `.modules`가 모듈 클래스 이름을 표시 (`moduleClass` 필드 추가)
 
 ### 수정
 
@@ -78,6 +86,53 @@
 - `Inertia` published package에서 import 불가 — `package.json` `exports`에
   `./inertia` subpath 추가.
 
+## [0.7.0] — 2026-06-22
+
+### 추가
+
+- `@nexusts/resilience` — 재시도 + circuit breaker +
+  bulkhead를 단일 DI 싱글톤으로 제공. `retry()` 함수 (4가지
+  백오프 전략: constant, linear, exponential, exponential-jitter).
+  `CircuitBreaker` 클래스 (closed/open/half-open 상태 머신,
+  롤링 실패 윈도우, threshold + `isFailure` predicate,
+  `onStateChange` 훅). `Bulkhead` 클래스 (FIFO 동시성 제한기,
+  `rejectOnFull` fail-fast). `ResilienceService`는
+  `getOrCreateCircuit(name)` / `getOrCreateBulkhead(name)` 레지스트리
+  제공 — "stripe"용 단일 circuit이 모든 코드 경로에서 공유됨.
+  `@Retry` / `@CircuitBreaker` / `@Bulkhead` / `@Resilient` 메서드
+  데코레이터 (metadata-only; legacy decorator tsconfig 사용자는
+  `applyResilience()` 호출로 수동 래핑 가능).
+- `examples/33-resilience-calls` — 3개 라우트, 프리미티브별 하나씩,
+  plus `tests/resilience/resilience.test.ts` 테스트
+  (20개 테스트: backoff, 상태 머신, FIFO 순서).
+- `docs/user-guide/resilience.md` + `.ko.md` — 사용자 가이드.
+- `docs/design/resilience.md` + `.ko.md` — 아키텍처 심층 분석.
+
+### 참고
+
+- 새 런타임 의존성 없음 — 순수 TypeScript.
+- `@Retry` / `@CircuitBreaker` / `@Bulkhead` / `@Resilient`
+  데코레이터는 v0.7.0에서 **metadata-only**입니다.
+
+## [0.6.9] — 2026-06-22
+
+### 추가
+
+- `@nexusts/graphql` — SDL-first GraphQL 엔드포인트.
+  `GraphQLService` + `GraphQLModule`. `POST /graphql`,
+  `GET /graphql?query=...`, `GET /graphql/schema`, 번들 내
+  GraphiQL 플레이그라운드 제공. `context()` 팩토리로
+  리졸버에 per-request 상태 주입. `@Resolver` / `@Query` /
+  `@Mutation` / `@Subscription` / `@Arg` 데코레이터 export.
+- `examples/32-graphql-hello` — 최소 hello-world 예제 +
+  `tests/graphql/graphql.test.ts` (15개 테스트).
+- `docs/user-guide/graphql.md` + `.ko.md` — 사용자 가이드.
+- `docs/design/graphql.md` + `.ko.md` — 아키텍처 심층 분석.
+
+### 참고
+
+- `graphql` (peer-dep)은 **번들링되지 않음**. `bun add graphql`로 설치.
+
 ## [0.6.8] — 2026-06-22
 
 ### 추가
@@ -85,8 +140,6 @@
 - `examples/` 아래 27개 동작 예제 추가 — 모듈당 하나, 기본 MVC부터
   gRPC / tracing / request-scope까지. 각 예제는 자체 `README.md` 를
   가지며 `cd examples/NN-name && bun main.ts` 로 실행 가능.
-- `tests/examples/smoke.test.ts` — 각 예제를 실제 Bun 서브프로세스로
-  실행하고 "listening" 마커를 기다린 뒤 정상 종료를 확인하는 vitest
 - `tests/examples/smoke.test.ts` — 각 예제를 실제 Bun 서브프로세스로
   실행하고 "listening" 마커를 기다린 뒤 정상 종료를 확인하는 vitest
   슈트. 55개 테스트가 약 2초 안에 실행됨.
@@ -883,7 +936,11 @@ Feature-complete MVP. 프레임워크가 "v0.2 약속" 모듈을 모두 획득.
 
 ---
 
+[0.7.4]: https://github.com/kabyeon/nexusts/compare/v0.7.3...v0.7.4
+
 [0.7.3]: https://github.com/kabyeon/nexusts/compare/v0.7.0...v0.7.3
+[0.7.0]: https://github.com/kabyeon/nexusts/compare/v0.6.9...v0.7.0
+[0.6.9]: https://github.com/kabyeon/nexusts/compare/v0.6.8...v0.6.9
 [0.4.0]: https://github.com/kabyeon/@nexusts/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/kabyeon/@nexusts/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/kabyeon/@nexusts/compare/v0.1.0...v0.2.0

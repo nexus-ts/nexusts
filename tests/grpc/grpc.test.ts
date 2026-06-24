@@ -24,9 +24,9 @@ import {
 	GrpcMethod,
 	getGrpcServiceName,
 	getGrpcMethodNames,
-} from "../../src/grpc/index.js";
-import { Inject, Injectable } from "../../src/core/decorators/index.js";
-import { Application } from "../../src/core/application.js";
+} from "@nexusts/grpc";
+import { Inject, Injectable } from "@nexusts/core";
+import { Application } from "@nexusts/core";
 
 const PROTO = `
 syntax = "proto3";
@@ -408,4 +408,4 @@ message Response { string result = 1; }
 	});
 });
 
-import { Module } from "../../src/core/decorators/index.js";
+import { Module } from "@nexusts/core";

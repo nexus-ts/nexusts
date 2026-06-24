@@ -15,12 +15,30 @@
  * Cross-runtime: works on Bun and Node via `@grpc/grpc-js`
  * (which is built on Node's `http2` module — Bun supports
  * this via Node-API compatibility).
- *
- * Unary methods only for v1; streaming (server / client / bidi)
- * is a future addition.
  */
 
 import type { ServiceDefinition, UntypedServiceImplementation } from "@grpc/grpc-js";
+
+/* ------------------------------------------------------------------ *
+ * Streaming types
+ * ------------------------------------------------------------------ */
+
+/**
+ * The RPC streaming classification, matching gRPC's four call types:
+ * - `unary`  — request → response            (@GrpcMethod)
+ * - `server` — request → stream<response>    (@GrpcServerStream)
+ * - `client` — stream<request> → response    (@GrpcClientStream)
+ * - `bidi`   — stream<request> → stream<res> (@GrpcBidiStream)
+ */
+export type GrpcStreamType = "unary" | "server" | "client" | "bidi";
+
+/** Internal method entry stored by the decorator. */
+export interface GrpcMethodEntry {
+	/** Method name as declared in the .proto file (PascalCase). */
+	protoName: string;
+	/** Streaming classification. */
+	streamType: GrpcStreamType;
+}
 
 /* ------------------------------------------------------------------ *
  * Configuration
@@ -79,6 +97,8 @@ export interface GrpcMethodMeta {
 	serviceName: string;
 	/** Method name as it appears in the .proto file. */
 	methodName: string;
+	/** Streaming classification. */
+	streamType: GrpcStreamType;
 }
 
 /* ------------------------------------------------------------------ *

@@ -318,6 +318,167 @@ GrpcModule.forRoot({
 });
 ```
 
+---
+
+## Streaming (v2)
+
+`@nexusts/grpc` v2는 gRPC의 세 가지 스트리밍 패턴을 모두 지원합니다.
+
+### 호출 방식 요약
+
+| 데코레이터 | proto 선언 | 서버 시그니처 | 클라이언트 반환 |
+|-----------|-----------|------------|--------------|
+| `@GrpcMethod` | `rpc M(Req) returns (Res)` | `(req) => Promise<Res>` | `Promise<Res>` |
+| `@GrpcServerStream` | `rpc M(Req) returns (stream Res)` | `(req) => AsyncIterable<Res>` | `AsyncIterable<Res>` |
+| `@GrpcClientStream` | `rpc M(stream Req) returns (Res)` | `(reqs: AsyncIterable<Req>) => Promise<Res>` | `(src: AsyncIterable<Req>) => Promise<Res>` |
+| `@GrpcBidiStream` | `rpc M(stream Req) returns (stream Res)` | `(reqs: AsyncIterable<Req>) => AsyncIterable<Res>` | `(src: AsyncIterable<Req>) => AsyncIterable<Res>` |
+
+---
+
+### Server streaming
+
+서버가 단일 요청을 받고 여러 응답을 스트림으로 전송합니다.
+
+```proto
+service NumberService {
+  rpc ListNumbers (ListRequest) returns (stream NumberResponse);
+}
+message ListRequest     { int32 count = 1; }
+message NumberResponse  { int32 n     = 1; }
+```
+
+```ts
+@Injectable()
+@GrpcService("NumberService")
+class NumberServiceImpl {
+  @GrpcServerStream("ListNumbers")
+  async *listNumbers(req: { count: number }): AsyncIterable<{ n: number }> {
+    for (let i = 0; i < req.count; i++) {
+      yield { n: i };
+    }
+  }
+}
+```
+
+클라이언트 사용:
+
+```ts
+const client = grpc.client<{
+  listNumbers(req: { count: number }): AsyncIterable<{ n: number }>;
+}>("NumberService");
+
+for await (const { n } of client.listNumbers({ count: 5 })) {
+  console.log(n); // 0, 1, 2, 3, 4
+}
+```
+
+---
+
+### Client streaming
+
+클라이언트가 스트림으로 여러 메시지를 전송하고 서버가 단일 응답을 반환합니다.
+
+```proto
+service SumService {
+  rpc Sum (stream NumberRequest) returns (SumResponse);
+}
+message NumberRequest { int32 n     = 1; }
+message SumResponse   { int32 total = 1; }
+```
+
+```ts
+@Injectable()
+@GrpcService("SumService")
+class SumServiceImpl {
+  @GrpcClientStream("Sum")
+  async sum(
+    reqs: AsyncIterable<{ n: number }>,
+  ): Promise<{ total: number }> {
+    let total = 0;
+    for await (const { n } of reqs) total += n;
+    return { total };
+  }
+}
+```
+
+클라이언트 사용:
+
+```ts
+const client = grpc.client<{
+  sum(src: AsyncIterable<{ n: number }>): Promise<{ total: number }>;
+}>("SumService");
+
+async function* numbers() {
+  yield { n: 1 };
+  yield { n: 2 };
+  yield { n: 3 };
+}
+
+const result = await client.sum(numbers());
+console.log(result.total); // 6
+```
+
+---
+
+### Bidirectional streaming
+
+양방향으로 스트림을 교환합니다. 서버는 요청 스트림을 받으면서 동시에 응답 스트림을 보냅니다.
+
+```proto
+service EchoService {
+  rpc Echo (stream EchoRequest) returns (stream EchoResponse);
+}
+message EchoRequest  { string msg   = 1; }
+message EchoResponse { string reply = 1; }
+```
+
+```ts
+@Injectable()
+@GrpcService("EchoService")
+class EchoServiceImpl {
+  @GrpcBidiStream("Echo")
+  async *echo(
+    reqs: AsyncIterable<{ msg: string }>,
+  ): AsyncIterable<{ reply: string }> {
+    for await (const { msg } of reqs) {
+      yield { reply: `echo: ${msg}` };
+    }
+  }
+}
+```
+
+클라이언트 사용:
+
+```ts
+const client = grpc.client<{
+  echo(
+    src: AsyncIterable<{ msg: string }>,
+  ): AsyncIterable<{ reply: string }>;
+}>("EchoService");
+
+async function* messages() {
+  yield { msg: "hello" };
+  yield { msg: "world" };
+}
+
+for await (const { reply } of client.echo(messages())) {
+  console.log(reply); // "echo: hello", "echo: world"
+}
+```
+
+---
+
+### 예제
+
+전체 예제: [`examples/34-grpc-streaming/main.ts`](../../examples/34-grpc-streaming/main.ts)
+
+```bash
+cd examples/34-grpc-streaming
+bun --hot main.ts
+```
+
+---
+
 ## 함께 보기
 
 - [`runtime-deployment.ko.md`](./runtime-deployment.ko.md) — Bun / Node /

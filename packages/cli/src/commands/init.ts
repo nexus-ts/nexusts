@@ -66,15 +66,18 @@ async function resolveOpt(
 		}
 		logger.warn(`"${flagVal}" is not valid for --${key}. Please choose from the list.`);
 	}
-	return select(
-		key === "style" ? "Routing style" as const
-			: key === "view" ? "View engine" as const
-			: key === "orm" ? "ORM driver" as const
-			: key === "db" ? "Database driver" as const
-			: "Inertia frontend" as const,
-		[...valid],
-		{ default: defaultVal },
-	);
+	const label = key === "style" ? "Routing style" as const
+		: key === "view" ? "View engine" as const
+		: key === "orm" ? "ORM driver" as const
+		: key === "db" ? "Database driver" as const
+		: "Inertia frontend" as const;
+	// Loop until the user provides a valid value (interactive only).
+	// Non-interactive returns the default.
+	for (;;) {
+		const answer = await select(label, [...valid], { default: defaultVal });
+		if (valid.includes(answer as any)) return answer;
+		logger.warn(`"${answer}" is not valid. Please choose from: ${valid.join(", ")}`);
+	}
 }
 
 export const initCommand: Command = {

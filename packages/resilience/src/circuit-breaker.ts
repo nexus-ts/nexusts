@@ -30,7 +30,7 @@
  *     of them fails → back to `open`. If all succeed → back to
  *     `closed`.
  */
-import type { CircuitBreakerConfig, CircuitMetrics, CircuitState } from "./types.js";
+import type { CircuitBreakerConfig, CircuitMetrics, CircuitState, ResilienceStore } from "./types.js";
 
 const DEFAULTS = {
 	threshold: 0.5,
@@ -70,6 +70,13 @@ export class CircuitBreaker {
 	private halfOpenInFlight = 0;
 	private halfOpenAllowed = 0;
 
+	/** Set by ResilienceService when a cross-pod store is configured. */
+	_store?: ResilienceStore;
+	/** How often (ms) to pull state from the store. Default: 5000. */
+	_syncIntervalMs = 5000;
+	private _lastSync = 0;
+	private _lastRemoteUpdate = 0;
+
 	constructor(name: string, config: CircuitBreakerConfig = {}) {
 		this.name = name;
 		this.config = {
@@ -98,6 +105,7 @@ export class CircuitBreaker {
 
 	/** Run `fn` through the circuit. Throws `CircuitOpenError` when open. */
 	async execute<T>(fn: () => Promise<T> | T): Promise<T> {
+		if (this._store) await this._maybeSyncFromStore();
 		const state = this.currentState;
 
 		if (state === "open") {
@@ -244,6 +252,49 @@ export class CircuitBreaker {
 		// (The hook API is set in the ResilienceService which owns
 		// the onStateChange list.)
 		this.fireHook(from, to);
+		if (this._store) this._saveToStore();
+	}
+
+	// ===================================================================
+	// Cross-pod store sync (best-effort, non-throwing)
+	// ===================================================================
+
+	private async _maybeSyncFromStore(): Promise<void> {
+		const now = Date.now();
+		if (now - this._lastSync < this._syncIntervalMs) return;
+		this._lastSync = now;
+		try {
+			const snap = await this._store!.getSnapshot(this.name);
+			if (!snap) return;
+			// Apply only if the remote snapshot is newer than the last one we applied.
+			if (snap.updatedAt <= this._lastRemoteUpdate) return;
+			this._lastRemoteUpdate = snap.updatedAt;
+			this.state = snap.state;
+			this.openedAt = snap.openedAt;
+			if (snap.state === "half-open") {
+				this.halfOpenAllowed = this.config.halfOpenAfter;
+				this.halfOpenInFlight = 0;
+			}
+		} catch {
+			// Degraded to local-only mode — do not throw.
+		}
+	}
+
+	private _saveToStore(): void {
+		const now = Date.now();
+		const cutoff = now - this.config.window;
+		const win = this.samples.filter((s) => s.ts >= cutoff);
+		const failures = win.filter((s) => !s.ok).length;
+		const successes = win.length - failures;
+		this._store!
+			.saveSnapshot(this.name, {
+				state: this.state,
+				openedAt: this.openedAt,
+				failures,
+				successes,
+				updatedAt: now,
+			})
+			.catch(() => {}); // fire-and-forget; errors are non-fatal
 	}
 
 	/** Set by ResilienceService — fires on each transition. */

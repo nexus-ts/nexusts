@@ -8,6 +8,8 @@
  *   } from "@nexusts/resilience";
  */
 export * from "./types.js";
+export { MemoryResilienceStore, RedisResilienceStore, DrizzleResilienceStore } from "./stores/index.js";
+export type { RedisResilienceStoreOptions, DrizzleResilienceStoreOptions } from "./stores/index.js";
 export { retry, computeBackoff } from "./retry.js";
 export { CircuitBreaker, CircuitOpenError } from "./circuit-breaker.js";
 export { Bulkhead, BulkheadFullError } from "./bulkhead.js";

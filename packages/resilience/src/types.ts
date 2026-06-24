@@ -132,6 +132,41 @@ export interface ResilientConfig {
 }
 
 // ============================================================================
+// Cross-pod Store
+// ============================================================================
+
+/** Snapshot of a circuit's shared state persisted in an external store. */
+export interface CircuitSnapshot {
+	state: CircuitState;
+	openedAt: number;
+	failures: number;
+	successes: number;
+	updatedAt: number;
+}
+
+/**
+ * Persistence backend for cross-pod circuit state.
+ * Implement this interface to share circuit state across pods.
+ * Comes pre-built as `MemoryResilienceStore`, `RedisResilienceStore`,
+ * and `DrizzleResilienceStore`.
+ */
+export interface ResilienceStore {
+	getSnapshot(name: string): Promise<CircuitSnapshot | null>;
+	saveSnapshot(name: string, snapshot: CircuitSnapshot): Promise<void>;
+	close?(): Promise<void>;
+}
+
+/** Redis connection options for `ResilienceModule.forRoot({ store: 'redis' })`. */
+export interface ResilienceRedisOptions {
+	url?: string;
+	host?: string;
+	port?: number;
+	password?: string;
+	db?: number;
+	keyPrefix?: string;
+}
+
+// ============================================================================
 // Module
 // ============================================================================
 
@@ -152,6 +187,20 @@ export interface ResilienceConfig {
 	 * Default bulkhead config — same as above.
 	 */
 	bulkhead?: BulkheadConfig;
+	/**
+	 * Cross-pod circuit state backend.
+	 * - `'memory'` (default): in-process, no sharing
+	 * - `'redis'`: shared via Redis (requires `redis` option)
+	 * - `ResilienceStore`: custom / pre-built store instance (e.g. `DrizzleResilienceStore`)
+	 */
+	store?: "memory" | "redis" | ResilienceStore;
+	/** Redis connection options for `store: 'redis'`. */
+	redis?: ResilienceRedisOptions;
+	/**
+	 * How often (ms) a circuit breaker polls the external store to pull
+	 * the latest cross-pod state. Default: 5000 (5s).
+	 */
+	syncIntervalMs?: number;
 }
 
 // ============================================================================

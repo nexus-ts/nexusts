@@ -26,7 +26,8 @@ import {
 	getResilientMetadata,
 	makeResilientWrapper,
 } from "./decorators/index.js";
-import type { ResilienceConfig } from "./types.js";
+import { MemoryResilienceStore } from "./stores/memory.js";
+import type { ResilienceConfig, ResilienceStore } from "./types.js";
 
 @Module({
 	providers: [
@@ -56,7 +57,18 @@ export class ResilienceModule {
 				{
 					provide: ResilienceService.TOKEN,
 					useFactory: () => {
-						const svc = new ResilienceService(config);
+						// Resolve the cross-pod store synchronously.
+						// For Redis: pre-build the store and pass it as an instance:
+						//   const store = new RedisResilienceStore(client);
+						//   ResilienceModule.forRoot({ store });
+						let store: ResilienceStore | undefined;
+						if (config.store && config.store !== "memory" && config.store !== "redis") {
+							store = config.store as ResilienceStore;
+						} else {
+							store = new MemoryResilienceStore();
+						}
+
+						const svc = new ResilienceService(config, store);
 						// Register globally so the eager-decorator path
 						// (in `decorators/index.ts`) can find us without
 						// needing each controller method to carry an

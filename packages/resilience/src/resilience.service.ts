@@ -22,6 +22,7 @@ import type {
 	BulkheadConfig,
 	CircuitBreakerConfig,
 	ResilienceConfig,
+	ResilienceStore,
 	RetryConfig,
 } from "./types.js";
 
@@ -38,8 +39,15 @@ export class ResilienceService {
 
 	private circuits = new Map<string, CircuitBreaker>();
 	private bulkheads = new Map<string, Bulkhead>();
+	private store?: ResilienceStore;
+	private syncIntervalMs: number;
 
-	constructor(@Inject("RESILIENCE_CONFIG") config: ResilienceConfig = {}) {
+	constructor(
+		@Inject("RESILIENCE_CONFIG") config: ResilienceConfig = {},
+		store?: ResilienceStore,
+	) {
+		this.syncIntervalMs = config.syncIntervalMs ?? 5000;
+		this.store = store ?? undefined;
 		this.defaults = {
 			retry: {
 				attempts: 3,
@@ -66,11 +74,24 @@ export class ResilienceService {
 		};
 	}
 
+	/** Set (or replace) the cross-pod store after construction. */
+	setStore(store: ResilienceStore): void {
+		this.store = store;
+		for (const cb of this.circuits.values()) {
+			cb._store = store;
+			cb._syncIntervalMs = this.syncIntervalMs;
+		}
+	}
+
 	/** Get or create a named circuit breaker. Shared across the app. */
 	getOrCreateCircuit(name: string, config: CircuitBreakerConfig = {}): CircuitBreaker {
 		let cb = this.circuits.get(name);
 		if (!cb) {
 			cb = new CircuitBreaker(name, { ...this.defaults.circuit, ...config });
+			if (this.store) {
+				cb._store = this.store;
+				cb._syncIntervalMs = this.syncIntervalMs;
+			}
 			this.circuits.set(name, cb);
 		}
 		return cb;

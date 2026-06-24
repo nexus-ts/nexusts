@@ -401,6 +401,75 @@ curl -X POST http://localhost:3000/resilience/circuits/stripe/reset
 { "error": "Circuit \"unknown\" not found" }
 ```
 
+## Cross-pod 서킷 브레이커 (v0.8)
+
+기본 `CircuitBreaker`는 단일 프로세스 내 메모리 상태만 관리한다. 멀티 인스턴스(pod) 환경에서는 pod A가 서킷을 열어도 pod B가 여전히 실패 요청을 시도할 수 있다.
+
+`ResilienceStore`를 통해 서킷 상태를 pod 간에 공유할 수 있다.
+
+### MemoryResilienceStore (기본값, 단일 pod)
+
+```ts
+ResilienceModule.forRoot({
+  retry: { attempts: 3 },
+  circuit: { threshold: 0.5 },
+  // store: 'memory' — 기본값, 명시 생략 가능
+})
+```
+
+### RedisResilienceStore (멀티 pod 권장)
+
+```ts
+import { createRedisClient }     from '@nexusts/redis';
+import { RedisResilienceStore }  from '@nexusts/resilience';
+
+const redisClient = await createRedisClient({ url: process.env.REDIS_URL });
+const store = new RedisResilienceStore(redisClient, { keyPrefix: 'myapp:cb:' });
+
+ResilienceModule.forRoot({
+  circuit:         { threshold: 0.5, timeout: 30_000 },
+  store,           // RedisResilienceStore 인스턴스 직접 전달
+  syncIntervalMs:  5_000,  // 5초마다 원격 상태 폴링 (기본값)
+})
+```
+
+### DrizzleResilienceStore (DB 기반)
+
+```ts
+import { DrizzleResilienceStore } from '@nexusts/resilience';
+
+const store = new DrizzleResilienceStore(drizzleService);
+// nexus_circuit_state 테이블을 자동 생성함 (IF NOT EXISTS)
+
+ResilienceModule.forRoot({ circuit: { threshold: 0.5 }, store })
+```
+
+### 동작 방식
+
+| 우선순위 | 동작 |
+| -------- | ---- |
+| 상태 전이 시 | `transition()` 직후 스토어에 스냅샷 저장 (fire-and-forget) |
+| `execute()` 호출 시 | `syncIntervalMs` 경과 후 스토어에서 스냅샷 읽기 |
+| 충돌 해결 | `updatedAt` 타임스탬프 기준 — 더 최신이면 덮어씀 |
+| 스토어 오류 | 로컬 상태로 폴백 — 절대 예외 전파 안 함 |
+
+`syncIntervalMs = 0`으로 설정하면 매 `execute()` 마다 폴링한다(테스트 용도).
+
+### 커스텀 백엔드
+
+`ResilienceStore` 인터페이스를 구현해 임의의 백엔드를 연결할 수 있다:
+
+```ts
+import type { ResilienceStore, CircuitSnapshot } from '@nexusts/resilience';
+
+class EtcdResilienceStore implements ResilienceStore {
+  async getSnapshot(name: string): Promise<CircuitSnapshot | null> { ... }
+  async saveSnapshot(name: string, snap: CircuitSnapshot): Promise<void> { ... }
+}
+```
+
+---
+
 ## 이번 릴리스에 포함되지 않은 것
 
 - **Bulkhead 큐 추적.** 큐가 길 때 현재는 `BulkheadFullError`만 본다.

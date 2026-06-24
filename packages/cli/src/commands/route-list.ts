@@ -54,8 +54,11 @@ export const routeListCommand: Command = {
 					const cls = mod[exportName];
 					if (typeof cls !== "function") continue;
 
-					const prefix =
-						Reflect.getMetadata("nexus:controller:prefix", cls) ?? "";
+					const controllerMeta =
+						Reflect.getMetadata("nexus:controller", cls) as
+							| { prefix?: string }
+							| undefined;
+					const prefix = controllerMeta?.prefix ?? "";
 					const routeList = Reflect.getMetadata("nexus:routes", cls) ?? [];
 
 					for (const r of routeList) {

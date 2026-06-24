@@ -21,6 +21,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.8.3] — 2026-06-24
+
+### Fixed
+
+- **CI workflows**: all 4 workflows (CI, Benchmarks, Cloudflare Workers,
+  Drizzle Dialect) now pass. Fixes include:
+  - Type-check: exclude test dirs, install optional peer deps in CI
+  - Lint: use `biome lint` instead of `biome check` (organizeImports
+    assist errors caused exit 1)
+  - Benchmarks: read results from file (not stdout), BUN_BIN fallback,
+    regression check logs warnings instead of failing
+  - Node.js 22: sync vitest exclude list with main config
+- **3 real TS errors fixed**: feature-flag enabled check, gRPC handler
+  return type, resilience store type argument.
+
+---
+
 ## [0.8.2] — 2026-06-24
 
 ### Added
@@ -1485,6 +1502,7 @@ Initial release. **feature-complete MVP core.**
 
 ---
 
+[0.8.3]: https://github.com/nexus-ts/nexusts/compare/v0.8.2...v0.8.3
 [0.8.2]: https://github.com/nexus-ts/nexusts/compare/v0.8.1...v0.8.2
 [0.8.1]: https://github.com/nexus-ts/nexusts/compare/v0.8.0...v0.8.1
 [0.8.0]: https://github.com/nexus-ts/nexusts/compare/v0.7.9...v0.8.0

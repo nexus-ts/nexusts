@@ -21,6 +21,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.8.3] — 2026-06-24
+
+### 수정
+
+- **CI 워크플로우**: 4개 모두 통과. typecheck exclude, lint 수정,
+  benchmarks JSON 파싱/회귀 검사 수정, Node.js 22 설정 동기화.
+- **3개 TS 오류 수정**: feature-flag, gRPC, resilience store.
+
+---
+
 ## [0.8.2] — 2026-06-24
 
 ### 추가
@@ -1131,6 +1141,7 @@ Feature-complete MVP. 프레임워크가 "v0.2 약속" 모듈을 모두 획득.
 
 ---
 
+[0.8.3]: https://github.com/nexus-ts/nexusts/compare/v0.8.2...v0.8.3
 [0.8.2]: https://github.com/nexus-ts/nexusts/compare/v0.8.1...v0.8.2
 [0.8.1]: https://github.com/nexus-ts/nexusts/compare/v0.8.0...v0.8.1
 [0.8.0]: https://github.com/nexus-ts/nexusts/compare/v0.7.9...v0.8.0

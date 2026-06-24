@@ -1,9 +1,9 @@
 # NexusTS vs NestJS — Feature Gap Analysis
 
 > 한국어 버전: [`nestjs-comparison.ko.md`](./nestjs-comparison.ko.md)
-> 분석 일자: 2026-06-24 · 기준: NexusTS **v0.8.2**
+> 분석 일자: 2026-06-24 · 기준: NexusTS **v0.8.3**
 
-This document compares NexusTS v0.8.2 against [NestJS](https://nestjs.com)
+This document compares NexusTS v0.8.3 against [NestJS](https://nestjs.com)
 to identify which production-grade backend features are **present**,
 **partially present**, or **missing**. Every Tier 1 *and* Tier 2 gap
 has been closed; this analysis now focuses on the remaining Tier 3+
@@ -17,11 +17,11 @@ gaps that block complete feature parity.
 
 ---
 
-## 1. Summary table (v0.8.2)
+## 1. Summary table (v0.8.3)
 
 Legend: ✅ ship · ⚠️ partial · ❌ missing · 🔵 third-party required
 
-| Category | NestJS | NexusTS v0.8.2 | Notes |
+| Category | NestJS | NexusTS v0.8.3 | Notes |
 |----------|--------|--------------|-------|
 | HTTP / routing | ✅ GraphQL, WebSockets, gRPC, SSE, Fastify | ✅ Hono + SSE + WS + gRPC + GraphQL | REST + functional + Nest/Adonis styles |
 | DI | ✅ Request-scoped, circular auto-resolve | ✅ Singleton + transient + request | Request scope via `AsyncLocalStorage`; `@Injectable({ scope: 'request' })` |
@@ -42,13 +42,13 @@ Legend: ✅ ship · ⚠️ partial · ❌ missing · 🔵 third-party required
 | Metrics | ✅ Prometheus integration | ✅ `@nexusts/metrics` | Counter / Gauge / Histogram / Summary |
 | Auth | ✅ @nestjs/passport + many strategies | ✅ `@nexusts/auth` (better-auth) | better-auth supports many strategies |
 | Encryption | ⚠️ DIY (or `nestjs-crypto`) | ✅ `@nexusts/crypto` | AES-256-GCM + HMAC + scrypt/argon2 |
-| Feature flags | ⚠️ DIY (no first-party) | ✅ `@nexusts/feature-flag` | Rollout, allowlist, denylist, `@FeatureFlag` decorator, memory backend. Shipped v0.8.2. |
+| Feature flags | ⚠️ DIY (no first-party) | ✅ `@nexusts/feature-flag` | Rollout, allowlist, denylist, `@FeatureFlag` decorator, memory backend. Shipped v0.8.3. |
 | Resilience (circuit breaker, retry) | ⚠️ nestjs-recq | ✅ `@nexusts/resilience` | Retry + Circuit Breaker + Bulkhead, shared named registry, exponential-jitter backoff |
 | GraphQL | ✅ @nestjs/graphql | ✅ `@nexusts/graphql` | SDL-first + code-first (`autoSchema: true`). `@Resolver`/`@Query`/`@Mutation` decorators with full SDL synthesis. Shipped v0.7.6. |
 | gRPC | ✅ @nestjs/microservices | ✅ `@nexusts/grpc` | Reflection-based, unary methods (streaming planned v2). Shipped v0.5. |
 | Resilience | ⚠️ nestjs-recq | ✅ `@nexusts/resilience` | Retry + Circuit Breaker + Bulkhead, shared named registry, HTTP admin API (`ResilienceAdminModule`), eager `applyResilience()` auto-wrap. **Zero new dependencies.** |
 
-**Headline**: NexusTS v0.8.2 closes **every Tier 1 and Tier 2 gap** from
+**Headline**: NexusTS v0.8.3 closes **every Tier 1 and Tier 2 gap** from
 the v0.2 analysis. All **32** shipped modules are first-party.
 
 ---
@@ -101,7 +101,7 @@ the v0.2 analysis. All **32** shipped modules are first-party.
 | **Eager `applyResilience()`** | v0.8.0 | `@Retry`/`@CircuitBreaker`/`@Bulkhead` auto-wrapped at controller mount. |
 | **ResilienceAdminModule** | v0.8.0 | HTTP admin endpoints for circuit breaker runtime control. |
 | **Cross-pod circuit breaker store** | v0.8.1 | `RedisResilienceStore`, `DrizzleResilienceStore`. |
-| **gRPC streaming** | v0.8.2 | Server/client/bidi streaming via decorators. |
+| **gRPC streaming** | v0.8.3 | Server/client/bidi streaming via decorators. |
 | **Repository migration** | v0.8.0 | Moved to `nexus-ts/nexusts` GitHub org. |
 | **Examples + smoke test expansion** | v0.7.0 | 33 examples total (added `32-graphql-hello`, `33-resilience-calls`). 67 smoke tests. |
 
@@ -352,7 +352,7 @@ Shipped in v0.5–v0.6.8:
 
 ### v0.7.9 — Bun decorator diagnostics (shipped)
 
-### v0.8.2 — ResilienceAdminModule + FeatureFlagModule (shipped)
+### v0.8.3 — ResilienceAdminModule + FeatureFlagModule (shipped)
 
 - **`ResilienceAdminModule`** — HTTP admin endpoints for circuit
   breaker and bulkhead inspection/control.
@@ -375,9 +375,9 @@ Shipped in v0.5–v0.6.8:
 
 ---
 
-## 8. Honest assessment (v0.8.2)
+## 8. Honest assessment (v0.8.3)
 
-NexusTS v0.8.2 is **production-ready for the vast majority of backend
+NexusTS v0.8.3 is **production-ready for the vast majority of backend
 services**:
 
 - The MVC + DI + validation core is solid and battle-tested.

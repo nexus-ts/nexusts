@@ -1,6 +1,6 @@
 {
   "name": "@nexusts/graphql",
-  "version": "0.8.2",
+  "version": "0.8.3",
   "description": "SDL-first GraphQL endpoint with @Resolver decorators",
   "type": "module",
   "main": "./dist/index.js",

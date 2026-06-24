@@ -1,6 +1,6 @@
 {
   "name": "@nexusts/drive",
-  "version": "0.8.2",
+  "version": "0.8.3",
   "description": "File storage abstraction (Local / S3 / R2 / memory)",
   "type": "module",
   "main": "./dist/index.js",

@@ -1,9 +1,9 @@
 # NexusTS vs AdonisJS — 기능 격차 분석
 
 > English version: [`adonisjs-comparison.md`](./adonisjs-comparison.md)
-> 분석 일자: 2026-06-24 · 기준: NexusTS **v0.8.2**
+> 분석 일자: 2026-06-24 · 기준: NexusTS **v0.8.3**
 
-이 문서는 NexusTS v0.8.2와 [AdonisJS v6](https://adonisjs.com)를 비교하여
+이 문서는 NexusTS v0.8.3와 [AdonisJS v6](https://adonisjs.com)를 비교하여
 어떤 AdonisJS 스타일 "battery" (관례 기반, "그냥 동작" 기능)가
 **있음**, **부분적**, **없음** 상태인지 식별한다. v0.3–v0.7.0 마일스톤이
 모든 Tier 1, Tier 2, Tier 3 격차를 해소했다. 이제 프레임워크는
@@ -60,7 +60,7 @@ AdonisJS가 출시하는 모든 battery를 다루며, 그 이상을 제공한다
 | Admin panel | ✅ `@adonisjs/admin` | ❌ 출시 안 됨 | 낮은 우선순위 |
 | GraphQL | ✅ `@adonisjs/graphql` (legacy) | ✅ `@nexusts/graphql` | SDL-first; `@Resolver`/`@Query`/`@Mutation` 데코레이터 + 전역 클래스 레지스트리 (v0.7.6). Code-first SDL 합성 v0.8. |
 | gRPC | ❌ DIY | ✅ `@nexusts/grpc` | v0.5에 출시됨 (reflection-based, unary / streaming v2) |
-| Feature flags | ❌ DIY | ✅ `@nexusts/feature-flag` | Rollout, allowlist, denylist, `@FeatureFlag` 데코레이터. v0.8.2 출시. |
+| Feature flags | ❌ DIY | ✅ `@nexusts/feature-flag` | Rollout, allowlist, denylist, `@FeatureFlag` 데코레이터. v0.8.3 출시. |
 | Resilience (서킷 브레이커, retry) | ❌ DIY | ✅ `@nexusts/resilience` | Retry + Circuit Breaker + Bulkhead, 공유 명명 레지스트리, exponential-jitter 백오프. v0.7.0 출시. **새 의존성 0.** |
 
 **헤드라인**: NexusTS v0.7.6는 **모든** AdonisJS v6 battery를

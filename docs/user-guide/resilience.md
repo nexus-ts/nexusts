@@ -389,6 +389,74 @@ curl -X POST http://localhost:3000/resilience/circuits/stripe/force-close
 
 Unknown circuit names return 404.
 
+## Cross-pod circuit breakers (v0.8)
+
+The default `CircuitBreaker` manages state in-process only. In a
+multi-pod environment, pod A may open the circuit while pod B still
+attempts failing requests. A `ResilienceStore` shares circuit state
+across pods.
+
+### MemoryResilienceStore (default, single pod)
+
+```ts
+ResilienceModule.forRoot({
+  retry: { attempts: 3 },
+  circuit: { threshold: 0.5 },
+  // store: 'memory' — default, can be omitted
+})
+```
+
+### RedisResilienceStore (multi-pod, recommended)
+
+```ts
+import { createRedisClient }     from '@nexusts/redis';
+import { RedisResilienceStore }  from '@nexusts/resilience';
+
+const redisClient = await createRedisClient({ url: process.env.REDIS_URL });
+const store = new RedisResilienceStore(redisClient, { keyPrefix: 'myapp:cb:' });
+
+ResilienceModule.forRoot({
+  circuit:         { threshold: 0.5, timeout: 30_000 },
+  store,
+  syncIntervalMs:  5_000,
+})
+```
+
+### DrizzleResilienceStore (database-backed)
+
+```ts
+import { DrizzleResilienceStore } from '@nexusts/resilience';
+
+const store = new DrizzleResilienceStore(drizzleService);
+// Automatically creates nexus_circuit_state table (IF NOT EXISTS)
+
+ResilienceModule.forRoot({ circuit: { threshold: 0.5 }, store })
+```
+
+### How it works
+
+| Step | Behaviour |
+| ---- | --------- |
+| On state transition | Snapshot saved to store immediately (fire-and-forget) |
+| On `execute()` | Snapshot read from store after `syncIntervalMs` elapsed |
+| Conflict resolution | Last-writer-wins via `updatedAt` timestamp |
+| Store errors | Fall back to local state — never propagate exceptions |
+
+Set `syncIntervalMs = 0` to poll on every `execute()` (for testing).
+
+### Custom backend
+
+Implement `ResilienceStore` to integrate any external store:
+
+```ts
+import type { ResilienceStore, CircuitSnapshot } from '@nexusts/resilience';
+
+class EtcdResilienceStore implements ResilienceStore {
+  async getSnapshot(name: string): Promise<CircuitSnapshot | null> { ... }
+  async saveSnapshot(name: string, snap: CircuitSnapshot): Promise<void> { ... }
+}
+```
+
 ## What's not in this release
 
 - **Bulkhead queue tracing.** When the queue is long, you currently

@@ -268,14 +268,25 @@ export const replCommand: Command = {
 					const app = env.app as
 						| {
 								server?: {
-									app?: { routes?: Array<{ method?: string; path?: string }> };
+									router?: {
+										getRoutes?: () => Array<{
+											method: string;
+											path: string;
+											target?: { name?: string };
+											propertyKey?: string | symbol;
+										}>;
+									};
 								};
 						  }
 						| undefined;
-					const raw = app?.server?.app?.routes ?? [];
+					const getRoutes = app?.server?.router?.getRoutes;
+					const raw =
+						typeof getRoutes === "function"
+							? getRoutes.call(app!.server!.router)
+							: [];
 					const seen = new Set<string>();
 					const routes = raw.filter((r) => {
-						const key = `${r.method ?? "?"}:${r.path ?? "?"}`;
+						const key = `${r.method}:${r.path}:${r.target?.name ?? ""}:${typeof r.propertyKey === "symbol" ? r.propertyKey.description ?? "" : String(r.propertyKey)}`;
 						if (seen.has(key)) return false;
 						seen.add(key);
 						return true;
@@ -283,9 +294,13 @@ export const replCommand: Command = {
 					if (routes.length === 0) {
 						console.log("  (no routes registered)");
 					} else {
+						const methodPad = Math.max(...routes.map((r) => r.method.length));
+						const pathPad = Math.max(...routes.map((r) => r.path.length));
 						for (const r of routes) {
-							const m = (r.method ?? "?").padEnd(7);
-							console.log(`  ${m} ${r.path ?? "?"}`);
+							const m = r.method.padEnd(methodPad);
+							const p = r.path.padEnd(pathPad);
+							const c = `${r.target?.name ?? "?"}.${typeof r.propertyKey === "symbol" ? r.propertyKey.description ?? "?" : String(r.propertyKey)}`;
+							console.log(`  ${m}  ${p}  ${c}`);
 						}
 					}
 					return true;

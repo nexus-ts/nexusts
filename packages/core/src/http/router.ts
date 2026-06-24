@@ -268,7 +268,7 @@ class NexusRouterImpl implements NexusRouter {
 		this.#routeList.push({
 			method: route.method,
 			path: fullPath,
-			target: controller.prototype,
+			target: controller,
 			propertyKey: route.propertyKey,
 			validation: validation ?? undefined,
 		});

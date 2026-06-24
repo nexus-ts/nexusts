@@ -21,6 +21,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.7.7] — 2026-06-24
+
+### Added
+
+- **GraphQL code-first SDL synthesis** (`autoSchema: true`):
+  `@Resolver`/`@Query`/`@Mutation` decorators now auto-generate SDL.
+  `@Arg` supports TypeScript type aliases (`string` → `String`,
+  `int` → `Int`, etc.). `extend type` merge when user's `typeDefs`
+  already defines a root type. Resolver classes are auto-instantiated
+  and wired into the resolver map.
+
+### Fixed
+
+- **`create-nexusts` → `nx init`**: `mergePackageJson()` now handles
+  `devDependencies` — `drizzle-kit` was missing when creating a
+  project via `bunx create-nexusts my-app`.
+- **`nx make:crud` next steps**: suggest `bun run dev` instead of
+  `bun --hot app/main.ts`; use `&&` instead of `&` for sequential
+  commands.
+
+### Changed
+
+- **Publish batch break**: reduced from 10s to 5s (configurable via
+  `PUBLISH_BATCH_BREAK_MS`).
+
+---
+
 ## [0.7.6] — 2026-06-24
 
 ### Added
@@ -1365,6 +1392,7 @@ Initial release. **feature-complete MVP core.**
 
 ---
 
+[0.7.7]: https://github.com/kabyeon/nexusts/compare/v0.7.6...v0.7.7
 [0.7.6]: https://github.com/kabyeon/nexusts/compare/v0.7.5...v0.7.6
 [0.7.5]: https://github.com/kabyeon/nexusts/compare/v0.7.4...v0.7.5
 [0.7.4]: https://github.com/kabyeon/nexusts/compare/v0.7.3...v0.7.4

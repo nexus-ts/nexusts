@@ -21,6 +21,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.7.7] — 2026-06-24
+
+### 추가
+
+- **GraphQL code-first SDL 합성** (`autoSchema: true`):
+  `@Resolver`/`@Query`/`@Mutation` 데코레이터에서 SDL 자동 생성.
+  `@Arg` 타입 별칭 지원 (`string` → `String`, `int` → `Int` 등).
+  `extend type` 병합, 리졸버 자동 인스턴스화.
+
+### 수정
+
+- **`create-nexusts` → `nx init`**: `mergePackageJson()`이
+  `devDependencies`도 처리하도록 수정 — `drizzle-kit` 누락 해결.
+- **`nx make:crud` 다음 단계**: `bun --hot app/main.ts` →
+  `bun run dev`, `&` → `&&`.
+
+### 변경
+
+- **Publish 배치 중단 시간**: 10s → 5s로 단축.
+
+---
+
 ## [0.7.6] — 2026-06-24
 
 ### 추가
@@ -1032,6 +1054,7 @@ Feature-complete MVP. 프레임워크가 "v0.2 약속" 모듈을 모두 획득.
 
 ---
 
+[0.7.7]: https://github.com/kabyeon/nexusts/compare/v0.7.6...v0.7.7
 [0.7.6]: https://github.com/kabyeon/nexusts/compare/v0.7.5...v0.7.6
 [0.7.5]: https://github.com/kabyeon/nexusts/compare/v0.7.4...v0.7.5
 [0.7.4]: https://github.com/kabyeon/nexusts/compare/v0.7.3...v0.7.4

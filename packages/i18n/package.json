@@ -1,6 +1,6 @@
 {
   "name": "@nexusts/i18n",
-  "version": "0.7.6",
+  "version": "0.7.7",
   "description": "Internationalization (Intl-based, pluralization)",
   "type": "module",
   "main": "./dist/index.js",

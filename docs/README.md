@@ -27,7 +27,7 @@ provided in `*.ko.md` files.
 | **User guide** (사용자 메뉴얼) | [`docs/user-guide/`](./user-guide/) | [`docs/user-guide/`](./user-guide/) (`*.ko.md`) |
 | **Analysis** (분석 · 비교) | [`docs/analysis/`](./analysis/) | [`docs/analysis/`](./analysis/) (`*.ko.md`) |
 | **API reference** (API 레퍼런스) | [`api-reference.md`](./api-reference.md) | [`api-reference.ko.md`](./api-reference.ko.md) |
-| **Publishing & deployment** (npm 배포 가이드) | [`publishing/`](./publishing/) | _(영어만 제공)_ |
+| **Publishing & deployment** (npm 배포 가이드) | [`publishing/`](./publishing/) | [`publishing/README.ko.md`](./publishing/README.ko.md) |
 
 ---
 
@@ -138,19 +138,14 @@ Architectural deep-dives for contributors and advanced users.
 How the 30 NexusTS packages plus the `create-nexusts` scaffolder
 get published to the npm registry.
 
-> **Note:** currently English only. The
-> [first-time setup](./publishing/first-time-setup.md) and
-> [npm rate limit](./publishing/npm-rate-limit.md) docs cover the
-> details of the v0.7.0 release incident.
-
-| Document | What it covers |
-| -------- | --------------- |
-| [Publishing overview](./publishing/README.md) | Index of the publishing docs, plus a TL;DR for maintainers |
-| [GitHub Actions workflow](./publishing/workflow.md) | How the auto-publish workflow runs, its modes (`publish` / `publish-batch` / `dry-run` / `build`) |
-| [Local publish](./publishing/local-publish.md) | How to run `bun run publish:all` from your machine, including the npm 11 device flow |
-| [npm rate limit](./publishing/npm-rate-limit.md) | The 25/24h per-user publish limit we hit on the v0.7.0 release, and how to recover |
-| [Troubleshooting](./publishing/troubleshooting.md) | Common publish failures (E429, EOTP, E401, E404) and fixes |
-| [First-time setup](./publishing/first-time-setup.md) | One-time setup for a new maintainer: org, 2FA, Automation token, GitHub secret |
+| 문서 | 내용 | 한국어 |
+| ---- | ---- | ------ |
+| [Publishing overview](./publishing/README.md) | Index of the publishing docs, plus a TL;DR for maintainers | [README.ko.md](./publishing/README.ko.md) |
+| [GitHub Actions workflow](./publishing/workflow.md) | How the auto-publish workflow runs, its modes (`publish` / `publish-batch` / `dry-run` / `build`) | — |
+| [Local publish](./publishing/local-publish.md) | How to run `bun run publish:all` from your machine, including the npm 11 device flow | [local-publish.ko.md](./publishing/local-publish.ko.md) |
+| [npm rate limit](./publishing/npm-rate-limit.md) | The 25/24h per-user publish limit we hit on the v0.7.0 release, and how to recover | [npm-rate-limit.ko.md](./publishing/npm-rate-limit.ko.md) |
+| [Troubleshooting](./publishing/troubleshooting.md) | Common publish failures (E429, EOTP, E401, E404) and fixes | — |
+| [First-time setup](./publishing/first-time-setup.md) | One-time setup for a new maintainer: org, 2FA, Automation token, GitHub secret | — |
 
 ---
 

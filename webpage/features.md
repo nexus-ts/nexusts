@@ -11,6 +11,9 @@ NexusTS ships **32 independent modules** — each is its own `@nexusts/*` packag
 
 | Feature | Package | Status |
 |---------|---------|--------|
+| **TC39 standard ES decorators** (no `experimentalDecorators`, no `reflect-metadata`) | `@nexusts/core` | ✅ **v0.9.0** |
+| Field injection (`@Inject(Token) declare field: Type`) | `@nexusts/core` | ✅ **v0.9.0** |
+| `ctx.req.*` methods (replaces `@Param`/`@Body`/`@Query`) | `@nexusts/core` | ✅ **v0.9.0** |
 | MVC + Dependency Injection | `@nexusts/core` | ✅ Core |
 | Routing (Nest/Adonis/functional styles) | `@nexusts/core` | ✅ Core |
 | Request Validation (Zod) | `@nexusts/core` | ✅ Core |

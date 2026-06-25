@@ -7,7 +7,7 @@ titleTemplate: Bun 네이티브 풀스택 프레임워크
 hero:
   name: NexusTS
   text: Bun 네이티브 풀스택 프레임워크
-  tagline: 32개 모듈 패키지 · 필요한 것만 설치 · 사용하지 않는 것은 제로 오버헤드
+  tagline: TC39 표준 데코레이터 · 32개 모듈 패키지 · 필요한 것만 설치 · 사용하지 않는 것은 제로 오버헤드
   image:
     src: /logo.svg
     alt: NexusTS
@@ -27,8 +27,8 @@ features:
     title: 32개 모듈 패키지
     details: 각 기능은 독립적인 `@nexusts/*` 패키지. 필요한 것만 설치. 불필요한 코드 제로.
   - icon: 🎯
-    title: 데코레이터 기반
-    details: NestJS 스타일 아키텍처. `@Module`, `@Controller`, `@Injectable`, `@Get`, `@Post` 데코레이터. 친숙한 패턴, 설정 없는 DI.
+    title: 표준 데코레이터 (TC39)
+    details: TC39 표준 ES 데코레이터 — `experimentalDecorators` 불필요, `reflect-metadata` 불필요. 필드 인젝션, `ctx.req.*` 메서드. 레거시 데코레이터와 듀얼모드 호환.
   - icon: 🔌
     title: 완전한 생태계
     details: GraphQL, gRPC (스트리밍 포함), WebSocket, SSE, Queue, Scheduler, Cache, Logger, Metrics, Tracing — 모두 자체 제공.
@@ -91,8 +91,8 @@ bunx nx new my-app --view inertia --orm drizzle --db bun-sqlite --frontend react
 ... 외 18개 →
 ```
 
-## v0.8.4 — 최신 릴리스
+## v0.9.0 — 최신 릴리스
 
-**32개 패키지** 출시 완료. NestJS/AdonisJS와의 Tier 1 및 Tier 2 격차를 모두 해소했습니다.
+**표준 데코레이터 마이그레이션.** TC39 표준 ES 데코레이터, `reflect-metadata` 제거. 필드 인젝션, `ctx.req.*` 메서드. **32개 패키지** 출시 완료. NestJS/AdonisJS와의 Tier 1 및 Tier 2 격차를 모두 해소했습니다.
 
 자세한 내용은 [변경 로그](https://github.com/nexus-ts/nexusts/blob/main/CHANGELOG.md)를 참고하세요.

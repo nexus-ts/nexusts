@@ -7,7 +7,7 @@ titleTemplate: Bun-native Fullstack Framework
 hero:
   name: NexusTS
   text: Bun-native fullstack framework
-  tagline: 32 modular packages · Install only what you import · Zero overhead for what you don't
+  tagline: TC39 standard decorators · 32 modular packages · Install only what you import · Zero overhead for what you don't
   image:
     src: /logo.svg
     alt: NexusTS
@@ -27,8 +27,8 @@ features:
     title: 32 Modular Packages
     details: Each feature is its own `@nexusts/*` package. Install only what you use. No bloat, no dead code.
   - icon: 🎯
-    title: Decorator-driven
-    details: NestJS-style architecture with `@Module`, `@Controller`, `@Injectable`, `@Get`, `@Post` decorators. Familiar patterns, zero-config DI.
+    title: Standard Decorators (TC39)
+    details: TC39 standard ES decorators — no `experimentalDecorators`, no `reflect-metadata`. Field injection, `ctx.req.*` methods. Dual-mode backward compatibility with legacy decorators.
   - icon: 🔌
     title: Full Ecosystem
     details: GraphQL, gRPC (incl. streaming), WebSocket, SSE, Queue, Scheduler, Cache, Logger, Metrics, Tracing — all first-party.
@@ -46,7 +46,7 @@ features:
 
 The framework provides a complete set of tools for building production backend services:
 
-- **MVC + DI** — NestJS-style decorators (`@Module`, `@Controller`, `@Injectable`, `@Get`, `@Post`)
+- **Standard decorators (TC39)** — No `experimentalDecorators`, no `reflect-metadata`. NestJS-style `@Module`, `@Controller`, `@Injectable` with field injection and `ctx.req.*` methods
 - **Database** — Drizzle ORM with 5 dialects (PostgreSQL, MySQL, SQLite, bun-sqlite, Cloudflare D1)
 - **GraphQL** — SDL-first + code-first with `autoSchema: true`
 - **gRPC** — All 4 call types: unary, server-stream, client-stream, bidi
@@ -95,6 +95,7 @@ bunx nx new my-app --view inertia --orm drizzle --db bun-sqlite --frontend react
 
 | Feature | NexusTS | NestJS | AdonisJS |
 |---------|---------|--------|----------|
+| **Decorators** | ✅ **TC39 standard ES** | ⚠️ experimentalDecorators | ⚠️ experimentalDecorators |
 | **Runtime** | Bun (native) | Node.js | Node.js |
 | **Packages** | 32 (opt-in) | Monolithic | Monolithic |
 | **GraphQL** | ✅ Built-in | ✅ @nestjs/graphql | ✅ @adonisjs/graphql |
@@ -105,8 +106,8 @@ bunx nx new my-app --view inertia --orm drizzle --db bun-sqlite --frontend react
 | **CLI** | ✅ `nx` (ACE-style) | ✅ NestJS CLI | ✅ Ace |
 | **License** | MIT | MIT | MIT |
 
-## v0.8.4 — Latest Release
+## v0.9.0 — Latest Release
 
-Active development with **32 packages** shipped. All Tier 1 & 2 gaps from NestJS/AdonisJS closed.
+**Standard decorator migration.** TC39 standard ES decorators, no `reflect-metadata`. Field injection, `ctx.req.*` methods. 32 packages shipped. All Tier 1 & 2 gaps from NestJS/AdonisJS closed.
 
 See the [Changelog](https://github.com/nexus-ts/nexusts/blob/main/CHANGELOG.md) for details.

@@ -2,8 +2,7 @@
 
 > 한국어 버전: [`schedule.ko.md`](./schedule.ko.md)
 
-NexusTS ships a schedule module under `@nexusts/schedule` that mirrors
-`@nestjs/schedule`:
+NexusTS ships a schedule module under `@nexusts/schedule`
 
 - `@Cron(expression)` decorator — runs a method on a cron schedule.
 - `@Interval(milliseconds)` — runs every N ms.

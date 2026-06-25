@@ -23,6 +23,7 @@
   "files": [
     "dist",
     "src/di",
+    "src/constants.ts",
     "README.md"
   ],
   "bin": {

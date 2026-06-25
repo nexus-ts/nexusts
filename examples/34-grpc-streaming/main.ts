@@ -173,21 +173,23 @@ await writeFile(protoPath, PROTO, "utf-8");
 class AppModule {}
 
 const app = new Application(AppModule);
-await app.listen(3000);
+
+const httpPort = Number(process.env.PORT ?? 3000);
+await app.listen(httpPort);
 
 // Start the gRPC server
 const grpc = app.container.resolve(GrpcSvcClass);
 await grpc.start();
 
 console.log(`
-✓ HTTP server: http://localhost:3000
+✓ HTTP server: http://localhost:${httpPort}
 ✓ gRPC server: localhost:50051
 
 Try:
-  curl http://localhost:3000/demo/ping   # unary
-  curl http://localhost:3000/demo/count  # server streaming
-  curl http://localhost:3000/demo/sum    # client streaming
-  curl http://localhost:3000/demo/echo   # bidirectional
+  curl http://localhost:${httpPort}/demo/ping   # unary
+  curl http://localhost:${httpPort}/demo/count  # server streaming
+  curl http://localhost:${httpPort}/demo/sum    # client streaming
+  curl http://localhost:${httpPort}/demo/echo   # bidirectional
 
 Press Ctrl+C to stop.
 `);

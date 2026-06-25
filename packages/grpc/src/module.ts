@@ -44,14 +44,14 @@ export class GrpcModule {
 				...config.services,
 				{
 					provide: GrpcService,
-					useFactory: (resolve: <T>(t: unknown) => T) => {
-
+					useFactory: () => {
 						const svc = new GrpcService(config);
-						// prepare() resolves the service impls from the
-						// container and registers their handlers on the
-						// gRPC server. The user calls start() later to
-						// bind to a port.
-						svc.setResolver((t) => resolve(t));
+						// Resolve service impls from the global DI container
+						// (stashed by Application during bootstrap).
+						const container = (globalThis as any)["__nexus_container"];
+						if (container) {
+							svc.setResolver((t) => container.resolve(t));
+						}
 						return svc;
 					},
 				},

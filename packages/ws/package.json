@@ -1,6 +1,6 @@
 {
   "name": "@nexusts/ws",
-  "version": "0.9.3",
+  "version": "0.9.4",
   "description": "WebSockets (Bun native, Node fallback via ws)",
   "type": "module",
   "main": "./dist/index.js",

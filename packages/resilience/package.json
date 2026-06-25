@@ -1,6 +1,6 @@
 {
   "name": "@nexusts/resilience",
-  "version": "0.9.3",
+  "version": "0.9.4",
   "description": "Retry + Circuit Breaker + Bulkhead",
   "type": "module",
   "main": "./dist/index.js",

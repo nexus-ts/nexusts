@@ -30,10 +30,10 @@
  *   }
  */
 
-import "reflect-metadata";
 import { Module } from "@nexusts/core";
 import { QueueService } from "./queue.service.js";
 import type { QueueConfig } from "./types.js";
+import { safeGetMeta, safeDefineMeta, safeHasMeta } from "@nexusts/core/di/safe-reflect";
 
 @Module({
 	providers: [

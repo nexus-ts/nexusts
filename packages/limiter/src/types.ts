@@ -26,8 +26,8 @@
  *   - `RedisStorage` (optional, multi-process / multi-pod)
  */
 
-import "reflect-metadata";
 import { METADATA_KEY } from "@nexusts/core";
+import { safeGetMeta, safeDefineMeta, safeHasMeta } from "@nexusts/core/di/safe-reflect";
 
 /** Identifier of the request — IP, user ID, API key, etc. */
 export type RateLimitKey = string;
@@ -126,22 +126,22 @@ export function RateLimit(
 		// Class-level: applied to all routes of the controller.
 		if (descriptor === undefined) {
 			const existing: RateLimitRule[] =
-				Reflect.getMetadata(LIMITER_RULE_KEY, target) ?? [];
+				safeGetMeta(LIMITER_RULE_KEY, target) ?? [];
 			existing.push({ ...rule, path: "**" });
-			Reflect.defineMetadata(LIMITER_RULE_KEY, existing, target);
+			safeDefineMeta(LIMITER_RULE_KEY, existing, target);
 			return target;
 		}
 		// Method-level: bound to the route.
 		const existing: RateLimitRule[] =
-			Reflect.getMetadata(LIMITER_RULE_KEY, target.constructor) ?? [];
+			safeGetMeta(LIMITER_RULE_KEY, target.constructor) ?? [];
 		existing.push({ ...rule, path: propertyKey === undefined ? "**" : `**` });
-		Reflect.defineMetadata(LIMITER_RULE_KEY, existing, target.constructor);
+		safeDefineMeta(LIMITER_RULE_KEY, existing, target.constructor);
 	};
 }
 
 /** Read all `@RateLimit` rules from a controller or method. */
 export function getLimiterRules(target: any): RateLimitRule[] {
-	return Reflect.getMetadata(LIMITER_RULE_KEY, target) ?? [];
+	return safeGetMeta(LIMITER_RULE_KEY, target) ?? [];
 }
 
 /** Convert a `DurationLike` to milliseconds. */

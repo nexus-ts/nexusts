@@ -27,9 +27,9 @@
  *   }
  */
 
-import "reflect-metadata";
 import type { EventService } from "../event.service.js";
 import type { EventName, ListenerOptions, EventListener } from "../types.js";
+import { safeGetMeta, safeDefineMeta, safeHasMeta } from "@nexusts/core/di/safe-reflect";
 
 const ON_EVENT_META = "nexus:events:on-event";
 
@@ -52,10 +52,10 @@ export function OnEvent(
 		}
 		const ctor = target.constructor as object;
 		const hooks: StoredHook[] =
-			(Reflect.getMetadata(ON_EVENT_META, ctor) as StoredHook[] | undefined) ??
+			(safeGetMeta(ON_EVENT_META, ctor) as StoredHook[] | undefined) ??
 			[];
 		hooks.push({ method: String(propertyKey), pattern, options });
-		Reflect.defineMetadata(ON_EVENT_META, hooks, ctor);
+		safeDefineMeta(ON_EVENT_META, hooks, ctor);
 	};
 }
 
@@ -64,7 +64,7 @@ export function getOnEventHooks(target: unknown): StoredHook[] {
 	const ctor =
 		(target as { constructor?: object }).constructor ?? (target as object);
 	return (
-		(Reflect.getMetadata(ON_EVENT_META, ctor) as StoredHook[] | undefined) ?? []
+		(safeGetMeta(ON_EVENT_META, ctor) as StoredHook[] | undefined) ?? []
 	);
 }
 

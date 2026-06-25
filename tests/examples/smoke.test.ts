@@ -81,6 +81,7 @@ const EXAMPLE_TSCONFIG = {
 		types: ["bun-types"],
 		baseUrl: ".",
 		paths: {
+			"@nexusts/core/*": ["../../packages/core/src/*"],
 			"@nexusts/*": ["../../packages/*/src/index.ts"],
 			"@nexusts/core": ["../../packages/core/src/index.ts"],
 		},

@@ -12,11 +12,11 @@
  * CircuitBreakerConfig, BulkheadConfig) used by the decorators
  * when no per-call options are given.
  */
-import "reflect-metadata";
 import { Inject, Injectable } from "@nexusts/core";
 import { CircuitBreaker } from "./circuit-breaker.js";
 import { Bulkhead } from "./bulkhead.js";
 import { retry } from "./retry.js";
+import { safeGetMeta, safeDefineMeta, safeHasMeta } from "@nexusts/core/di/safe-reflect";
 import type {
 	BackoffStrategy,
 	BulkheadConfig,

@@ -12,12 +12,12 @@
  *   })
  *   export class AppModule {}
  */
-import "reflect-metadata";
 import { Module } from "@nexusts/core";
 import { CacheService } from "./cache.service.js";
 import { MemoryStore } from "./stores/memory.js";
 import { RedisCacheStore } from "./stores/redis.js";
 import type { CacheConfig } from "./types.js";
+import { safeGetMeta, safeDefineMeta, safeHasMeta } from "@nexusts/core/di/safe-reflect";
 
 @Module({
 	providers: [

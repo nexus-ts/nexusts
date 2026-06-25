@@ -26,11 +26,11 @@
  * Resolvers can also be declared via the `@Resolver` + `@Query` /
  * `@Mutation` / `@Subscription` decorators — see the user guide.
  */
-import "reflect-metadata";
 import type { Context } from "hono";
 import { Module } from "@nexusts/core";
 import { GraphQLService } from "./graphql.service.js";
 import type { GraphQLConfig } from "./types.js";
+import { safeGetMeta, safeDefineMeta, safeHasMeta } from "@nexusts/core/di/safe-reflect";
 
 @Module({
 	providers: [

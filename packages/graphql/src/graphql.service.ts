@@ -12,7 +12,6 @@
  * `graphql` (a peer-dep). If the user hasn't installed it, we
  * throw a clear error from the first attempt.
  */
-import "reflect-metadata";
 import type {
 	GraphQLConfig,
 	GraphQLContext,
@@ -22,6 +21,7 @@ import type {
 } from "./types.js";
 import { getRegisteredResolvers, getResolverFields } from "./decorators/index.js";
 import { normalizeGQLType } from "./decorators/type-mapper.js";
+import { safeGetMeta, safeDefineMeta, safeHasMeta } from "@nexusts/core/di/safe-reflect";
 
 interface GraphQLJs {
 	parse: (s: string) => unknown;

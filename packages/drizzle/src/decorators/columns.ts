@@ -5,7 +5,7 @@
  * ergonomics on top of Drizzle's table-builder API. The decorators
  * record metadata that the repository can read for default queries.
  */
-import "reflect-metadata";
+import { safeGetMeta, safeDefineMeta, safeHasMeta } from "@nexusts/core/di/safe-reflect";
 import {
 	DRIZZLE_TABLE_META,
 	type ColumnMetadata,
@@ -14,7 +14,7 @@ import {
 
 export function Table(name: string): ClassDecorator {
 	return (target: any) => {
-		const existing: TableMetadata = Reflect.getMetadata(
+		const existing: TableMetadata = safeGetMeta(
 			DRIZZLE_TABLE_META,
 			target,
 		) ?? {
@@ -22,7 +22,7 @@ export function Table(name: string): ClassDecorator {
 			columns: new Map(),
 		};
 		existing.name = name;
-		Reflect.defineMetadata(DRIZZLE_TABLE_META, existing, target);
+		safeDefineMeta(DRIZZLE_TABLE_META, existing, target);
 	};
 }
 
@@ -60,16 +60,16 @@ export function PrimaryKey(
 }
 
 export function getTableMeta(target: any): TableMetadata {
-	const m: TableMetadata = Reflect.getMetadata(DRIZZLE_TABLE_META, target) ?? {
+	const m: TableMetadata = safeGetMeta(DRIZZLE_TABLE_META, target) ?? {
 		name: target.name.toLowerCase(),
 		columns: new Map(),
 	};
-	Reflect.defineMetadata(DRIZZLE_TABLE_META, m, target);
+	safeDefineMeta(DRIZZLE_TABLE_META, m, target);
 	return m;
 }
 
 export function readTableMeta(target: any): TableMetadata | undefined {
-	return Reflect.getMetadata(DRIZZLE_TABLE_META, target);
+	return safeGetMeta(DRIZZLE_TABLE_META, target);
 }
 
 export type { ColumnMetadata, TableMetadata } from "../types.js";

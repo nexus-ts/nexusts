@@ -1,5 +1,5 @@
-import "reflect-metadata";
 import type { FlagContext } from "../types.js";
+import { safeGetMeta, safeDefineMeta, safeHasMeta } from "@nexusts/core/di/safe-reflect";
 
 const FLAG_META = Symbol.for("nexus:FeatureFlag");
 
@@ -34,7 +34,7 @@ export function FeatureFlag(
 	options: FeatureFlagOptions = {},
 ): MethodDecorator {
 	return (target: any, propertyKey: string | symbol, descriptor: PropertyDescriptor) => {
-		const specs: FlagSpec[] = Reflect.getMetadata(FLAG_META, target.constructor) ?? [];
+		const specs: FlagSpec[] = safeGetMeta(FLAG_META, target.constructor) ?? [];
 		specs.push({
 			propertyKey,
 			flagName,
@@ -42,10 +42,10 @@ export function FeatureFlag(
 			onDisabled: options.onDisabled,
 			original: descriptor.value,
 		});
-		Reflect.defineMetadata(FLAG_META, specs, target.constructor);
+		safeDefineMeta(FLAG_META, specs, target.constructor);
 	};
 }
 
 export function getFlagSpecs(target: any): FlagSpec[] {
-	return Reflect.getMetadata(FLAG_META, target) ?? [];
+	return safeGetMeta(FLAG_META, target) ?? [];
 }

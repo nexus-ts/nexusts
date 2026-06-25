@@ -18,10 +18,10 @@
  *   }
  */
 
-import "reflect-metadata";
 import { createParamDecorator } from "@nexusts/core";
 import { PARAM_TYPES } from "@nexusts/core";
 import type { SessionRecord, SessionData } from "../types.js";
+import { safeGetMeta, safeDefineMeta, safeHasMeta } from "@nexusts/core/di/safe-reflect";
 
 export interface SessionOptions<T = SessionData> {
 	/**

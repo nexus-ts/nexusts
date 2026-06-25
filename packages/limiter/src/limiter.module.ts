@@ -13,12 +13,12 @@
  *   })
  *   export class AppModule {}
  */
-import "reflect-metadata";
 import { Module } from "@nexusts/core";
 import { LimiterService } from "./limiter.service.js";
 import { LimiterMiddleware } from "./limiter.middleware.js";
 import { MemoryRateLimitStorage } from "./backends/memory.js";
 import type { LimiterConfig } from "./types.js";
+import { safeGetMeta, safeDefineMeta, safeHasMeta } from "@nexusts/core/di/safe-reflect";
 
 @Module({
 	providers: [

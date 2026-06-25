@@ -18,8 +18,8 @@
  * async create(@Body() body: InsertUser) { ... }
  * ```
  */
-import "reflect-metadata";
 import type { z } from "zod";
+import { safeGetMeta, safeDefineMeta, safeHasMeta } from "@nexusts/core/di/safe-reflect";
 
 /**
  * Zod schema derived from a Drizzle table's `$inferSelect` type.

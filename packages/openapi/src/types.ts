@@ -1,4 +1,5 @@
 /**
+import { safeGetMeta, safeDefineMeta, safeHasMeta } from "@nexusts/core/di/safe-reflect";
  * `nexusjs/openapi` — OpenAPI 3.1 + Scalar UI.
  *
  *   @Module({
@@ -23,7 +24,6 @@
  *   // -> GET /docs            (Scalar UI)
  */
 
-import "reflect-metadata";
 
 // ---------------------------------------------------------------------------
 // OpenAPI spec types (subset of OpenAPI 3.1 — enough for 95% of real APIs)

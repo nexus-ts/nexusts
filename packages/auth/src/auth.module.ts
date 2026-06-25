@@ -18,11 +18,11 @@
  * looks up. Both resolve to the same instance via `useExisting`.
  */
 
-import "reflect-metadata";
 import { Module } from "@nexusts/core";
 import { AuthController } from "./auth.controller.js";
 import { AuthService } from "./auth.service.js";
 import type { AuthConfig } from "./types.js";
+import { safeGetMeta, safeDefineMeta, safeHasMeta } from "@nexusts/core/di/safe-reflect";
 
 @Module({
 	controllers: [AuthController],

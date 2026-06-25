@@ -13,7 +13,6 @@
  * - `location(...)` for full-page reloads (e.g. on logout)
  * - `back()` to navigate one step in history
  */
-import "reflect-metadata";
 import type { Context } from "hono";
 import type {
 	InertiaConfig,
@@ -33,6 +32,7 @@ import {
 } from "./helpers.js";
 import { InertiaResponse, INERTIA_RESPONSE_TAG } from "./inertia-response.js";
 import { InertiaFormBuilder } from "./form-helper.js";
+import { safeGetMeta, safeDefineMeta, safeHasMeta } from "@nexusts/core/di/safe-reflect";
 
 const INERTIA_TOKEN = Symbol.for("nexus:Inertia");
 

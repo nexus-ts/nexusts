@@ -1,4 +1,5 @@
 /**
+import { safeGetMeta, safeDefineMeta, safeHasMeta } from "@nexusts/core/di/safe-reflect";
  * `nexusjs/mail` — outbound email.
  *
  *   const mail = new MailService({ transport: new SmtpTransport({ host: 'smtp.gmail.com' }) });
@@ -16,7 +17,6 @@
  *
  *   mail.renderMjml('template', { name: 'Kim' })  // compile MJML to HTML
  */
-import "reflect-metadata";
 
 /** A single recipient. */
 export type MailAddress = string | { name?: string; address: string };

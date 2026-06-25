@@ -25,7 +25,6 @@
 
 import { Module } from "@nexusts/core";
 import { Inject } from "@nexusts/core";
-import "reflect-metadata";
 import type { Application } from "@nexusts/core";
 import {
 	I18nService,
@@ -33,6 +32,7 @@ import {
 } from "./service.js";
 import { i18nMiddleware } from "./middleware.js";
 import type { I18nConfig, Locale, MessageCatalog } from "./types.js";
+import { safeGetMeta, safeDefineMeta, safeHasMeta } from "@nexusts/core/di/safe-reflect";
 
 @Module({
 	providers: [

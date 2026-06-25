@@ -15,10 +15,10 @@
  *   })
  *   export class AppModule {}
  */
-import "reflect-metadata";
 import { Module } from "@nexusts/core";
 import { ShieldService } from "./shield.service.js";
 import type { ShieldConfig } from "./types.js";
+import { safeGetMeta, safeDefineMeta, safeHasMeta } from "@nexusts/core/di/safe-reflect";
 
 @Module({
 	providers: [

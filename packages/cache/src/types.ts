@@ -15,8 +15,8 @@
  *   async findById(id: string) { ... }
  */
 
-import "reflect-metadata";
 import { METADATA_KEY } from "@nexusts/core";
+import { safeGetMeta, safeDefineMeta, safeHasMeta } from "@nexusts/core/di/safe-reflect";
 
 /** A single cache entry. */
 export interface CacheEntry<T = unknown> {
@@ -108,7 +108,7 @@ export function Cacheable(
 		descriptor: PropertyDescriptor,
 	) => {
 		const existing: CacheableSpec[] =
-			Reflect.getMetadata(CACHEABLE_META, target.constructor) ?? [];
+			safeGetMeta(CACHEABLE_META, target.constructor) ?? [];
 		existing.push({
 			prefix,
 			keyFn,
@@ -116,7 +116,7 @@ export function Cacheable(
 			propertyKey,
 			original: descriptor.value,
 		});
-		Reflect.defineMetadata(CACHEABLE_META, existing, target.constructor);
+		safeDefineMeta(CACHEABLE_META, existing, target.constructor);
 	};
 }
 
@@ -131,9 +131,9 @@ export function CacheInvalidate(
 		descriptor: PropertyDescriptor,
 	) => {
 		const existing: CacheInvalidateSpec[] =
-			Reflect.getMetadata(CACHE_INVALIDATE_META, target.constructor) ?? [];
+			safeGetMeta(CACHE_INVALIDATE_META, target.constructor) ?? [];
 		existing.push({ prefix, keyFn, propertyKey, original: descriptor.value });
-		Reflect.defineMetadata(CACHE_INVALIDATE_META, existing, target.constructor);
+		safeDefineMeta(CACHE_INVALIDATE_META, existing, target.constructor);
 	};
 }
 
@@ -153,10 +153,10 @@ export interface CacheInvalidateSpec {
 }
 
 export function getCacheableSpecs(target: any): CacheableSpec[] {
-	return Reflect.getMetadata(CACHEABLE_META, target) ?? [];
+	return safeGetMeta(CACHEABLE_META, target) ?? [];
 }
 export function getCacheInvalidateSpecs(target: any): CacheInvalidateSpec[] {
-	return Reflect.getMetadata(CACHE_INVALIDATE_META, target) ?? [];
+	return safeGetMeta(CACHE_INVALIDATE_META, target) ?? [];
 }
 
 export { METADATA_KEY };

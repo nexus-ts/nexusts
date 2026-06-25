@@ -4,8 +4,8 @@
  * Decorate a controller method to describe one of its responses.
  * Multiple `@ApiResponse` calls accumulate.
  */
-import "reflect-metadata";
 import { OPENAPI_META, type ApiResponseOptions } from "../types.js";
+import { safeGetMeta, safeDefineMeta, safeHasMeta } from "@nexusts/core/di/safe-reflect";
 
 export function ApiResponse(
 	status: number | string,
@@ -13,8 +13,8 @@ export function ApiResponse(
 ): MethodDecorator {
 	return (target: object, propertyKey: string | symbol) => {
 		const existing: Array<[string, ApiResponseOptions]> =
-			Reflect.getMetadata(OPENAPI_META.RESPONSES, target.constructor, propertyKey) ?? [];
+			safeGetMeta(OPENAPI_META.RESPONSES, target.constructor, propertyKey) ?? [];
 		existing.push([String(status), options]);
-		Reflect.defineMetadata(OPENAPI_META.RESPONSES, existing, target.constructor, propertyKey);
+		safeDefineMeta(OPENAPI_META.RESPONSES, existing, target.constructor, propertyKey);
 	};
 }

@@ -30,9 +30,9 @@
  *   schedule.start();
  */
 
-import "reflect-metadata";
 import type { ScheduleService } from "../schedule.service.js";
 import type { CronExpression, CronOptions, ScheduleHandler } from "../types.js";
+import { safeGetMeta, safeDefineMeta, safeHasMeta } from "@nexusts/core/di/safe-reflect";
 
 const CRON_META = "nexus:schedule:cron";
 const INTERVAL_META = "nexus:schedule:interval";
@@ -55,7 +55,7 @@ export function Cron(
 			expression: CronExpression;
 			options: CronOptions;
 		}> =
-			(Reflect.getMetadata(CRON_META, ctor) as
+			(safeGetMeta(CRON_META, ctor) as
 				| Array<{
 						method: string;
 						expression: CronExpression;
@@ -63,7 +63,7 @@ export function Cron(
 				  }>
 				| undefined) ?? [];
 		hooks.push({ method: String(propertyKey), expression, options });
-		Reflect.defineMetadata(CRON_META, hooks, ctor);
+		safeDefineMeta(CRON_META, hooks, ctor);
 	};
 }
 
@@ -81,11 +81,11 @@ export function Interval(milliseconds: number, name?: string): MethodDecorator {
 			milliseconds: number;
 			name?: string;
 		}> =
-			(Reflect.getMetadata(INTERVAL_META, ctor) as
+			(safeGetMeta(INTERVAL_META, ctor) as
 				| Array<{ method: string; milliseconds: number; name?: string }>
 				| undefined) ?? [];
 		hooks.push({ method: String(propertyKey), milliseconds, name });
-		Reflect.defineMetadata(INTERVAL_META, hooks, ctor);
+		safeDefineMeta(INTERVAL_META, hooks, ctor);
 	};
 }
 
@@ -103,11 +103,11 @@ export function Timeout(milliseconds: number, name?: string): MethodDecorator {
 			milliseconds: number;
 			name?: string;
 		}> =
-			(Reflect.getMetadata(TIMEOUT_META, ctor) as
+			(safeGetMeta(TIMEOUT_META, ctor) as
 				| Array<{ method: string; milliseconds: number; name?: string }>
 				| undefined) ?? [];
 		hooks.push({ method: String(propertyKey), milliseconds, name });
-		Reflect.defineMetadata(TIMEOUT_META, hooks, ctor);
+		safeDefineMeta(TIMEOUT_META, hooks, ctor);
 	};
 }
 
@@ -120,7 +120,7 @@ export function getCronHooks(
 	const ctor =
 		(target as { constructor?: object }).constructor ?? (target as object);
 	return (
-		(Reflect.getMetadata(CRON_META, ctor) as
+		(safeGetMeta(CRON_META, ctor) as
 			| Array<{
 					method: string;
 					expression: CronExpression;
@@ -136,7 +136,7 @@ export function getIntervalHooks(
 	const ctor =
 		(target as { constructor?: object }).constructor ?? (target as object);
 	return (
-		(Reflect.getMetadata(INTERVAL_META, ctor) as
+		(safeGetMeta(INTERVAL_META, ctor) as
 			| Array<{ method: string; milliseconds: number; name?: string }>
 			| undefined) ?? []
 	);
@@ -148,7 +148,7 @@ export function getTimeoutHooks(
 	const ctor =
 		(target as { constructor?: object }).constructor ?? (target as object);
 	return (
-		(Reflect.getMetadata(TIMEOUT_META, ctor) as
+		(safeGetMeta(TIMEOUT_META, ctor) as
 			| Array<{ method: string; milliseconds: number; name?: string }>
 			| undefined) ?? []
 	);

@@ -14,8 +14,8 @@
  * `"Int"`, `"[User!]!"`). When omitted, the framework uses `"String"`
  * as a safe default — explicit is better than implicit.
  */
-import "reflect-metadata";
 import { pushResolverField, getResolverTypeName } from "./resolver.js";
+import { safeGetMeta, safeDefineMeta, safeHasMeta } from "@nexusts/core/di/safe-reflect";
 
 const ARGS_KEY = Symbol.for("nexus:GraphQL:MethodArgs");
 
@@ -30,11 +30,11 @@ export function Arg(name: string, type: string = "String"): ParameterDecorator {
 				"@Arg() can only decorate method parameters, not constructor parameters.",
 			);
 		}
-		const list = (Reflect.getMetadata(ARGS_KEY, target, propertyKey) as
+		const list = (safeGetMeta(ARGS_KEY, target, propertyKey) as
 			| Array<{ name: string; type: string; index: number }>
 			| undefined) ?? [];
 		list.push({ name, type, index: parameterIndex });
-		Reflect.defineMetadata(ARGS_KEY, list, target, propertyKey);
+		safeDefineMeta(ARGS_KEY, list, target, propertyKey);
 	};
 }
 
@@ -43,7 +43,7 @@ export function getMethodArgs(
 	target: object,
 	propertyKey: string | symbol,
 ): Array<{ name: string; type: string; index: number }> {
-	return (Reflect.getMetadata(ARGS_KEY, target, propertyKey) as
+	return (safeGetMeta(ARGS_KEY, target, propertyKey) as
 		| Array<{ name: string; type: string; index: number }>
 		| undefined) ?? [];
 }

@@ -28,8 +28,8 @@
  *   - `retry:` hint to control client reconnect timing
  */
 
-import "reflect-metadata";
 import { METADATA_KEY } from "@nexusts/core";
+import { safeGetMeta, safeDefineMeta, safeHasMeta } from "@nexusts/core/di/safe-reflect";
 
 // ---------------------------------------------------------------------------
 // Public types
@@ -83,7 +83,7 @@ export interface SseStreamController {
 /** Marks a controller method as an SSE endpoint. OpenAPI hint. */
 export function SseEventMeta(options: { name?: string; description?: string } = {}): MethodDecorator {
 	return (target: object, propertyKey: string | symbol) => {
-		Reflect.defineMetadata(
+		safeDefineMeta(
 			"nexus:sse:event",
 			options,
 			target.constructor,
@@ -100,9 +100,9 @@ export function LastEventId(): ParameterDecorator {
 	return (target: object, propertyKey: string | symbol | undefined, parameterIndex: number) => {
 		const t = propertyKey === undefined ? (target as Function) : (target.constructor as Function);
 		const existing: number[] =
-			Reflect.getMetadata("nexus:sse:lastEventId", t, propertyKey as string | symbol) ?? [];
+			safeGetMeta("nexus:sse:lastEventId", t, propertyKey as string | symbol) ?? [];
 		existing.push(parameterIndex);
-		Reflect.defineMetadata("nexus:sse:lastEventId", existing, t, propertyKey as string | symbol);
+		safeDefineMeta("nexus:sse:lastEventId", existing, t, propertyKey as string | symbol);
 	};
 }
 

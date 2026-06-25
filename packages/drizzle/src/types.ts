@@ -1,4 +1,5 @@
 /**
+import { safeGetMeta, safeDefineMeta, safeHasMeta } from "@nexusts/core/di/safe-reflect";
  * `nexusjs/drizzle` — Drizzle ORM integration. Default ORM for NexusTS.
  *
  *   @Module({
@@ -33,7 +34,6 @@
  *   - `db.raw\`SELECT * FROM users WHERE id = ${id}\`` — parameterized, safe.
  */
 
-import "reflect-metadata";
 
 // ---------------------------------------------------------------------------
 // Dialect

@@ -70,6 +70,11 @@ export default defineConfig({
 	},
 	resolve: {
 		alias: [
+			// Map @nexusts/core/* to packages/core/src/* for subpath imports
+			{
+				find: /^@nexusts\/core\/(.+)$/,
+				replacement: `${root}/packages/core/src/$1`,
+			},
 			{
 				find: /^@nexusts\/core$/,
 				replacement: `${root}/packages/core/src/index.ts`,

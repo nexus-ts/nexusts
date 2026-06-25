@@ -20,7 +20,6 @@
  *   @Resilient({ retry: {...}, circuit: {...}, bulkhead: {...} })
  *   async criticalCall() { ... }
  */
-import "reflect-metadata";
 import type {
 	BulkheadConfig,
 	CircuitBreakerConfig,
@@ -34,6 +33,7 @@ import { RESILIENCE_META } from "../types.js";
 // At runtime, the dependency is set via `setResilienceService()` so
 // only the *type* needs to be visible at type-check time.
 import type { ResilienceService } from "../resilience.service.js";
+import { safeGetMeta, safeDefineMeta, safeHasMeta } from "@nexusts/core/di/safe-reflect";
 
 // Per-method metadata kinds. Each decorator stores its own
 // payload under a separate key so a method can have e.g. `@Retry`
@@ -62,14 +62,14 @@ export function getMethodRetry(
 	target: object,
 	propertyKey: string | symbol,
 ): RetryConfig | undefined {
-	return Reflect.getMetadata(KEY_RETRY, target, propertyKey) as RetryConfig | undefined;
+	return safeGetMeta(KEY_RETRY, target, propertyKey) as RetryConfig | undefined;
 }
 
 export function getMethodCircuit(
 	target: object,
 	propertyKey: string | symbol,
 ): CircuitBreakerConfig | undefined {
-	return Reflect.getMetadata(KEY_CIRCUIT, target, propertyKey) as
+	return safeGetMeta(KEY_CIRCUIT, target, propertyKey) as
 		| CircuitBreakerConfig
 		| undefined;
 }
@@ -78,7 +78,7 @@ export function getMethodBulkhead(
 	target: object,
 	propertyKey: string | symbol,
 ): BulkheadConfig | undefined {
-	return Reflect.getMetadata(KEY_BULKHEAD, target, propertyKey) as
+	return safeGetMeta(KEY_BULKHEAD, target, propertyKey) as
 		| BulkheadConfig
 		| undefined;
 }
@@ -87,7 +87,7 @@ export function getMethodResilient(
 	target: object,
 	propertyKey: string | symbol,
 ): ResilientConfig | undefined {
-	return Reflect.getMetadata(KEY_RESILIENT, target, propertyKey) as
+	return safeGetMeta(KEY_RESILIENT, target, propertyKey) as
 		| ResilientConfig
 		| undefined;
 }
@@ -111,7 +111,7 @@ function makeMethodDecorator<TConfig>(
 			// default) doesn't pass it. Instead, the framework
 			// reads the metadata at controller-mount time and
 			// calls `applyResilience()` to wrap the method.
-			Reflect.defineMetadata(key, extract(config), _target, propertyKey);
+			safeDefineMeta(key, extract(config), _target, propertyKey);
 		};
 	};
 }

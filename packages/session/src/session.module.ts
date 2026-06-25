@@ -26,10 +26,10 @@
  *   }
  */
 
-import "reflect-metadata";
 import { Module } from "@nexusts/core";
 import { SessionService } from "./session.service.js";
 import type { SessionConfig } from "./types.js";
+import { safeGetMeta, safeDefineMeta, safeHasMeta } from "@nexusts/core/di/safe-reflect";
 
 @Module({
 	providers: [

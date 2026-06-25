@@ -1,3 +1,4 @@
+import "reflect-metadata";
 /**
  * Safe reflect wrappers — allows code to work with or without
  * `reflect-metadata` being loaded.

@@ -23,8 +23,8 @@
  *   class WorkerModule {}
  */
 
-import "reflect-metadata";
 import type { QueueService } from "../queue.service.js";
+import { safeGetMeta, safeDefineMeta, safeHasMeta } from "@nexusts/core/di/safe-reflect";
 
 /**
  * Method decorator. The decorated method is invoked once with no
@@ -40,11 +40,11 @@ export function OnQueueReady(): MethodDecorator {
 		// code reads METADATA_KEY.QUEUE_READY_HOOKS and calls each.
 		const ctor = target.constructor as object;
 		const hooks: Array<string | symbol> =
-			(Reflect.getMetadata("nexus:queue:ready-hooks", ctor) as
+			(safeGetMeta("nexus:queue:ready-hooks", ctor) as
 				| Array<string | symbol>
 				| undefined) ?? [];
 		hooks.push(propertyKey!);
-		Reflect.defineMetadata("nexus:queue:ready-hooks", hooks, ctor);
+		safeDefineMeta("nexus:queue:ready-hooks", hooks, ctor);
 	};
 }
 
@@ -55,7 +55,7 @@ export function getQueueReadyHooks(target: unknown): Array<string | symbol> {
 	const ctor =
 		(target as { constructor?: object }).constructor ?? (target as object);
 	return (
-		(Reflect.getMetadata("nexus:queue:ready-hooks", ctor) as
+		(safeGetMeta("nexus:queue:ready-hooks", ctor) as
 			| Array<string | symbol>
 			| undefined) ?? []
 	);

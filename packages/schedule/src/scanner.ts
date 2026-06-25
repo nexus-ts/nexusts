@@ -1,6 +1,7 @@
 /**
  * Scanner bridge — connects the Application's provider scanner with the
  * ScheduleService. Lives in its own file to avoid circular imports
+import { safeGetMeta } from "@nexusts/core/di/safe-reflect";
  * between schedule.module.ts and schedule.service.ts.
  */
 import type { ScheduleService } from "./schedule.service.js";
@@ -18,9 +19,9 @@ export function scanProviderForSchedules(instance: unknown): void {
 	if (!svc) return;
 	const ctor = (instance as any)?.constructor;
 	if (!ctor) return;
-	const hasCron = Reflect.getMetadata("nexus:schedule:cron", ctor);
-	const hasInterval = Reflect.getMetadata("nexus:schedule:interval", ctor);
-	const hasTimeout = Reflect.getMetadata("nexus:schedule:timeout", ctor);
+	const hasCron = safeGetMeta("nexus:schedule:cron", ctor);
+	const hasInterval = safeGetMeta("nexus:schedule:interval", ctor);
+	const hasTimeout = safeGetMeta("nexus:schedule:timeout", ctor);
 	if (hasCron || hasInterval || hasTimeout) {
 		svc.scanInstance(instance as object);
 	}

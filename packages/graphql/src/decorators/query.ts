@@ -17,10 +17,10 @@
  *     events() { return pubsub.asyncIterator("EVENTS"); }
  *   }
  */
-import "reflect-metadata";
 import { pushResolverField } from "./resolver.js";
 import { getMethodArgs } from "./arg.js";
 import type { ResolverClassRecord } from "../types.js";
+import { safeGetMeta, safeDefineMeta, safeHasMeta } from "@nexusts/core/di/safe-reflect";
 
 type OperationKind = "query" | "mutation" | "subscription";
 

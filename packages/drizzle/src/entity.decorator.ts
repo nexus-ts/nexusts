@@ -19,9 +19,9 @@
  * }
  * ```
  */
-import "reflect-metadata";
 import type { DrizzleRepository } from "./repository/index.js";
 import type { DrizzleService } from "./drizzle.service.js";
+import { safeGetMeta, safeDefineMeta, safeHasMeta } from "@nexusts/core/di/safe-reflect";
 
 /** Storage for entity → table metadata. */
 const ENTITY_TABLE_MAP = new Map<Function, any>();

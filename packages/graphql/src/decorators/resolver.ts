@@ -17,8 +17,8 @@
  *     @Subscription()                              events() { ... }
  *   }
  */
-import "reflect-metadata";
 import type { ResolverClassRecord } from "../types.js";
+import { safeGetMeta, safeDefineMeta, safeHasMeta } from "@nexusts/core/di/safe-reflect";
 
 const RESOLVER_KEY = Symbol.for("nexus:GraphQL:Resolver");
 const FIELDS_KEY = Symbol.for("nexus:GraphQL:Fields");
@@ -33,10 +33,10 @@ export function Resolver(typeName?: string): ClassDecorator {
 	return (target: Function) => {
 		const ctor = target as unknown as new (...args: any[]) => any;
 		const inferred = typeName ?? ctor.name.replace(/Resolver$/, "");
-		Reflect.defineMetadata(RESOLVER_KEY, true, ctor);
-		Reflect.defineMetadata(TYPENAME_KEY, inferred, ctor);
-		if (!Reflect.hasMetadata(FIELDS_KEY, ctor)) {
-			Reflect.defineMetadata(FIELDS_KEY, [], ctor);
+		safeDefineMeta(RESOLVER_KEY, true, ctor);
+		safeDefineMeta(TYPENAME_KEY, inferred, ctor);
+		if (!safeHasMeta(FIELDS_KEY, ctor)) {
+			safeDefineMeta(FIELDS_KEY, [], ctor);
 		}
 		_resolverRegistry.add(ctor);
 	};
@@ -55,7 +55,7 @@ export function clearResolverRegistry(): void {
 /** Read the type-name this resolver is for. */
 export function getResolverTypeName(target: object): string | undefined {
 	const t = (target as { prototype?: object }).prototype ?? target;
-	const fromMeta = Reflect.getMetadata(TYPENAME_KEY, t);
+	const fromMeta = safeGetMeta(TYPENAME_KEY, t);
 	if (fromMeta) return fromMeta as string;
 	// Fallback: derive from the class name (drop "Resolver" suffix).
 	const ctor = (t as { constructor?: { name: string } }).constructor;
@@ -68,19 +68,19 @@ export function pushResolverField(
 	field: ResolverClassRecord["fields"][number],
 ): void {
 	const t = (target as { prototype?: object }).prototype ?? target;
-	const list = (Reflect.getMetadata(FIELDS_KEY, t) as ResolverClassRecord["fields"]) ?? [];
+	const list = (safeGetMeta(FIELDS_KEY, t) as ResolverClassRecord["fields"]) ?? [];
 	list.push(field);
-	Reflect.defineMetadata(FIELDS_KEY, list, t);
+	safeDefineMeta(FIELDS_KEY, list, t);
 }
 
 /** Read the field metadata for a resolver class. */
 export function getResolverFields(target: object): ResolverClassRecord["fields"] {
 	const t = (target as { prototype?: object }).prototype ?? target;
-	return (Reflect.getMetadata(FIELDS_KEY, t) as ResolverClassRecord["fields"]) ?? [];
+	return (safeGetMeta(FIELDS_KEY, t) as ResolverClassRecord["fields"]) ?? [];
 }
 
 /** True if `target` was decorated with `@Resolver`. */
 export function isResolverClass(target: object): boolean {
 	const t = (target as { prototype?: object }).prototype ?? target;
-	return Reflect.getMetadata(RESOLVER_KEY, t) === true;
+	return safeGetMeta(RESOLVER_KEY, t) === true;
 }

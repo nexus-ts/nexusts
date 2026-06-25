@@ -13,10 +13,10 @@
  *   })
  *   export class AppModule {}
  */
-import "reflect-metadata";
 import { Module } from "@nexusts/core";
 import { FeatureFlagService } from "./feature-flag.service.js";
 import type { FeatureFlagConfig } from "./types.js";
+import { safeGetMeta, safeDefineMeta, safeHasMeta } from "@nexusts/core/di/safe-reflect";
 
 @Module({
 	providers: [

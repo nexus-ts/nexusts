@@ -1,4 +1,5 @@
 /**
+import { safeGetMeta, safeDefineMeta, safeHasMeta } from "@nexusts/core/di/safe-reflect";
  * `nexusjs/drive` — file storage abstraction.
  *
  *   const drive = new DriveService({ driver: new LocalDriver({ root: '/var/data' }) });
@@ -16,7 +17,6 @@
  *   drive.list('avatars/');
  */
 
-import "reflect-metadata";
 
 /** File content: Buffer, Uint8Array, or string. */
 export type FileContent = Buffer | Uint8Array | string;

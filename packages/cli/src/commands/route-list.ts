@@ -11,6 +11,7 @@ import { readdirSync, statSync } from "node:fs";
 import { resolve } from "node:path";
 import type { Command, CommandContext } from "../core/index.js";
 import { colors, logger } from "../core/index.js";
+import { safeGetMeta } from "@nexusts/core/di/safe-reflect";
 
 interface DiscoveredRoute {
 	method: string;
@@ -55,11 +56,11 @@ export const routeListCommand: Command = {
 					if (typeof cls !== "function") continue;
 
 					const controllerMeta =
-						Reflect.getMetadata("nexus:controller", cls) as
+						safeGetMeta("nexus:controller", cls) as
 							| { prefix?: string }
 							| undefined;
 					const prefix = controllerMeta?.prefix ?? "";
-					const routeList = Reflect.getMetadata("nexus:routes", cls) ?? [];
+					const routeList = safeGetMeta("nexus:routes", cls) ?? [];
 
 					for (const r of routeList) {
 						routes.push({

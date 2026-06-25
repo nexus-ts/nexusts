@@ -56,6 +56,12 @@ export default defineConfig({
 	},
 	resolve: {
 		alias: [
+			// Map @nexusts/core/* to packages/core/src/* for subpath imports
+			// (e.g. @nexusts/core/di/safe-reflect)
+			{
+				find: /^@nexusts\/core\/(.+)$/,
+				replacement: `${root}/packages/core/src/$1`,
+			},
 			// Map @nexusts/* to packages/*/src/index.ts for in-tree testing
 			{
 				find: /^@nexusts\/core$/,

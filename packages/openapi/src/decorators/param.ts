@@ -4,15 +4,15 @@
  * auto-derives path params from the route pattern (`/users/:id` → `id`).
  * Use this when you want to override the schema or add a description.
  */
-import "reflect-metadata";
 import { OPENAPI_META, type ApiParamOptions } from "../types.js";
+import { safeGetMeta, safeDefineMeta, safeHasMeta } from "@nexusts/core/di/safe-reflect";
 
 export function ApiParam(options: ApiParamOptions): MethodDecorator {
 	return (target: object, propertyKey: string | symbol) => {
 		const existing: ApiParamOptions[] =
-			Reflect.getMetadata(OPENAPI_META.PARAMS, target.constructor, propertyKey) ?? [];
+			safeGetMeta(OPENAPI_META.PARAMS, target.constructor, propertyKey) ?? [];
 		existing.push(options);
-		Reflect.defineMetadata(OPENAPI_META.PARAMS, existing, target.constructor, propertyKey);
+		safeDefineMeta(OPENAPI_META.PARAMS, existing, target.constructor, propertyKey);
 	};
 }
 
@@ -25,8 +25,8 @@ export function ApiParam(options: ApiParamOptions): MethodDecorator {
 export function ApiQuery(options: ApiParamOptions): MethodDecorator {
 	return (target: object, propertyKey: string | symbol) => {
 		const existing: ApiParamOptions[] =
-			Reflect.getMetadata(OPENAPI_META.QUERIES, target.constructor, propertyKey) ?? [];
+			safeGetMeta(OPENAPI_META.QUERIES, target.constructor, propertyKey) ?? [];
 		existing.push(options);
-		Reflect.defineMetadata(OPENAPI_META.QUERIES, existing, target.constructor, propertyKey);
+		safeDefineMeta(OPENAPI_META.QUERIES, existing, target.constructor, propertyKey);
 	};
 }

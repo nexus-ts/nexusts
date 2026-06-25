@@ -2,8 +2,8 @@
  * `@ApiSecurity('bearerAuth', [])` — declare the security requirements
  * for an operation or controller.
  */
-import "reflect-metadata";
 import { OPENAPI_META, type ApiSecurityOptions } from "../types.js";
+import { safeGetMeta, safeDefineMeta, safeHasMeta } from "@nexusts/core/di/safe-reflect";
 
 export function ApiSecurity(name: string, scopes: string[] = []): ClassDecorator & MethodDecorator {
 	return (
@@ -15,13 +15,13 @@ export function ApiSecurity(name: string, scopes: string[] = []): ClassDecorator
 		const key = OPENAPI_META.SECURITY;
 		const existing: ApiSecurityOptions[] =
 			(typeof _propertyKey === "string" || typeof _propertyKey === "symbol")
-				? Reflect.getMetadata(key, target.constructor, _propertyKey) ?? []
-				: Reflect.getMetadata(key, target) ?? [];
+				? safeGetMeta(key, target.constructor, _propertyKey) ?? []
+				: safeGetMeta(key, target) ?? [];
 		existing.push({ [name]: scopes });
 		if (typeof _propertyKey === "string" || typeof _propertyKey === "symbol") {
-			Reflect.defineMetadata(key, existing, target.constructor, _propertyKey);
+			safeDefineMeta(key, existing, target.constructor, _propertyKey);
 		} else {
-			Reflect.defineMetadata(key, existing, target);
+			safeDefineMeta(key, existing, target);
 		}
 	};
 }
@@ -29,6 +29,6 @@ export function ApiSecurity(name: string, scopes: string[] = []): ClassDecorator
 /** `@ApiExclude()` — exclude a route from the spec. */
 export function ApiExclude(): MethodDecorator {
 	return (target: object, propertyKey: string | symbol) => {
-		Reflect.defineMetadata(OPENAPI_META.EXCLUDE, true, target.constructor, propertyKey);
+		safeDefineMeta(OPENAPI_META.EXCLUDE, true, target.constructor, propertyKey);
 	};
 }

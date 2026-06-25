@@ -9,7 +9,6 @@
  * `getRoutes()` method that returns the registered route list, so
  * the spec is always in sync with the actual API.
  */
-import "reflect-metadata";
 import { Inject, Injectable } from "@nexusts/core";
 import type {
 	ApiOperationOptions,
@@ -28,6 +27,7 @@ import type {
 } from "./types.js";
 import { OPENAPI_META } from "./types.js";
 import { zodToJsonSchema } from "./zod-to-json-schema.js";
+import { safeGetMeta, safeDefineMeta, safeHasMeta } from "@nexusts/core/di/safe-reflect";
 
 @Injectable()
 export class OpenAPIService {
@@ -67,7 +67,7 @@ export class OpenAPIService {
 	getSpec(): OpenAPIDocument {
 		const paths: Record<string, Record<string, OpenAPIOperation>> = {};
 		for (const route of this.#routes) {
-			if (Reflect.getMetadata(OPENAPI_META.EXCLUDE, route.target.constructor, route.propertyKey)) continue;
+			if (safeGetMeta(OPENAPI_META.EXCLUDE, route.target.constructor, route.propertyKey)) continue;
 			const op = this.buildOperation(route);
 			const normalized = this.normalizePath(route.path);
 			const method = route.method.toLowerCase();
@@ -105,8 +105,8 @@ export class OpenAPIService {
 		const propKey = route.propertyKey;
 
 		// 1. Tags from class + operation
-		const classTags: string[] = Reflect.getMetadata(OPENAPI_META.TAGS, ctor) ?? [];
-		const opMeta: ApiOperationOptions | undefined = Reflect.getMetadata(
+		const classTags: string[] = safeGetMeta(OPENAPI_META.TAGS, ctor) ?? [];
+		const opMeta: ApiOperationOptions | undefined = safeGetMeta(
 			OPENAPI_META.OPERATION,
 			ctor,
 			propKey,
@@ -120,7 +120,7 @@ export class OpenAPIService {
 		const pathParams = this.extractPathParams(route.path);
 		for (const name of pathParams) {
 			const override = (
-				(Reflect.getMetadata(OPENAPI_META.PARAMS, ctor, propKey) ?? []) as ApiParamOptions[]
+				(safeGetMeta(OPENAPI_META.PARAMS, ctor, propKey) ?? []) as ApiParamOptions[]
 			).find((p) => p.name === name);
 			params.push({
 				name,
@@ -154,7 +154,7 @@ export class OpenAPIService {
 		}
 		// Explicit `@ApiQuery` decorators override / supplement.
 		const explicitQueries: ApiParamOptions[] =
-			Reflect.getMetadata(OPENAPI_META.QUERIES, ctor, propKey) ?? [];
+			safeGetMeta(OPENAPI_META.QUERIES, ctor, propKey) ?? [];
 		for (const q of explicitQueries) {
 			// Replace any auto-derived entry for the same name.
 			const idx = params.findIndex(
@@ -172,7 +172,7 @@ export class OpenAPIService {
 		}
 		// Explicit `@ApiParam` decorators override path params.
 		const explicitParams: ApiParamOptions[] =
-			Reflect.getMetadata(OPENAPI_META.PARAMS, ctor, propKey) ?? [];
+			safeGetMeta(OPENAPI_META.PARAMS, ctor, propKey) ?? [];
 		for (const p of explicitParams) {
 			const idx = params.findIndex(
 				(x) => x.in === "path" && x.name === p.name,
@@ -190,7 +190,7 @@ export class OpenAPIService {
 
 		// 3. Request body
 		let requestBody: OpenAPIRequestBody | undefined;
-		const bodyMeta = Reflect.getMetadata(OPENAPI_META.BODY, ctor, propKey);
+		const bodyMeta = safeGetMeta(OPENAPI_META.BODY, ctor, propKey);
 		if (bodyMeta?.schema || route.validation?.body) {
 			const schema = bodyMeta?.schema ?? route.validation?.body;
 			const mediaType: OpenAPIMediaType = { schema: this.toSchema(schema) };
@@ -205,7 +205,7 @@ export class OpenAPIService {
 		// 4. Responses
 		const responses: Record<string, OpenAPIResponse> = {};
 		const responseMetas: Array<[string, ApiResponseOptions]> =
-			Reflect.getMetadata(OPENAPI_META.RESPONSES, ctor, propKey) ?? [];
+			safeGetMeta(OPENAPI_META.RESPONSES, ctor, propKey) ?? [];
 		for (const [status, opt] of responseMetas) {
 			const r: OpenAPIResponse = { description: opt.description };
 			if (opt.schema) {

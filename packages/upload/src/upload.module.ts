@@ -16,11 +16,11 @@
  * the route's metadata (set by `@Upload('fieldName')`) to know
  * which fields to parse.
  */
-import "reflect-metadata";
 import { Module } from "@nexusts/core";
 import { UploadService } from "./upload.service.js";
 import type { UploadConfig } from "./types.js";
 import { uploadMiddleware } from "./upload.middleware.js";
+import { safeGetMeta, safeDefineMeta, safeHasMeta } from "@nexusts/core/di/safe-reflect";
 
 @Module({
 	providers: [
@@ -54,7 +54,7 @@ export class UploadModule {
 	static mount(app: any, svc: UploadService, routes: any[] = []): void {
 		const fieldSet = new Map<string, { maxFiles: number; required: boolean }>();
 		for (const r of routes) {
-			const metas = (Reflect.getMetadata("nexus:upload:options", r.target.constructor, r.propertyKey) ?? []) as Array<{ name: string; options: any }>;
+			const metas = (safeGetMeta("nexus:upload:options", r.target.constructor, r.propertyKey) ?? []) as Array<{ name: string; options: any }>;
 			for (const m of metas) {
 				const existing = fieldSet.get(m.name);
 				const maxFiles = m.options?.maxFiles ?? 1;

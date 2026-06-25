@@ -60,4 +60,4 @@ examples/*/bun.lock
 
 # Cloudflare
 .wrangler/
-.dev.vars
+.dev.varswebpage/.vitepress/cache/

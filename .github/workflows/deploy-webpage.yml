@@ -5,7 +5,7 @@ on:
   push:
     branches: [main]
     paths:
-      - 'webpage/**'
+      - "webpage/**"
   workflow_dispatch:
 
 permissions:

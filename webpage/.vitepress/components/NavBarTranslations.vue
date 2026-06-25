@@ -4,19 +4,24 @@ import { useData } from 'vitepress'
 import VPFlyout from 'vitepress/dist/client/theme-default/components/VPFlyout.vue'
 import VPMenuLink from 'vitepress/dist/client/theme-default/components/VPMenuLink.vue'
 
-const { site } = useData()
+const { site, theme } = useData()
 
-// Always show all locales in the order they are defined, with the active one highlighted
 const localeLinks = computed(() =>
   Object.entries(site.value.locales).map(([key, value]) => ({
     text: value.label,
     link: value.link || (key === 'root' ? '/' : `/${key}/`),
+    active: key === (site.value as any).localeIndex,
   }))
 )
 </script>
 
 <template>
-  <VPFlyout v-if="localeLinks.length" class="VPNavBarTranslations" icon="vpi-languages" label="🌐">
+  <VPFlyout
+    v-if="localeLinks.length"
+    class="VPNavBarTranslations"
+    icon="vpi-languages"
+    :label="theme.langMenuLabel || '🌐'"
+  >
     <div class="items">
       <template v-for="locale in localeLinks" :key="locale.link">
         <VPMenuLink :item="locale" />

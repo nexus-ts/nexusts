@@ -36,3 +36,12 @@
     font-size: 4rem;
   }
 }
+
+/* Locale dropdown: hide redundant title (button already shows current language) */
+.VPNavBarTranslations .title {
+  display: none;
+}
+
+.VPNavBarTranslations .items {
+  padding-top: 4px;
+}

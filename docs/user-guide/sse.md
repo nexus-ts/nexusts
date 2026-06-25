@@ -162,7 +162,8 @@ data: 1700000001000
 
 ```ts
 @Get('/exports/:id')
-export(@Param('id') id: string, @Req() c: any) {
+export(ctx: Context) {
+    const id = ctx.req.param('id');
   return sse(c, (stream) => {
     const t = setInterval(() => {
       const progress = jobStore.getProgress(id);

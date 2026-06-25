@@ -641,7 +641,6 @@ await this.postService.create({
 | `No provider for "undefined"` | `@Inject(X)`의 X가 `providers`에 등록됐는지, `static TOKEN`이 있는지 |
 | 404 on a defined route | controller 클래스가 **별도 파일**에 있는지 (main.ts 안에 있지 않은지) |
 | `sqlite.query is not a function` | `DrizzleService.client`에 raw 메서드 없음 → Drizzle 쿼리빌더 사용 |
-| `Cannot find module 'reflect-metadata'` | `import "reflect-metadata"`가 main.ts에 있는지 |
 | Decorator가 적용되지 않음 | tsconfig에 `experimentalDecorators: true` + `useDefineForClassFields: false` |
 | Bun에서 `better-sqlite3` 로드 실패 | `bun:sqlite`로 전환 |
 | `Cannot find name 'Inject'` | tsconfig의 `experimentalDecorators` 누락 |

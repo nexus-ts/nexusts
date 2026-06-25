@@ -68,8 +68,9 @@ Visit `http://localhost:3000/docs` for the Scalar UI.
 
 ```ts
 import { z } from 'zod';
-import { Body, Controller, Delete, Get, Inject, Param, Post, Put, Query, Validate } from '@nexusts/core';
+import { Controller, Get, Post, Inject } from '@nexusts/core';
 import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiParam, ApiQuery } from '@nexusts/openapi';
+import type { Context } from 'hono';
 
 const CreateUserSchema = z.object({
   email: z.string().email(),
@@ -95,7 +96,8 @@ class UserController {
   @ApiQuery({ name: 'limit', description: 'Max rows to return' })
   @ApiResponse(200, { description: 'OK', schema: z.array(UserSchema) })
   @ApiResponse(401, { description: 'Unauthenticated' })
-  list(@Query('limit') limit?: number) {
+  list(ctx: Context) {
+    const limit = Number(ctx.req.query('limit'));
     return this.users.findAll({ limit });
   }
 
@@ -104,7 +106,8 @@ class UserController {
   @ApiParam({ name: 'id', description: 'User id', schema: { type: 'integer' } })
   @ApiResponse(200, { description: 'OK', schema: UserSchema })
   @ApiResponse(404, { description: 'Not found' })
-  findById(@Param('id') id: number) {
+  findById(ctx: Context) {
+    const id = Number(ctx.req.param('id'));
     return this.users.findById(id);
   }
 
@@ -113,8 +116,8 @@ class UserController {
   @ApiBody({ description: 'New user payload', schema: CreateUserSchema })
   @ApiResponse(201, { description: 'Created', schema: UserSchema })
   @ApiResponse(400, { description: 'Validation error' })
-  @Validate({ body: CreateUserSchema })
-  create(@Body() input: z.infer<typeof CreateUserSchema>) {
+  async create(ctx: Context) {
+    const input = CreateUserSchema.parse(await ctx.req.json());
     return this.users.create(input);
   }
 }

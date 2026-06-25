@@ -1,7 +1,7 @@
 # Getting Started
 
 > 한국어 버전: [`getting-started.ko.md`](./getting-started.ko.md)
-> Current version: **v0.4** — see [`../../CHANGELOG.md`](../../CHANGELOG.md).
+> Current version: **v0.9** — see [`../../CHANGELOG.md`](../../CHANGELOG.md).
 
 This guide walks you from an empty directory to a running NexusTS app
 with the **default ORM (Drizzle)** and the most common modules in
@@ -9,7 +9,7 @@ about five minutes.
 
 ## 1. Prerequisites
 
-- **Bun** ≥ 1.1 — <https://bun.sh>
+- **Bun** ≥ 1.3 — <https://bun.sh>
 - **TypeScript** ≥ 5.6 (installed automatically with Bun)
 - A code editor with TS support (VS Code, Zed, etc.)
 
@@ -36,11 +36,10 @@ bun add @nexusts/queue              # if you need background jobs
 # ... etc.
 ```
 
-> `zod` and `hono` are bundled by NexusTS
-> but installing them explicitly is recommended so type resolution works.
-> `drizzle-orm` is a required peer dep of `@nexusts/drizzle` — install
-> the driver package (`pg`, `postgres`, `mysql2`, or `better-sqlite3`)
-> for the dialect you use.
+> `zod` and `hono` are peer dependencies — install them explicitly
+> so type resolution works. `drizzle-orm` is a required peer dep of
+> `@nexusts/drizzle`; install the driver package (`pg`, `postgres`,
+> `mysql2`, or `better-sqlite3`) for the dialect you use.
 
 ---
 
@@ -99,7 +98,6 @@ my-app/
 ### `app/main.ts`
 
 ```ts
-import 'reflect-metadata';
 import { Application } from '@nexusts/core';
 import { AppModule } from './app.module.js';
 
@@ -173,15 +171,20 @@ export class AppModule {}
 ### `app/controllers/home.controller.ts`
 
 ```ts
-import { Controller, Get, Inject } from '@nexusts/core';
+import { Controller, Get } from '@nexusts/core';
 import { DrizzleService } from '@nexusts/drizzle';
 import { users } from '../db/schema.js';
 
 @Controller('/')
 export class HomeController {
+  private db = new DrizzleService({
+    dialect: 'postgres',
+    connection: { url: process.env.DATABASE_URL! },
+  });
+
   @Get('/')
-  async index(@Inject(DrizzleService.TOKEN) db: DrizzleService) {
-    return { users: await db.select().from(users).all() };
+  async index() {
+    return { users: await this.db.select().from(users).all() };
   }
 }
 ```
@@ -205,7 +208,7 @@ And on another shell:
 
 ```bash
 $ curl http://localhost:3000/
-{"message":"Hello, NexusTS!"}
+[{"id":1,"email":"alice@example.com"}]
 ```
 
 ---
@@ -246,20 +249,15 @@ Bun's `--hot` flag restarts the process on file change.
 
 | Problem | Likely cause | Fix |
 | ------- | ------------ | --- |
-| `Reflect.metadata is not a function` | `reflect-metadata` not imported | Add `import 'reflect-metadata';` at the top of `main.ts` |
 | `Class "X" is missing the @Module() decorator` | Module class missing `@Module({...})` | Add `@Module({ controllers: [...] })` to the class |
 | `Cannot resolve token "DB"` | Token not in any module's `providers` | Add `{ provide: 'DB', useValue: drizzleInstance }` to the relevant module |
 | `No provider for "undefined"` | Injecting a `static TOKEN` that isn't registered | See [common-pitfalls.md §1](./common-pitfalls.md#1-inject-someclasstoken이-동작하지-않음) — register both class and `{ provide: TOKEN, useExisting: Class }` |
 | 404 on a route you defined | Controller class defined inline in `main.ts` | See [common-pitfalls.md §2](./common-pitfalls.md#2-한-파일에-여러-controller를-정의하면-라우터가-누락됨) — put each controller in its own file |
 | `sqlite.query is not a function` | `DrizzleService.client` isn't a raw `bun:sqlite` handle | Use Drizzle's query builder: `db.select().from(table).all()` |
-| `Cannot find module 'reflect-metadata'` | `reflect-metadata` not installed | `bun add reflect-metadata` |
 | `Decorator function return type expected` | Decorator applied to a non-method | Decorators belong on classes, methods, or parameters |
 | 404 on a route you defined (path) | Path mismatch | Check `@Controller('/users')` + `@Get('/:id')` produces `/users/:id` |
-| `tsc` reports `Cannot find name 'reflect-metadata'` | `types` array missing `bun-types` or `node` | Add `"types": ["bun-types"]` to `compilerOptions` |
 | `'better-sqlite3' is not yet supported in Bun` | Using better-sqlite3 with Bun runtime | Switch to `dialect: 'bun-sqlite'` |
-| `useDefineForClassFields` warning | Decorator metadata isn't emitted | Add `"useDefineForClassFields": false` |
-| `experimentalDecorators` warning | Decorators silently ignored | Add `"experimentalDecorators": true` |
-| Constructor `private readonly` + `@Inject` doesn't work on Bun | Bun 1.3.14 TS transformer quirk | Use manual assignment: `this.x = x` |
+| Injecting into constructor parameter | Using `experimentalDecorators` without `@Inject()` | Use field injection: `@Inject(Token) declare field: Type` |
 
 > For more debugging recipes see **[common-pitfalls.md](./common-pitfalls.md)** — a comprehensive guide to
 > the most common gotchas.

@@ -154,8 +154,9 @@ Inertia v3's `<Form>` component pairs with this server-side helper:
 
 ```ts
 import { z } from 'zod';
-import { Body, Controller, Post } from '@nexusts/core';
+import { Controller, Post, Inject } from '@nexusts/core';
 import { Inertia } from '@nexusts/view/inertia';
+import type { Context } from 'hono';
 
 const UserSchema = z.object({
   name: z.string().min(2),
@@ -167,7 +168,8 @@ class UserController {
   @Inject(Inertia.TOKEN) declare inertia: Inertia;
 
   @Post('/')
-  async store(@Body() input: Record<string, any>) {
+  async store(ctx: Context) {
+    const input = await ctx.req.json() as Record<string, any>;
     const form = this.inertia.form('Users/Create');
     const r = UserSchema.safeParse(input);
 
@@ -289,7 +291,6 @@ export class AppModule {}
 
 ```ts
 // main.ts
-import 'reflect-metadata';
 import { Application } from '@nexusts/core';
 import { AppModule } from './app.module.js';
 

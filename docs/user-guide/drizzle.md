@@ -581,11 +581,19 @@ import { users } from '../schema/users.js';
 const insertUserSchema = createInsertSchema(users);
 type InsertUser = z.infer<typeof insertUserSchema>;
 
+// Standard decorator mode (v0.9+):
 @Post('/users')
-@Validate({ body: insertUserSchema })
-async create(@Body() body: InsertUser) {
+async create(ctx: Context) {
+  const body = insertUserSchema.parse(await ctx.req.json()) as InsertUser;
   return this.users.create(body);
 }
+
+// Legacy mode (experimentalDecorators: true):
+// @Post('/users')
+// @Validate({ body: insertUserSchema })
+// async create(@Body() body: InsertUser) {
+//   return this.users.create(body);
+// }
 ```
 
 Available helpers:

@@ -54,7 +54,7 @@ need; the core stays small.
 │  ┌────────┐ ┌────────┐ ┌──────────────────────────────────────┐ │
 │  │Runtime │ │  CLI   │ │           Decorators                 │ │
 │  │Bun/Node│ │ nx ... │ │ @Controller @Injectable @Module      │ │
-│  │Cloudfl.│ │        │ │ @Get/Post @Body/@Query @Validate     │ │
+│  │Cloudfl.│ │        │ │ @Get/Post @Validate                │ │
 │  │        │ │        │ │ @UseGuards @UseInterceptors          │ │
 │  │        │ │        │ │ @UseFilters @Global()                │ │
 │  └────────┘ └────────┘ └──────────────────────────────────────┘ │
@@ -138,8 +138,9 @@ Hono fetch event
       │
       ▼
 ┌────────────────────────────────────────────────────────────┐
-│ 5. Parameter extraction                                    │
-│    @Body / @Query / @Param / @Headers / @Req / @Res /...  │
+│ 5. Parameter extraction (legacy) / ctx injection (standard) │
+│    Legacy: @Body / @Query / @Param / @Headers / @Req / ... │
+│    Standard: controller receives ctx: Context directly      │
 └────────────────────────────────────────────────────────────┘
       │
       ▼

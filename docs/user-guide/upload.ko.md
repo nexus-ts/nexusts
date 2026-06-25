@@ -55,8 +55,7 @@ await app.listen(3000);
 Controller에서:
 
 ```ts
-import { z } from 'zod';
-import { Body, Controller, Post, Validate } from '@nexusts/core';
+import { Controller, Post } from '@nexusts/core';
 import { Upload, UploadedFile, UploadedFiles } from '@nexusts/upload';
 import type { UploadedFile } from '@nexusts/upload';
 
@@ -64,9 +63,7 @@ import type { UploadedFile } from '@nexusts/upload';
 class UploadController {
   @Post('/avatar')
   @Upload('avatar')
-  @Validate({ body: z.object({ caption: z.string().optional() }) })
   uploadAvatar(
-    @Body() body: { caption?: string },
     @UploadedFile('avatar') avatar: UploadedFile,
   ) {
     return {

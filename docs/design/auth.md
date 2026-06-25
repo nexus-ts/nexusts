@@ -119,8 +119,8 @@ tokens. The `useExisting` alias binds it to the same instance as the
 class token, so consumers can use either:
 
 ```ts
-constructor(@Inject(AuthService) private auth: AuthService) {}
-constructor(@Inject(AuthService.TOKEN) private auth: AuthService) {}
+@Inject(AuthService) declare auth: AuthService;
+@Inject(AuthService.TOKEN) declare auth: AuthService;
 ```
 
 Both work and return the same instance.

@@ -10,7 +10,6 @@ NexusTS는 단일 `Application` API를 통해 **Bun, Node.js, Cloudflare Workers
 
 ```ts
 // main.ts
-import 'reflect-metadata';
 import { Application } from '@nexusts/core';
 import { AppModule } from './app.module.js';
 
@@ -61,7 +60,6 @@ npx tsx app/main.ts
 
 ```ts
 // app/worker.ts
-import 'reflect-metadata';
 import { Application } from '@nexusts/core';
 import { AppModule } from './app.module.js';
 

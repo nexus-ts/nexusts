@@ -31,7 +31,7 @@ Scalar UI integration, and the auto-generation pipeline.
 │  @ApiParam({ name: 'id', schema: z.string() })              │
 │  @ApiResponse({ status: 200, schema: UserSchema })          │
 │  @ApiTags('Users')                                          │
-│  findById(@Param('id') id: string) { ... }                  │
+│  findById(ctx: Context) { const id = ctx.req.param('id'); ... }                  │
 └─────────────────────────────────────────────────────────────┘
                               │
                               ▼

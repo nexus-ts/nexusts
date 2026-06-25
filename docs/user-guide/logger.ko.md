@@ -95,9 +95,6 @@ class UserService {
   }
 }
 ```
-ts
-> @Inject(Logger.TOKEN) declare logger: Logger;
-> ```
 
 ### 로그 메서드
 
@@ -170,7 +167,7 @@ import { Logger } from '@nexusts/logger';
 import { randomUUID } from 'node:crypto';
 
 class RequestHandler {
-  @Inject(Logger.TOKEN) declare logger: Logger;
+  private logger = new Logger();
 
   async handle(request: Request) {
     await this.logger.with(
@@ -203,7 +200,7 @@ import { randomUUID } from 'node:crypto';
 
 @Injectable()
 class RequestLoggerMiddleware implements NestMiddleware {
-  @Inject(Logger.TOKEN) declare logger: Logger;
+  private logger = new Logger();
 
   use(req: any, _res: any, next: () => void) {
     this.logger.with(
@@ -351,7 +348,7 @@ Pino 트랜스포트는 비동기적으로 초기화됩니다. 첫 로그를
 ```ts
 @Injectable()
 class AppBootstrap {
-  @Inject(Logger.TOKEN) declare logger: Logger;
+  private logger = new Logger();
 
   async onStart() {
     await this.logger.ready();
@@ -376,7 +373,7 @@ import { Logger } from '@nexusts/logger';
 
 @Controller('/users')
 class UserController {
-  @Inject(Logger.TOKEN) declare logger: Logger;
+  private logger = new Logger();
 
   @Get()
   list() {
@@ -408,7 +405,7 @@ import { Inject } from '@nexusts/core';
 import { Logger } from '@nexusts/logger';
 
 class CleanupJob {
-  @Inject(Logger.TOKEN) declare logger: Logger;
+  private logger = new Logger();
 
   @Cron('0 3 * * *')
   async nightlyCleanup() {

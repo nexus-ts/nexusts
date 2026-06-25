@@ -42,7 +42,9 @@ import { SessionService, Session } from '@nexusts/session';
 @Controller('/cart')
 export class CartController {
   @Post('/')
-  async add(@Session() session, @Body() body: { item: string }) {
+  async add(ctx: Context) {
+    const session = ctx.var?.nexus?.session;
+    const body = await ctx.req.json() as { item: string };
     const cart = (session?.data.cart ?? []) as string[];
     cart.push(body.item);
     return this.sessions.update(session.id, { dataPatch: { cart } });
@@ -252,7 +254,8 @@ to build a `Set-Cookie` header:
 ```ts
 class AuthController {
   @Post('/login')
-  async login(@Body() body: { userId: string }) {
+  async login(ctx: Context) {
+    const body = await ctx.req.json() as { userId: string };
     const s = await this.sessions.create({ data: { userId: body.userId } });
     (s as { userId: string }).userId = body.userId;
     const setCookie = this.sessions.buildSetCookie(s);
@@ -283,7 +286,8 @@ After authentication, rotate the session id so the previous
 
 ```ts
 @Post('/login')
-async login(@Session() session, @Body() body) {
+async login(ctx: Context) {
+    const body = await ctx.req.json();
   const fresh = await this.sessions.rotate(session.id);
   (fresh as { userId: string }).userId = body.userId;
   return new Response(null, {

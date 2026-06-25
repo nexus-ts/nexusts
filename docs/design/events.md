@@ -151,7 +151,7 @@ the process.
 ```ts
 @Injectable()
 class EmailListeners {
-  constructor(@Inject(EventService.TOKEN) private events: EventService) {}
+  @Inject(EventService.TOKEN) declare events: EventService;
 
   @OnEvent('user.created')
   async handleUserCreated(payload: { userId: string; email: string }) {

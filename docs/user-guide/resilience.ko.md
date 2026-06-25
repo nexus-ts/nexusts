@@ -220,7 +220,8 @@ class PaymentController {
     circuit:  { threshold: 0.5, timeout: 30_000 },
     bulkhead: { maxConcurrent: 5 },
   })
-  async charge(@Body() body: ChargeDto) {
+  async charge(ctx: Context) {
+    const body = await ctx.req.json() as ChargeDto;
     // ← 자동으로 bulkhead → circuit → retry 순으로 래핑됨
     return stripe.charge(body);
   }

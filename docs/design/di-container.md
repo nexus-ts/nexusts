@@ -8,7 +8,7 @@
 The DI container is the heart of NexusTS. It:
 
 - **Registers** providers (classes, values, factories, aliases)
-- **Resolves** dependencies recursively through `reflect-metadata`
+- **Resolves** dependencies recursively through `__nexus_meta__` (standard mode) or `reflect-metadata` / Map fallback (legacy mode)
 - **Manages** instance lifecycles (singleton by default)
 - **Detects** circular dependencies with helpful errors
 - **Scopes** providers per-module (modules are encapsulation units)

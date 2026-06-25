@@ -168,7 +168,6 @@ GraphQLModule.forRoot({
 ### 빠른 예제
 
 ```ts
-import "reflect-metadata";
 import { Resolver, Query, Mutation, Arg } from "@nexusts/graphql";
 
 @Resolver()

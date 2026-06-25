@@ -126,8 +126,8 @@ export class MeController {
   @Inject(AuthService.TOKEN) declare auth: AuthService;
 
   @Get('/')
-  async me(@Req() c: Context) {
-    const session = await this.auth.getSession({ headers: c.req.raw.headers });
+  async me(ctx: Context) {
+    const session = await this.auth.getSession({ headers: ctx.req.raw.headers });
     if (!session) return c.json({ user: null }, 401);
     return c.json(session);
   }
@@ -275,7 +275,8 @@ class SignupController {
   @Inject(AuthService.TOKEN) declare auth: AuthService;
 
   @Post('/register')
-  async register(@Body() body: SignupDto) {
+  async register(ctx: Context) {
+    const body = await ctx.req.json() as SignupDto;
     const result = await this.auth.signUp({
       email: body.email,
       password: body.password,

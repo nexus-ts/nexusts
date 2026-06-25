@@ -87,7 +87,7 @@ The instance is also registered in the DI container under
 inject it:
 
 ```ts
-constructor(@Inject(Inertia.TOKEN) private inertia: Inertia) {}
+@Inject(Inertia.TOKEN) declare inertia: Inertia;
 ```
 
 ---
@@ -147,7 +147,8 @@ server-side helper. The pattern is **Post/Redirect/Get**:
 
 ```ts
 @Post('/')
-async store(@Body() input: Record<string, any>) {
+async store(ctx: Context) {
+    const input = await ctx.req.json() as Record<string, any>;
   const form = this.inertia.form('Users/Create');
   const r = UserSchema.safeParse(input);
 

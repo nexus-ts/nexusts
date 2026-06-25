@@ -140,7 +140,8 @@ class WebhookController {
   @Inject(EventService.TOKEN) declare events: EventService;
 
   @Post('/incoming')
-  async incoming(@Body() body: any) {
+  async incoming(ctx: Context) {
+    const body = await ctx.req.json() as any;
     await this.events.emit('webhook.received', {
       source: body.source,
       timestamp: Date.now(),

@@ -12,7 +12,6 @@ loads the appropriate adapter.
 
 ```ts
 // main.ts
-import 'reflect-metadata';
 import { Application } from '@nexusts/core';
 import { AppModule } from './app.module.js';
 
@@ -66,7 +65,6 @@ Both `tsx` and `ts-node` respect `tsconfig.json` and emit
 
 ```ts
 // app/worker.ts
-import 'reflect-metadata';
 import { Application } from '@nexusts/core';
 import { AppModule } from './app.module.js';
 

@@ -7,7 +7,7 @@
 
 ## 1. 사전 요구 사항
 
-- **Bun** ≥ 1.1 — <https://bun.sh>
+- **Bun** ≥ 1.3 — <https://bun.sh>
 - **TypeScript** ≥ 5.6 (Bun과 함께 자동 설치)
 - TS 지원이 있는 코드 에디터 (VS Code, Zed 등)
 
@@ -80,7 +80,6 @@ my-app/
 ### `app/main.ts`
 
 ```ts
-import 'reflect-metadata';
 import { Application } from '@nexusts/core';
 import { AppModule } from './app.module.js';
 
@@ -165,12 +164,10 @@ Bun의 `--hot` 플래그는 파일 변경 시 프로세스를 재시작합니다
 
 | 문제 | 가능한 원인 | 해결 |
 | ------- | ------------ | ----- |
-| `Reflect.metadata is not a function` | `reflect-metadata`가 import되지 않음 | `main.ts` 맨 위에 `import 'reflect-metadata';` 추가 |
 | `Class "X" is missing the @Module() decorator` | 모듈 클래스에 `@Module({...})` 누락 | `@Module({ controllers: [...] })`를 클래스에 추가 |
 | `Cannot resolve token "DB"` | 어떤 모듈의 `providers`에도 토큰이 없음 | `{ provide: 'DB', useValue: drizzleInstance }`를 관련 모듈에 추가 |
 | `Decorator function return type expected` | 메서드가 아닌 것에 데코레이터 적용 | 데코레이터는 클래스, 메서드, 또는 파라미터에 적용 |
 | 정의한 경로가 404 | 경로 불일치 | `@Controller('/users')` + `@Get('/:id')`가 `/users/:id`를 만드는지 확인 |
-| `tsc`가 `Cannot find name 'reflect-metadata'` 보고 | `types` 배열에 `bun-types` 또는 `node` 누락 | `compilerOptions`에 `"types": ["bun-types"]` 추가 |
 
 ---
 

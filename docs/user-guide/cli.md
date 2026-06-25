@@ -15,7 +15,7 @@ your project's chosen routing style, view engine, ORM, and database.
 The CLI is part of the `@nexusts/core` package — no extra dependency:
 
 ```bash
-bun add @nexusts/cli reflect-metadata zod hono
+bun add @nexusts/cli zod hono
 ```
 
 After install, `bunx nx ...` works automatically via the `bin` entry

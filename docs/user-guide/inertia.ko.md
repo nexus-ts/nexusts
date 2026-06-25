@@ -157,7 +157,8 @@ class UserController {
   @Inject(Inertia.TOKEN) declare inertia: Inertia;
 
   @Post('/')
-  async store(@Body() input: Record<string, any>) {
+  async store(ctx: Context) {
+    const input = await ctx.req.json() as Record<string, any>;
     const form = this.inertia.form('Users/Create');
     const r = UserSchema.safeParse(input);
 
@@ -277,7 +278,6 @@ export class AppModule {}
 
 ```ts
 // main.ts
-import 'reflect-metadata';
 import { Application } from '@nexusts/core';
 import { AppModule } from './app.module.js';
 

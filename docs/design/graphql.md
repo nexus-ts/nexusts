@@ -232,7 +232,7 @@ read by `GraphQLService` to build the resolver map:
 @Resolver("User")
 class UserResolver {
   @Query("currentUser")
-  me(@Ctx() c: any) { return c.state.user; }
+  me(ctx: Context) { return (ctx as any).state?.user; }
 
   @Mutation()
   updateProfile(@Arg("name") name: string) { ... }

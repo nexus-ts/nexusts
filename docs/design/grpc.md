@@ -417,8 +417,8 @@ tokens. The `useExisting` alias binds it to the same instance as
 the class token:
 
 ```ts
-constructor(@Inject(GrpcService) private grpc: GrpcService) {}
-constructor(@Inject(GRPC_SERVICE_TOKEN) private grpc: GrpcService) {}
+@Inject(GrpcService) declare grpc: GrpcService;
+@Inject(GRPC_SERVICE_TOKEN) declare grpc: GrpcService;
 ```
 
 Both work and return the same instance.

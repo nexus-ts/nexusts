@@ -63,7 +63,8 @@ class SignupController {
   @Inject(QueueService.TOKEN) declare queue: QueueService;
 
   @Post('/')
-  async signup(@Body() body: { email: string }) {
+  async signup(ctx: Context) {
+    const body = await ctx.req.json() as { email: string };
     await this.queue.add('send-welcome-email', { email: body.email });
     return { status: 'queued' };
   }

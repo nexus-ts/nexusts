@@ -93,7 +93,8 @@ class UserController {
   @ApiQuery({ name: 'limit', description: '반환할 최대 행 수' })
   @ApiResponse(200, { description: 'OK', schema: z.array(UserSchema) })
   @ApiResponse(401, { description: '인증되지 않음' })
-  list(@Query('limit') limit?: number) {
+  list(ctx: Context) {
+    const limit = Number(ctx.req.query('limit'));
     return this.users.findAll({ limit });
   }
 
@@ -102,7 +103,8 @@ class UserController {
   @ApiParam({ name: 'id', description: '사용자 ID', schema: { type: 'integer' } })
   @ApiResponse(200, { description: 'OK', schema: UserSchema })
   @ApiResponse(404, { description: '찾을 수 없음' })
-  findById(@Param('id') id: number) {
+  findById(ctx: Context) {
+    const id = Number(ctx.req.param('id'));
     return this.users.findById(id);
   }
 
@@ -112,7 +114,8 @@ class UserController {
   @ApiResponse(201, { description: '생성됨', schema: UserSchema })
   @ApiResponse(400, { description: '검증 오류' })
   @Validate({ body: CreateUserSchema })
-  create(@Body() input: z.infer<typeof CreateUserSchema>) {
+  async create(ctx: Context) {
+    const input = CreateUserSchema.parse(await ctx.req.json());
     return this.users.create(input);
   }
 }
@@ -194,13 +197,15 @@ JSON Schema로 변환한다. `@ApiBody` / `@ApiQuery` / `@ApiParam`에서
 // 이 Zod 스키마에서 request body 스키마를 자동 도출:
 @Validate({ body: CreateUserSchema })
 @Post('/')
-create(@Body() input: z.infer<typeof CreateUserSchema>) { ... }
+async create(ctx: Context) {
+    const input = CreateUserSchema.parse(await ctx.req.json()); ... }
 
 // 같은 operation이지만 커스텀 description:
 @Validate({ body: CreateUserSchema })
 @ApiBody({ description: '생성할 새 사용자' })
 @Post('/')
-create(@Body() input: z.infer<typeof CreateUserSchema>) { ... }
+async create(ctx: Context) {
+    const input = CreateUserSchema.parse(await ctx.req.json()); ... }
 ```
 
 Path parameter는 라우트 패턴에서 자동 도출된다

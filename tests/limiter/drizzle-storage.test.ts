@@ -2,7 +2,6 @@
  * Tests for DrizzleRateLimitStorage.
  */
 
-import "reflect-metadata";
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { DrizzleService } from "../../src/drizzle/index.js";
 import { DrizzleRateLimitStorage } from "../../src/limiter/backends/drizzle.js";

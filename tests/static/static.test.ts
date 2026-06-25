@@ -2,7 +2,6 @@
  * Tests for nexus/static.
  */
 
-import "reflect-metadata";
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import { writeFile, mkdir, rm } from "node:fs/promises";
 import { join } from "node:path";

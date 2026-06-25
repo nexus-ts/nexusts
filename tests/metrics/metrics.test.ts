@@ -14,7 +14,6 @@
  * 10. Global labels applied correctly
  */
 
-import "reflect-metadata";
 import { describe, it, expect, beforeEach } from "vitest";
 import { Hono } from "hono";
 import {

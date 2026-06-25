@@ -3,7 +3,6 @@
  * route table.
  */
 
-import "reflect-metadata";
 import { describe, it, expect, beforeEach } from "vitest";
 import * as z from "zod/v3";
 import { OpenAPIService } from "../../src/openapi/openapi.service.js";

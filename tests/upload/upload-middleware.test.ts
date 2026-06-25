@@ -5,7 +5,6 @@
  * file via `multipart/form-data`.
  */
 
-import "reflect-metadata";
 import { describe, it, expect, beforeEach } from "vitest";
 import { Hono } from "hono";
 import { UploadService } from "../../src/upload/upload.service.js";

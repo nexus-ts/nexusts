@@ -6,7 +6,6 @@
  * (`upload-middleware.test.ts`).
  */
 
-import "reflect-metadata";
 import { describe, it, expect, beforeEach } from "vitest";
 import { UploadService } from "../../src/upload/upload.service.js";
 import { UploadError } from "../../src/upload/types.js";

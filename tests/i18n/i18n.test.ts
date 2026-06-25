@@ -13,7 +13,6 @@
  * 9. Module wiring
  */
 
-import "reflect-metadata";
 import { describe, it, expect } from "vitest";
 import { Hono } from "hono";
 import {

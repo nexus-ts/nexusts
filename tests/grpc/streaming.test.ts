@@ -10,7 +10,6 @@
  * 6. Error propagation in server streaming
  */
 
-import "reflect-metadata";
 import { describe, it, expect, afterEach } from "vitest";
 import { writeFile, mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";

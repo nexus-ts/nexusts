@@ -14,7 +14,6 @@
  * 10. Cache backend: RedisCacheStore supports tags
  */
 
-import "reflect-metadata";
 import { describe, it, expect } from "vitest";
 import {
 	createRedisClient,

@@ -12,7 +12,6 @@
  * 8. Command registration: name, aliases
  */
 
-import "reflect-metadata";
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { mkdir, mkdtemp, readFile, rm, writeFile, stat } from "node:fs/promises";
 import { tmpdir } from "node:os";

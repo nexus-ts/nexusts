@@ -1,7 +1,6 @@
 /**
  * Tests for exception filters and HttpException.
  */
-import "reflect-metadata";
 import { describe, it, expect } from "vitest";
 import {
 	HttpException,

@@ -10,7 +10,6 @@
  *  - `ResilienceAdminModule.forRoot()` HTTP admin endpoints.
  */
 import { beforeAll, describe, expect, it } from "vitest";
-import "reflect-metadata";
 
 let retry: typeof import("@nexusts/resilience").retry;
 let computeBackoff: typeof import("@nexusts/resilience").computeBackoff;

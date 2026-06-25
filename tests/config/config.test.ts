@@ -2,7 +2,6 @@
  * Tests for nexus/config.
  */
 
-import "reflect-metadata";
 import { describe, it, expect } from "vitest";
 import { z } from "zod";
 import { ConfigService } from "../../src/config/index.js";

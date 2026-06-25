@@ -2,7 +2,6 @@
  * Tests for the Application class — lifecycle hooks, middleware ordering,
  * listen/shutdown, and the bootstrap() / shutdown() flow.
  */
-import "reflect-metadata";
 import { describe, it, expect, vi } from "vitest";
 import { Hono } from "hono";
 import {

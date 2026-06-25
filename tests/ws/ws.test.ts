@@ -11,7 +11,6 @@
  * 7. End-to-end: simulate a client-server exchange
  */
 
-import "reflect-metadata";
 import { describe, it, expect, beforeEach } from "vitest";
 import { Hono } from "hono";
 import {

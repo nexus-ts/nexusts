@@ -2,7 +2,6 @@
  * Tests for nexus/cache.
  */
 
-import "reflect-metadata";
 import { describe, it, expect, beforeEach } from "vitest";
 import {
 	CacheService,

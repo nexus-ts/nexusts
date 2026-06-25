@@ -1,7 +1,6 @@
 /**
  * Tests for lifecycle hooks.
  */
-import "reflect-metadata";
 import { describe, it, expect } from "vitest";
 import {
 	hasOnModuleInit,

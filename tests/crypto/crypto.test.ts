@@ -10,7 +10,6 @@
  * 6. Edge cases (empty string, unicode, long input)
  */
 
-import "reflect-metadata";
 import { describe, it, expect } from "vitest";
 import { EncryptionService } from "../../src/crypto/encryption.js";
 import { HashService } from "../../src/crypto/hash.js";

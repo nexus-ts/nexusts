@@ -2,7 +2,6 @@
  * Tests for RedisCacheStore using an in-memory mock Redis client.
  */
 
-import "reflect-metadata";
 import { describe, it, expect, beforeEach } from "vitest";
 import { RedisCacheStore } from "@nexusts/cache";
 import type { RedisClient } from "@nexusts/redis";

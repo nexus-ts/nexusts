@@ -2,7 +2,6 @@
  * Tests for DrizzleHealthIndicator.
  */
 
-import "reflect-metadata";
 import { describe, it, expect } from "vitest";
 import { DrizzleHealthIndicator } from "../../src/health/indicators/drizzle.js";
 import { DrizzleService } from "../../src/drizzle/index.js";

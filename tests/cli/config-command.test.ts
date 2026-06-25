@@ -14,7 +14,6 @@
  * 10. --force: overwrites even when no flag is passed
  */
 
-import "reflect-metadata";
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { mkdtemp, readFile, rm, stat } from "node:fs/promises";
 import { tmpdir } from "node:os";

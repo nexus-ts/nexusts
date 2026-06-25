@@ -2,7 +2,6 @@
  * Tests for nexus/sse — SseStream class + sse() helper + Hono integration.
  */
 
-import "reflect-metadata";
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { Hono } from "hono";
 import { SseStream } from "../../src/sse/sse-stream.js";

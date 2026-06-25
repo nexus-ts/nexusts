@@ -2,7 +2,6 @@
  * Tests for MemoryStore's tag-based invalidation.
  */
 
-import "reflect-metadata";
 import { describe, it, expect, beforeEach } from "vitest";
 import { MemoryStore } from "../../src/cache/stores/memory.js";
 

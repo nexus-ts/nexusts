@@ -1,7 +1,6 @@
 /**
  * Tests for @Global() decorator.
  */
-import "reflect-metadata";
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import {
 	Global,

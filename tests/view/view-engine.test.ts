@@ -10,7 +10,6 @@
  * 6. RenduAdapter.render coerces non-string values (Rendu 0.1.0 bug workaround)
  */
 
-import "reflect-metadata";
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";

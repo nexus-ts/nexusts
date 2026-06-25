@@ -2,7 +2,6 @@
  * Tests for nexus/openapi — Zod → JSON Schema converter.
  */
 
-import "reflect-metadata";
 import { describe, it, expect } from "vitest";
 import * as z from "zod/v3";
 import { zodToJsonSchema } from "../../src/openapi/zod-to-json-schema.js";

@@ -9,7 +9,6 @@
  *   - CurrentUser decorator is importable and usable
  */
 
-import "reflect-metadata";
 import { describe, it, expect, beforeAll, beforeEach } from "vitest";
 import { Hono } from "hono";
 import { Application } from "@core/application";

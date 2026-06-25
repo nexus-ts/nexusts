@@ -7,7 +7,6 @@
  * resolve them through the alias. These are tested directly from
  * `drizzle-orm` (verified at runtime by Node.js `require`).
  */
-import "reflect-metadata";
 import { describe, it, expect } from "vitest";
 import {
 	Entity,

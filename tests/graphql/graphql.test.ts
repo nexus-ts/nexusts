@@ -11,7 +11,6 @@
  */
 import { afterEach, beforeAll, describe, expect, it } from "vitest";
 import { Hono } from "hono";
-import "reflect-metadata";
 
 let GraphQLService: any;
 let GraphQLModule: any;

@@ -1,7 +1,6 @@
 /**
  * Tests for HTTP guards.
  */
-import "reflect-metadata";
 import { describe, it, expect } from "vitest";
 import {
 	AuthGuard,

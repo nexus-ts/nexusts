@@ -8,7 +8,6 @@
  *   - `getRequest()` / `getRequestScope()` helpers work from anywhere.
  */
 
-import "reflect-metadata";
 import { describe, it, expect } from "vitest";
 import { Hono } from "hono";
 import { DIContainer } from "../../src/core/di/container.js";

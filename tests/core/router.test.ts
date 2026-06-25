@@ -3,7 +3,6 @@
  * @Param, @Query, @Headers, response serialization, guards,
  * interceptors, and exception filters in a real Hono request cycle.
  */
-import "reflect-metadata";
 import { describe, it, expect } from "vitest";
 import { Hono } from "hono";
 import {

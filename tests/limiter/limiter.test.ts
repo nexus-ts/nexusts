@@ -2,7 +2,6 @@
  * Tests for nexus/limiter.
  */
 
-import "reflect-metadata";
 import { describe, it, expect, beforeEach } from "vitest";
 import { Hono } from "hono";
 import { LimiterService } from "../../src/limiter/limiter.service.js";

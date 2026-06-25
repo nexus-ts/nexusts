@@ -2,7 +2,6 @@
  * Tests for the dialect-aware Drizzle templates.
  */
 
-import "reflect-metadata";
 import { describe, expect, it } from "vitest";
 import { render } from "../../src/cli/core/template.js";
 import {

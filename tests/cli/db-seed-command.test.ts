@@ -10,7 +10,6 @@
  * 6. Non-existent folder creates an empty one with a README
  */
 
-import "reflect-metadata";
 import { mkdir, readdir, readFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";

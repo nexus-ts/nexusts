@@ -1,7 +1,6 @@
 /**
  * Tests for interceptors.
  */
-import "reflect-metadata";
 import { describe, it, expect } from "vitest";
 import {
 	createInterceptor,

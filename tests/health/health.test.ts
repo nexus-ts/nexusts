@@ -2,7 +2,6 @@
  * Tests for nexus/health.
  */
 
-import "reflect-metadata";
 import { describe, it, expect } from "vitest";
 import { Application } from "@core/application";
 import { Module } from "@core/decorators/module";

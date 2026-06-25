@@ -3,7 +3,6 @@
  * better-sqlite3) when available, otherwise skips DB-backed tests.
  */
 
-import "reflect-metadata";
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { DrizzleService, RawQuery } from "../../src/drizzle/index.js";
 

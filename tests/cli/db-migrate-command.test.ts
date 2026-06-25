@@ -5,7 +5,6 @@
  * stubbed CommandContext. No real database is required.
  */
 
-import "reflect-metadata";
 import {
 	writeFile as fsWriteFile,
 	mkdir,

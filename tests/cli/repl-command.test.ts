@@ -9,7 +9,6 @@
  * 4. Behavior with --no-boot (error handling for missing app)
  */
 
-import "reflect-metadata";
 import { describe, it, expect, beforeEach } from "vitest";
 import { writeFile, mkdir } from "node:fs/promises";
 import { tmpdir } from "node:os";

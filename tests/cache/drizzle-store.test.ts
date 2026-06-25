@@ -2,7 +2,6 @@
  * Tests for DrizzleCacheStore.
  */
 
-import "reflect-metadata";
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { DrizzleService } from "../../src/drizzle/index.js";
 import { DrizzleCacheStore } from "../../src/cache/stores/drizzle.js";

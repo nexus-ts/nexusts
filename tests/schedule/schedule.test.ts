@@ -12,7 +12,6 @@
  *   - ScheduleModule.forRoot default (memory) backend
  */
 
-import "reflect-metadata";
 import { describe, it, expect, beforeEach } from "vitest";
 import { Application } from "@core/application";
 import { Module } from "@core/decorators/module";

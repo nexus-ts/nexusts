@@ -16,7 +16,6 @@ import { Inject, Injectable } from "@nexusts/core";
 import { CircuitBreaker } from "./circuit-breaker.js";
 import { Bulkhead } from "./bulkhead.js";
 import { retry } from "./retry.js";
-import { safeGetMeta, safeDefineMeta, safeHasMeta } from "@nexusts/core/di/safe-reflect";
 import type {
 	BackoffStrategy,
 	BulkheadConfig,
@@ -31,6 +30,9 @@ export class ResilienceService {
 	/** DI token — `@Inject(ResilienceService.TOKEN)`. */
 	static readonly TOKEN = Symbol.for("nexus:ResilienceService");
 
+	/** Resilience config — injected by DI container. */
+	@Inject("RESILIENCE_CONFIG") declare private _config: ResilienceConfig;
+
 	readonly defaults: {
 		retry: Required<RetryConfig>;
 		circuit: Required<CircuitBreakerConfig>;
@@ -42,10 +44,8 @@ export class ResilienceService {
 	private store?: ResilienceStore;
 	private syncIntervalMs: number;
 
-	constructor(
-		@Inject("RESILIENCE_CONFIG") config: ResilienceConfig = {},
-		store?: ResilienceStore,
-	) {
+	constructor(store?: ResilienceStore) {
+		const config = this._config ?? {};
 		this.syncIntervalMs = config.syncIntervalMs ?? 5000;
 		this.store = store ?? undefined;
 		this.defaults = {

@@ -4,11 +4,16 @@ import type { CircuitSnapshot, ResilienceStore } from "../types.js";
 export class MemoryResilienceStore implements ResilienceStore {
 	#snapshots = new Map<string, CircuitSnapshot>();
 
-	async getSnapshot(name: string): Promise<CircuitSnapshot | null> {
+	async loadSnapshot(name: string): Promise<CircuitSnapshot | null> {
 		return this.#snapshots.get(name) ?? null;
 	}
 
 	async saveSnapshot(name: string, snapshot: CircuitSnapshot): Promise<void> {
 		this.#snapshots.set(name, { ...snapshot });
+	}
+
+	/** @deprecated Use loadSnapshot instead. */
+	async getSnapshot(name: string): Promise<CircuitSnapshot | null> {
+		return this.loadSnapshot(name);
 	}
 }

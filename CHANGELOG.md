@@ -11,14 +11,118 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+---
+
+## [0.9.7] — 2026-06-26
+
+### Added
+
+- **gRPC tests enabled**: Removed `tests/grpc/**` vitest exclusion. All 13 gRPC
+  tests pass with updated dual-mode decorators (348 total, +23 from 0.9.6).
+
 ### Fixed
 
+- **Core `@Inject`/`@Injectable` export**: `decorators/index.ts` now exports from
+  `standard-inject.ts` (dual-mode TC39 + legacy) instead of `injectable.ts`
+  (legacy-only). Fixes field injection (`@Inject(Token) declare field`) in
+  standard decorator mode — previously the field decorator silently did nothing
+  because the legacy `Inject` didn't handle `context.kind === "field"`.
+
 - **Cache decorators (dual-mode)**: `@Cacheable` and `@CacheInvalidate`
-  updated to support TC39 standard ES decorator mode + legacy fallback.
-  Previously they read `descriptor.value` directly, which is `undefined`
-  in Bun's default stage-3 decorator mode. Now detects standard mode via
-  `context.kind === "method"` and stores metadata on `context.metadata`
-  and the constructor's `__nexus_meta__`.
+  converted to dual-mode. Uses Symbol-on-function metadata bridge for
+  standard decorator compatibility.
+
+- **Events decorator (dual-mode)**: `@OnEvent` converted to dual-mode with
+  Symbol-on-function metadata bridge and `collectFnHooks` reader.
+
+- **Auth module (standard patterns)**: `AuthService` migrated from constructor
+  injection to field injection + lazy `instance` getter. `AuthController`
+  migrated from `@Req()`/`@Body()`/`@Res()` parameter decorators to
+  `ctx: Context` with `ctx.req.*` methods.
+
+- **Drive module fixes**: `DriveService` migrated to field injection.
+  `types.ts` — removed broken import line inside JSDoc comment.
+  `DriveModule` — removed unused `safeGetMeta`/`safeDefineMeta`/`safeHasMeta`.
+
+- **Health module (standard patterns)**: `HealthController` and
+  `HealthCheckService` migrated to field injection + `ctx: Context`.
+
+- **I18n module**: `ConfiguredI18nModule` migrated from constructor `@Inject`
+  to field injection. Removed unused imports.
+
+- **Limiter module**: `LimiterService` and `LimiterMiddleware` migrated to
+  field injection. `@RateLimit` decorator converted to dual-mode
+  (class-level + method-level). `getLimiterRules` updated for standard mode.
+
+- **Logger module**: `Logger` migrated to field injection + lazy `init()`.
+  Setter/getter pattern ensures `init()` runs before any access.
+  `init()` preserves externally assigned transports.
+
+- **Mail module**: `MailService` migrated to field injection.
+  `types.ts` — removed broken import inside JSDoc.
+
+- **Metrics decorators (dual-mode)**: `@Counted` and `@Timed` converted to
+  dual-mode using shared `makeCountedWrapper`/`makeTimedWrapper` helpers.
+
+- **OpenAPI module (dual-mode)**: All API decorators (`@ApiOperation`,
+  `@ApiBody`, `@ApiResponse`, `@ApiParam`, `@ApiQuery`) converted to
+  dual-mode. New `standard-meta.ts` helpers (`readMethodMeta`,
+  `storeMethodMetaStandard`) for Symbol-on-function metadata bridge.
+  `OpenAPIService` migrated to field injection + `readMethodMeta` calls.
+
+- **Queue module**: `QueueService` migrated to field injection.
+  `@OnQueueReady` converted to dual-mode. Fixes example 09-queue bugs:
+  `consume()` → `process()`, `job.id` → `job.jobId`, `{type:"memory"}` →
+  `{backend:"memory"}`.
+
+- **Redis module**: No changes needed — pure factory pattern, no DI decorators.
+
+- **Resilience module**: `ResilienceService` migrated to field injection.
+  `MemoryResilienceStore` fixed — added missing `loadSnapshot()` method
+  (interface had it but implementation only had `getSnapshot`).
+
+- **Schedule decorators (dual-mode)**: `@Cron`, `@Interval`, `@Timeout`
+  converted to dual-mode using `makeScheduleDecorator` factory + Symbol
+  metadata bridge. `readStashed` uses flat concat (not nested push).
+
+- **Shield module**: `ShieldService` migrated to field injection + lazy
+  `init()`. Removed unused module imports.
+
+- **Static module**: Removed unused `safeGetMeta`/`safeDefineMeta`/`safeHasMeta`
+  imports. No other changes needed — pure class.
+
+- **Tracing module**: `TracingConfigHolder` and `ConfiguredTracingModule`
+  migrated to field injection. `@Trace` decorator converted to dual-mode.
+
+- **Upload module**: `UploadService` migrated to field injection + lazy
+  config getter. `@Upload` decorator already had dual-mode support.
+
+- **Feature-flag module**: `FeatureFlagService` migrated to dual constructor
+  (accepts `config?` param + `@Inject` fallback). `@FeatureFlag` decorator
+  converted to dual-mode.
+
+- **Config module**: `ConfigService` migrated to dual constructor
+  (accepts `options?` param for direct instantiation, falls back to
+  `@Inject` for DI). All getter/require/reload use `this.#options`.
+
+- **Drizzle module**: `DrizzleService` migrated to constructor `config?`
+  parameter + `@Inject` fallback. `DrizzleModule.forRoot` uses `useFactory`
+  to pass config to constructor, fixing auto-open for bun-sqlite
+  (issue: `@Inject` field was set after constructor ran, so `this._config`
+  was `undefined` during construction, preventing automatic DB open).
+
+- **gRPC decorators (dual-mode)**: `@GrpcService`, `@GrpcMethod`,
+  `@GrpcServerStream`, `@GrpcClientStream`, `@GrpcBidiStream` converted
+  to dual-mode. `getGrpcMethodEntries` falls back to `collectFnMethods`
+  for standard mode.
+
+### Docs
+
+- **User guides**: Updated shield, upload, drizzle, logger docs from legacy
+  `@Req()`/`@Body()`/`@Res()`/`@Inject` constructor injection patterns
+  to standard `ctx: Context`, `ctx.req.*()`, `@Inject(...) declare field`.
+- **Korean docs**: Updated design/queue.ko.md, design/auth.ko.md from
+  constructor injection to field injection.
 
 ---
 

@@ -1,6 +1,6 @@
 {
   "name": "@nexusts/health",
-  "version": "0.9.6",
+  "version": "0.9.7",
   "description": "Health check endpoints (live, ready, startup)",
   "type": "module",
   "main": "./dist/index.js",

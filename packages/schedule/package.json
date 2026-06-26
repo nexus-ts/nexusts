@@ -1,6 +1,6 @@
 {
   "name": "@nexusts/schedule",
-  "version": "0.9.6",
+  "version": "0.9.7",
   "description": "Cron scheduling (@Cron / @Interval / @Timeout)",
   "type": "module",
   "main": "./dist/index.js",

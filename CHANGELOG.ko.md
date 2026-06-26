@@ -11,7 +11,83 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+---
+
+## [0.9.7] — 2026-06-26
+
+### 추가
+
+- **gRPC 테스트 활성화**: vitest에서 `tests/grpc/**` 제외 제거. 13개 gRPC 테스트 모두
+  통과 (총 348개, 0.9.6 대비 +23).
+
 ### 수정
+
+- **Core `@Inject`/`@Injectable` export 변경**: `decorators/index.ts`가
+  `injectable.ts`(레거시 전용) 대신 `standard-inject.ts`(듀얼 모드 TC39 + 레거시)를
+  export하도록 수정. 표준 데코레이터 모드에서 `@Inject(Token) declare field` 필드 주입이
+  동작하지 않던 문제 해결.
+
+- **Cache 데코레이터 (듀얼 모드)**: `@Cacheable`/`@CacheInvalidate`를 듀얼 모드로 변환.
+  Symbol-on-function 메타데이터 브릿지 사용.
+
+- **Events 데코레이터 (듀얼 모드)**: `@OnEvent`를 듀얼 모드로 변환.
+  `collectFnHooks` 리더 추가.
+
+- **Auth 모듈 (표준 패턴)**: `AuthService` 생성자 주입 → 필드 주입 + lazy instance
+  getter. `AuthController` `@Req()`/`@Body()`/`@Res()` → `ctx: Context` +
+  `ctx.req.*` 메서드.
+
+- **Drive 모듈**: `DriveService` 필드 주입으로 마이그레이션. JSDoc 내부 깨진 import 제거.
+  미사용 모듈 import 제거.
+
+- **Health 모듈**: `HealthController`/`HealthCheckService` 필드 주입 + `ctx.req.*`로
+  마이그레이션.
+
+- **I18n 모듈**: `ConfiguredI18nModule` 생성자 `@Inject` → 필드 주입.
+
+- **Limiter 모듈**: `LimiterService`/`LimiterMiddleware` 필드 주입.
+  `@RateLimit` 데코레이터 듀얼 모드 변환.
+
+- **Logger 모듈**: `Logger` 필드 주입 + lazy `init()`. setter/getter에서 `init()`
+  호출 보장. 외부에서 할당한 transports 보존.
+
+- **Mail 모듈**: `MailService` 필드 주입. JSDoc 내부 깨진 import 제거.
+
+- **Metrics 데코레이터 (듀얼 모드)**: `@Counted`/`@Timed` 듀얼 모드 변환.
+
+- **OpenAPI 모듈 (듀얼 모드)**: 모든 API 데코레이터 듀얼 모드 변환.
+  `standard-meta.ts` 헬퍼 (`readMethodMeta`, `storeMethodMetaStandard`) 추가.
+
+- **Queue 모듈**: `QueueService` 필드 주입. `@OnQueueReady` 듀얼 모드.
+  예제 09-queue 버그 수정: `consume()` → `process()`, `job.id` → `job.jobId`.
+
+- **Resilience 모듈**: `ResilienceService` 필드 주입. `MemoryResilienceStore`에
+  `loadSnapshot()` 메서드 추가 (인터페이스에는 있었지만 구현 누락).
+
+- **Schedule 데코레이터 (듀얼 모드)**: `@Cron`/`@Interval`/`@Timeout` 듀얼 모드.
+
+- **Shield 모듈**: `ShieldService` 필드 주입 + lazy `init()`.
+
+- **Tracing 모듈**: `TracingConfigHolder`/`ConfiguredTracingModule` 필드 주입.
+  `@Trace` 데코레이터 듀얼 모드.
+
+- **Upload 모듈**: `UploadService` 필드 주입 + lazy config getter.
+
+- **Feature-flag 모듈**: `FeatureFlagService` 듀얼 생성자. `@FeatureFlag` 듀얼 모드.
+
+- **Config 모듈**: `ConfigService` 듀얼 생성자 (`options?` + `@Inject` fallback).
+
+- **Drizzle 모듈**: `DrizzleService` 생성자 `config?` 파라미터 추가.
+  `DrizzleModule.forRoot` `useFactory`로 변경. bun-sqlite 자동 오픈 문제 해결.
+
+- **gRPC 데코레이터 (듀얼 모드)**: `@GrpcService`/`@GrpcMethod`/`@GrpcServerStream`/
+  `@GrpcClientStream`/`@GrpcBidiStream` 듀얼 모드.
+
+### 문서
+
+- **사용자 가이드**: shield, upload, drizzle, logger 문서에서 레거시 `@Req()`/`@Body()`/
+  `@Res()`/생성자 주입 패턴 → 표준 `ctx: Context`/`ctx.req.*()`/`@Inject(...) declare field`로 업데이트.
+- **한국어 문서**: design/queue.ko.md, design/auth.ko.md 생성자 주입 → 필드 주입으로 업데이트.
 
 - **Cache 데코레이터 (듀얼 모드)**: `@Cacheable`과 `@CacheInvalidate`가
   TC39 표준 ES 데코레이터 모드 + 레거시 폴백을 지원하도록 업데이트.

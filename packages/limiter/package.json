@@ -1,6 +1,6 @@
 {
   "name": "@nexusts/limiter",
-  "version": "0.9.6",
+  "version": "0.9.7",
   "description": "Rate limiting (fixed / sliding / token-bucket)",
   "type": "module",
   "main": "./dist/index.js",

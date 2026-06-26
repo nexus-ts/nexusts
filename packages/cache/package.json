@@ -1,6 +1,6 @@
 {
   "name": "@nexusts/cache",
-  "version": "0.9.6",
+  "version": "0.9.7",
   "description": "Application cache (memory / Redis / Drizzle backends)",
   "type": "module",
   "main": "./dist/index.js",

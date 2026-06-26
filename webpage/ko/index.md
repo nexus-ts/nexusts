@@ -7,7 +7,7 @@ titleTemplate: Bun 네이티브 풀스택 프레임워크
 hero:
   name: NexusTS
   text: Bun 네이티브 풀스택 프레임워크
-  tagline: TC39 표준 데코레이터 · 32개 모듈 패키지 · 필요한 것만 설치 · 사용하지 않는 것은 제로 오버헤드
+  tagline: TC39 표준 데코레이터 · 33개 모듈 패키지 · 필요한 것만 설치 · 사용하지 않는 것은 제로 오버헤드
   image:
     src: /logo.svg
     alt: NexusTS
@@ -24,7 +24,7 @@ features:
     title: Bun 네이티브
     details: Bun.js 런타임에 특화. 네이티브 TypeScript, 빠른 시작, 핫 리로드. 컴파일러 대기 시간 없음.
   - icon: 📦
-    title: 32개 모듈 패키지
+    title: 33개 모듈 패키지
     details: 각 기능은 독립적인 `@nexusts/*` 패키지. 필요한 것만 설치. 불필요한 코드 제로.
   - icon: 🎯
     title: 표준 데코레이터 (TC39)
@@ -37,12 +37,12 @@ features:
     details: Retry, Circuit Breaker, Bulkhead. 크로스-팟 저장소 (Redis/Drizzle). HTTP 관리 API. 카나리 배포용 기능 플래그.
   - icon: ⚡
     title: 검증된 CI
-    details: 314개 이상의 테스트 (Bun, Node.js 22, Cloudflare Workers, 3개 Drizzle 방언). 모든 커밋에서 smoke 테스트 통과.
+    details: 348개 이상의 테스트 (Bun, Node.js 22, Cloudflare Workers, 3개 Drizzle 방언). 모든 커밋에서 smoke 테스트 통과.
 ---
 
 ## NexusTS란?
 
-**NexusTS**는 Bun 네이티브 풀스택 TypeScript 프레임워크입니다. **32개 독립 패키지**를 `@nexusts/*` 네임스페이스로 제공합니다. 필요한 것만 설치하세요.
+**NexusTS**는 Bun 네이티브 풀스택 TypeScript 프레임워크입니다. **33개 독립 패키지**를 `@nexusts/*` 네임스페이스로 제공합니다. 필요한 것만 설치하세요.
 
 프로덕션 백엔드 서비스 구축에 필요한 모든 도구를 제공합니다:
 
@@ -88,11 +88,11 @@ bunx nx new my-app --view inertia --orm drizzle --db bun-sqlite --frontend react
 @nexusts/queue      → 작업 큐 (BullMQ / Redis)
 @nexusts/schedule   → Cron / Interval / Timeout
 @nexusts/feature-flag → 카나리 / A/B 테스트
-... 외 18개 →
+... 외 19개 →
 ```
 
-## v0.9.0 — 최신 릴리스
+## v0.9.7 — 최신 릴리스
 
-**표준 데코레이터 마이그레이션.** TC39 표준 ES 데코레이터, `reflect-metadata` 제거. 필드 인젝션, `ctx.req.*` 메서드. **32개 패키지** 출시 완료. NestJS/AdonisJS와의 Tier 1 및 Tier 2 격차를 모두 해소했습니다.
+**표준 데코레이터 마이그레이션 완료.** 모든 프레임워크 데코레이터가 듀얼 모드(TC39 표준 + 레거시)를 지원합니다. Core `@Inject`/`@Injectable` export가 표준 모드 필드 인젝션을 위해 수정되었습니다. 18개 모듈이 듀얼 모드 데코레이터로 전환되었고, 15개 모듈이 표준 DI 패턴으로 마이그레이션되었습니다. gRPC 테스트가 재활성화되었습니다. 348개 테스트. 33개 패키지.
 
 자세한 내용은 [변경 로그](https://github.com/nexus-ts/nexusts/blob/main/CHANGELOG.md)를 참고하세요.

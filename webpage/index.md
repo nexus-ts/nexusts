@@ -7,7 +7,7 @@ titleTemplate: Bun-native Fullstack Framework
 hero:
   name: NexusTS
   text: Bun-native fullstack framework
-  tagline: TC39 standard decorators · 32 modular packages · Install only what you import · Zero overhead for what you don't
+  tagline: TC39 standard decorators · 33 modular packages · Install only what you import · Zero overhead for what you don't
   image:
     src: /logo.svg
     alt: NexusTS
@@ -24,7 +24,7 @@ features:
     title: Bun-native
     details: Built specifically for Bun.js runtime. Native TypeScript, fast startup, and hot reload. No waiting for compilers.
   - icon: 📦
-    title: 32 Modular Packages
+    title: 33 Modular Packages
     details: Each feature is its own `@nexusts/*` package. Install only what you use. No bloat, no dead code.
   - icon: 🎯
     title: Standard Decorators (TC39)
@@ -37,12 +37,12 @@ features:
     details: Retry, Circuit Breaker, Bulkhead. Cross-pod stores (Redis/Drizzle). HTTP admin API. Feature flags for canary deployments.
   - icon: ⚡
     title: Battle-tested CI
-    details: 314+ tests across Bun, Node.js 22, Cloudflare Workers, and 3 Drizzle dialects. Smoke-tested on every commit.
+    details: 348+ tests across Bun, Node.js 22, Cloudflare Workers, and 3 Drizzle dialects. Smoke-tested on every commit.
 ---
 
 ## What is NexusTS?
 
-**NexusTS** is a Bun-native fullstack TypeScript framework with a modular architecture. It ships **32 independent packages** under the `@nexusts/*` namespace — you only install what you import.
+**NexusTS** is a Bun-native fullstack TypeScript framework with a modular architecture. It ships **33 independent packages** under the `@nexusts/*` namespace — you only install what you import.
 
 The framework provides a complete set of tools for building production backend services:
 
@@ -88,7 +88,7 @@ bunx nx new my-app --view inertia --orm drizzle --db bun-sqlite --frontend react
 @nexusts/queue      → Job queue (BullMQ / Redis)
 @nexusts/schedule   → Cron / Interval / Timeout
 @nexusts/feature-flag → Canary / A/B testing
-... and 18 more →
+... and 19 more →
 ```
 
 ## Why NexusTS?
@@ -106,8 +106,8 @@ bunx nx new my-app --view inertia --orm drizzle --db bun-sqlite --frontend react
 | **CLI** | ✅ `nx` (ACE-style) | ✅ NestJS CLI | ✅ Ace |
 | **License** | MIT | MIT | MIT |
 
-## v0.9.0 — Latest Release
+## v0.9.7 — Latest Release
 
-**Standard decorator migration.** TC39 standard ES decorators, no `reflect-metadata`. Field injection, `ctx.req.*` methods. 32 packages shipped. All Tier 1 & 2 gaps from NestJS/AdonisJS closed.
+**Standard Decorator Migration Complete.** Every decorator in the framework now supports dual-mode (TC39 standard + legacy). Core `@Inject`/`@Injectable` export fixed for standard-mode field injection. 18 modules converted to dual-mode decorators. 15 modules migrated to standard DI patterns. gRPC tests re-enabled. 348 tests. 33 packages.
 
 See the [Changelog](https://github.com/nexus-ts/nexusts/blob/main/CHANGELOG.md) for details.

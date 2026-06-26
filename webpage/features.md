@@ -5,13 +5,17 @@ description: NexusTS feature overview
 
 # Features
 
-NexusTS ships **32 independent modules** — each is its own `@nexusts/*` package, so you install only what you use.
+NexusTS ships **33 independent modules** — each is its own `@nexusts/*` package, so you install only what you use.
 
 ## Core Framework
 
 | Feature | Package | Status |
 |---------|---------|--------|
-| **TC39 standard ES decorators** (no `experimentalDecorators`, no `reflect-metadata`) | `@nexusts/core` | ✅ **v0.9.0** |
+| **All decorators dual-mode** (TC39 + legacy) | ALL | ✅ **v0.9.7** |
+| **18 modules dual-mode decorators** (@Cacheable, @OnEvent, @RateLimit, @Cron, @Trace, @GrpcMethod, etc.) | ALL | ✅ **v0.9.7** |
+| **15 modules standard DI patterns** (constructor → field injection) | ALL | ✅ **v0.9.7** |
+| **Core @Inject/@Injectable standard-mode export** | `@nexusts/core` | ✅ **v0.9.7** |
+| TC39 standard ES decorators (no `experimentalDecorators`, no `reflect-metadata`) | `@nexusts/core` | ✅ **v0.9.0** |
 | Field injection (`@Inject(Token) declare field: Type`) | `@nexusts/core` | ✅ **v0.9.0** |
 | `ctx.req.*` methods (replaces `@Param`/`@Body`/`@Query`) | `@nexusts/core` | ✅ **v0.9.0** |
 | MVC + Dependency Injection | `@nexusts/core` | ✅ Core |

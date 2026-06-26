@@ -20,7 +20,6 @@
 import { Module } from "@nexusts/core";
 import { StaticService } from "./static.service.js";
 import type { ServeStaticOptions } from "./static.service.js";
-import { safeGetMeta, safeDefineMeta, safeHasMeta } from "@nexusts/core/di/safe-reflect";
 
 @Module({
 	providers: [

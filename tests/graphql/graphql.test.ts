@@ -303,8 +303,8 @@ describe("SDL synthesis — code-first schema generation", () => {
 	it("wires @Arg metadata as field arguments in generated SDL", async () => {
 		@Resolver()
 		class GreetResolver {
-			@Query("greet", { returns: "String!" })
-			greet(@Arg("name", "String!") name: string): string {
+			@Query("greet", { returns: "String!", args: { name: "String!" } })
+			greet(name: string): string {
 				return `Hello, ${name}!`;
 			}
 		}
@@ -320,8 +320,8 @@ describe("SDL synthesis — code-first schema generation", () => {
 	it("synthesises type Mutation SDL from @Mutation decorators", async () => {
 		@Resolver()
 		class EchoResolver {
-			@Mutation("echo", { returns: "String!" })
-			echo(@Arg("msg", "String!") msg: string): string {
+			@Mutation("echo", { returns: "String!", args: { msg: "String!" } })
+			echo(msg: string): string {
 				return msg;
 			}
 		}
@@ -341,8 +341,8 @@ describe("SDL synthesis — code-first schema generation", () => {
 	it("uses 'extend type Query' when typeDefs already defines Query", async () => {
 		@Resolver()
 		class AddResolver {
-			@Query("add", { returns: "Int!" })
-			add(@Arg("a", "Int!") a: number, @Arg("b", "Int!") b: number): number {
+			@Query("add", { returns: "Int!", args: { a: "Int!", b: "Int!" } })
+			add(a: number, b: number): number {
 				return a + b;
 			}
 		}

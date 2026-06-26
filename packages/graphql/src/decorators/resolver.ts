@@ -18,7 +18,7 @@
  *   }
  */
 import type { ResolverClassRecord } from "../types.js";
-import { safeGetMeta, safeDefineMeta, safeHasMeta } from "@nexusts/core/di/safe-reflect";
+import { safeGetMeta, safeDefineMeta } from "@nexusts/core/di/safe-reflect";
 
 const RESOLVER_KEY = Symbol.for("nexus:GraphQL:Resolver");
 const FIELDS_KEY = Symbol.for("nexus:GraphQL:Fields");
@@ -29,6 +29,9 @@ const TYPENAME_KEY = Symbol.for("nexus:GraphQL:TypeName");
 // without needing a separate scan pass.
 const _resolverRegistry = new Set<Function>();
 
+/** Module-level field storage — avoids safeDefineMeta fallback store issues. */
+const _fieldStore = new Map<Function, ResolverClassRecord["fields"]>();
+
 export function Resolver(typeName?: string): any {
 	return (...args: any[]) => {
 		// Standard decorator mode (TC39)
@@ -37,9 +40,11 @@ export function Resolver(typeName?: string): any {
 			const inferred = typeName ?? target.name.replace(/Resolver$/, "");
 			safeDefineMeta(RESOLVER_KEY, true, target);
 			safeDefineMeta(TYPENAME_KEY, inferred, target);
-			if (!safeHasMeta(FIELDS_KEY, target)) {
-				safeDefineMeta(FIELDS_KEY, [], target);
-			}
+			// Collect fields stored on shared context.metadata by @Query/@Mutation
+			const accumulated = (context.metadata as any)["nexus:GraphQL:Fields"] as
+				| ResolverClassRecord["fields"]
+				| undefined;
+			_fieldStore.set(target, accumulated ?? []);
 			_resolverRegistry.add(target);
 			return;
 		}
@@ -49,9 +54,9 @@ export function Resolver(typeName?: string): any {
 		const inferred = typeName ?? ctor.name.replace(/Resolver$/, "");
 		safeDefineMeta(RESOLVER_KEY, true, ctor);
 		safeDefineMeta(TYPENAME_KEY, inferred, ctor);
-		if (!safeHasMeta(FIELDS_KEY, ctor)) {
-			safeDefineMeta(FIELDS_KEY, [], ctor);
-		}
+		// Read fields stored by pushResolverField on the prototype
+		const fields = safeGetMeta(FIELDS_KEY, ctor.prototype) as ResolverClassRecord["fields"] | undefined;
+		_fieldStore.set(ctor, fields ?? []);
 		_resolverRegistry.add(ctor);
 	};
 }
@@ -81,6 +86,7 @@ export function pushResolverField(
 	target: object,
 	field: ResolverClassRecord["fields"][number],
 ): void {
+	// Legacy mode: store via safeDefineMeta on the prototype
 	const t = (target as { prototype?: object }).prototype ?? target;
 	const list = (safeGetMeta(FIELDS_KEY, t) as ResolverClassRecord["fields"]) ?? [];
 	list.push(field);
@@ -88,9 +94,8 @@ export function pushResolverField(
 }
 
 /** Read the field metadata for a resolver class. */
-export function getResolverFields(target: object): ResolverClassRecord["fields"] {
-	const t = (target as { prototype?: object }).prototype ?? target;
-	return (safeGetMeta(FIELDS_KEY, t) as ResolverClassRecord["fields"]) ?? [];
+export function getResolverFields(target: Function): ResolverClassRecord["fields"] {
+	return _fieldStore.get(target) ?? [];
 }
 
 /** True if `target` was decorated with `@Resolver`. */

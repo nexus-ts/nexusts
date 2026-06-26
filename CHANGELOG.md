@@ -13,6 +13,52 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.9.8] — 2026-06-27
+
+### Added
+
+- **Constructor → field injection migration**: All 60+ source files, JSDoc
+  comments, and documentation updated to standard decorator field injection
+  (`@Inject(Token) declare field: Type`). Constructor injection is now
+  explicitly documented as legacy-only, with field injection as the
+  recommended standard pattern.
+
+### Changed
+
+- **`@nexusts/core/di/container.ts`**: Error messages now recommend field
+  injection (`@Inject(Svc) declare svc: Svc`) instead of constructor
+  injection patterns.
+
+- **CLI templates**: `make:listener`, `make:queue:job`, `make:queue:worker`,
+  `make:session` now generate field injection by default.
+
+- **Docs & examples**: All user-guide, design-doc, API-reference, and
+  example README code samples migrated to field injection. Legacy patterns
+  retained where technically required (`super()` calls, Bun bug docs).
+
+### Fixed
+
+- **`@nexusts/events/src/event.service.ts`**: Config injection now uses
+  standard field decorator pattern instead of constructor parameter
+  injection.
+
+- **`@nexusts/resilience/src/admin.module.ts`**: ResilienceAdminController
+  injection uses `declare private _svc` field pattern.
+
+- **`@nexusts/cache/src/cache.service.ts`**: Reverted to constructor
+  injection (required for direct `new CacheService()` instantiation in
+  tests).
+
+### Documentation
+
+- All user-guide docs: controllers, DI, request-scope, drizzle,
+  production-basics updated with field injection examples.
+- All 17 package JSDoc examples: quick-start code snippets updated.
+- All 15+ example READMEs: converted to field injection.
+- Added standard decorator mode informational note in controllers guide.
+
+---
+
 ## [0.9.7] — 2026-06-26
 
 ### Added

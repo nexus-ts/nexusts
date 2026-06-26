@@ -13,6 +13,46 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.9.8] — 2026-06-27
+
+### 추가
+
+- **생성자 → 필드 인젝션 마이그레이션**: 60개 이상의 소스 파일, JSDoc 주석,
+  문서를 표준 데코레이터 필드 인젝션(`@Inject(Token) declare field: Type`)으로
+  업데이트. 생성자 인젝션은 레거시 전용으로 문서화.
+
+### 변경
+
+- **`@nexusts/core/di/container.ts`**: 에러 메시지가 필드 인젝션 권장
+  (`@Inject(Svc) declare svc: Svc`).
+
+- **CLI 템플릿**: `make:listener`, `make:queue:job`, `make:queue:worker`,
+  `make:session` 템플릿이 기본적으로 필드 인젝션을 생성.
+
+- **문서 및 예제**: 모든 user-guide, design-doc, API-reference, 예제 README
+  코드 샘플을 필드 인젝션으로 마이그레이션.
+
+### 수정
+
+- **`@nexusts/events/src/event.service.ts`**: Config 인젝션을 표준 필드
+  데코레이터 패턴으로 변경.
+
+- **`@nexusts/resilience/src/admin.module.ts`**: ResilienceAdminController가
+  `declare private _svc` 필드 패턴 사용.
+
+- **`@nexusts/cache/src/cache.service.ts`**: 생성자 인젝션 유지 (테스트에서
+  `new CacheService()` 직접 생성 필요).
+
+### 문서
+
+- 모든 user-guide 문서: controllers, DI, request-scope, drizzle,
+  production-basics 필드 인젝션 예제로 업데이트.
+- 모든 17개 패키지 JSDoc 예제 업데이트.
+- 모든 15개 이상 예제 README 필드 인젝션으로 변환.
+- controllers 가이드에 표준 데코레이터 모드 정보 노트 추가.
+
+---
+
 ## [0.9.7] — 2026-06-26
 
 ### 추가

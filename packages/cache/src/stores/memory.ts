@@ -157,7 +157,7 @@ function globToRegExp(pattern: string): RegExp {
 			pattern
 				.replace(/[.+^${}()|[\]\\]/g, "\\$&")
 				.replace(/\*\*/g, "::DBL::")
-				.replace(/\*/g, "[^:]+")
+				.replace(/\*/g, "[^:]*")
 				.replace(/::DBL::/g, ".*") +
 			"$",
 	);

@@ -11,7 +11,7 @@ export class LimiterMiddleware {
 	/** DI token. */
 	static readonly TOKEN = Symbol.for("nexus:LimiterMiddleware");
 
-	constructor(@Inject(LimiterService.TOKEN) private readonly limiter: LimiterService) {}
+	@Inject(LimiterService.TOKEN) declare private readonly limiter: LimiterService;
 
 	/** Returns a Hono middleware. */
 	middleware() {

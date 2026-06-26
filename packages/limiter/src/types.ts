@@ -26,8 +26,7 @@
  *   - `RedisStorage` (optional, multi-process / multi-pod)
  */
 
-import { METADATA_KEY } from "@nexusts/core";
-import { safeGetMeta, safeDefineMeta, safeHasMeta } from "@nexusts/core/di/safe-reflect";
+import { safeGetMeta, safeDefineMeta } from "@nexusts/core/di/safe-reflect";
 
 /** Identifier of the request — IP, user ID, API key, etc. */
 export type RateLimitKey = string;
@@ -114,15 +113,54 @@ export interface LimiterConfig {
 
 export const LIMITER_RULE_KEY = Symbol.for("nexus:RateLimitRule");
 
-/** Decorator: attach a per-route rate limit. */
-export function RateLimit(
-	rule: RateLimitRule,
-): MethodDecorator & ClassDecorator {
-	return (
-		target: any,
-		propertyKey?: string | symbol,
-		descriptor?: PropertyDescriptor,
-	) => {
+/** Symbol key used to stash @RateLimit rules on the function itself (standard mode). */
+const FN_RULE_KEY = Symbol.for("nexus:limiter:fn:rule");
+
+/**
+ * @RateLimit decorator — attach a per-route rate limit.
+ *
+ * Dual-mode: supports TC39 standard ES decorators + legacy.
+ * Can be used on both classes and methods.
+ */
+export function RateLimit(rule: RateLimitRule): any {
+	return function (this: any, targetOrFn: any, contextOrKey?: any): any {
+		// ── Standard decorator mode ──
+		if (contextOrKey?.kind === "class") {
+			// Class-level.
+			const { metadata } = contextOrKey;
+			const existing: RateLimitRule[] = metadata[LIMITER_RULE_KEY] ?? [];
+			existing.push({ ...rule, path: "**" });
+			metadata[LIMITER_RULE_KEY] = existing;
+			// Also store on __nexus_meta__ so getLimiterRules can find it.
+			if (typeof targetOrFn === "function") {
+				if (!(targetOrFn as any).__nexus_meta__) {
+					Object.defineProperty(targetOrFn, "__nexus_meta__", {
+						value: metadata,
+						writable: true,
+						configurable: true,
+						enumerable: false,
+					});
+				}
+			}
+			return;
+		}
+		if (contextOrKey?.kind === "method") {
+			// Method-level — stash rule on the function.
+			const fn = targetOrFn;
+			const { metadata } = contextOrKey;
+			const existing: RateLimitRule[] = metadata[LIMITER_RULE_KEY] ?? [];
+			existing.push({ ...rule, path: "**" });
+			metadata[LIMITER_RULE_KEY] = existing;
+			// Also stash on the function for legacy reader compatibility.
+			if (!(fn as any)[FN_RULE_KEY]) (fn as any)[FN_RULE_KEY] = [];
+			(fn as any)[FN_RULE_KEY].push(rule);
+			return;
+		}
+
+		// ── Legacy decorator mode ──
+		const target = targetOrFn;
+		const descriptor = arguments[2];
+
 		// Class-level: applied to all routes of the controller.
 		if (descriptor === undefined) {
 			const existing: RateLimitRule[] =
@@ -134,14 +172,30 @@ export function RateLimit(
 		// Method-level: bound to the route.
 		const existing: RateLimitRule[] =
 			safeGetMeta(LIMITER_RULE_KEY, target.constructor) ?? [];
-		existing.push({ ...rule, path: propertyKey === undefined ? "**" : `**` });
+		existing.push({ ...rule, path: "**" });
 		safeDefineMeta(LIMITER_RULE_KEY, existing, target.constructor);
 	};
 }
 
 /** Read all `@RateLimit` rules from a controller or method. */
 export function getLimiterRules(target: any): RateLimitRule[] {
-	return safeGetMeta(LIMITER_RULE_KEY, target) ?? [];
+	// Legacy path.
+	const fromLegacy = safeGetMeta(LIMITER_RULE_KEY, target) as RateLimitRule[] | undefined;
+	if (fromLegacy) return fromLegacy;
+	// Standard path: check .__nexus_meta__ (set by @Module/@Controller/etc).
+	const clsMeta = typeof target === "function" && (target as any).__nexus_meta__;
+	if (clsMeta?.[LIMITER_RULE_KEY]) return clsMeta[LIMITER_RULE_KEY] as RateLimitRule[];
+	// Standard path: check prototype methods for stashed data (method-level).
+	const fromFn: RateLimitRule[] = [];
+	if (target.prototype) {
+		for (const name of Object.getOwnPropertyNames(target.prototype)) {
+			const fn = target.prototype[name];
+			if (typeof fn !== "function") continue;
+			const stashed = (fn as any)[FN_RULE_KEY];
+			if (stashed) fromFn.push(...stashed);
+		}
+	}
+	return fromFn;
 }
 
 /** Convert a `DurationLike` to milliseconds. */

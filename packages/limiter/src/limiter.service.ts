@@ -22,42 +22,70 @@ export class LimiterService {
 	/** DI token — `@Inject(LimiterService.TOKEN)`. */
 	static readonly TOKEN = Symbol.for("nexus:LimiterService");
 
-	storage: RateLimitStorage;
-	rules: RateLimitRule[];
-	defaultKey: NonNullable<LimiterConfig["defaultKey"]>;
-	defaultReject: NonNullable<LimiterConfig["defaultReject"]>;
+	/** Rate-limit config — injected by DI container. */
+	@Inject("LIMITER_CONFIG") declare private config: LimiterConfig;
 
-	constructor(@Inject("LIMITER_CONFIG") config: LimiterConfig = {}) {
-		this.storage = config.storage ?? new MemoryRateLimitStorage();
-		this.rules = config.rules ?? [];
-		this.defaultKey =
-			config.defaultKey ??
-			((c: any) => {
-				const fwd = c?.req?.header?.("x-forwarded-for");
-				if (fwd) return fwd.split(",")[0]?.trim() ?? "unknown";
-				return c?.req?.raw?.["conn"]?.remoteAddr?.hostname ?? "unknown";
-			});
-		this.defaultReject =
-			config.defaultReject ??
-			((_c, result) =>
-				new Response(
-					JSON.stringify({
-						error: "Too Many Requests",
-						limit: result.limit,
-						remaining: 0,
-						retryAfter: result.retryAfter,
-					}),
-					{
-						status: 429,
-						headers: {
-							"Content-Type": "application/json",
-							"Retry-After": String(result.retryAfter),
-							"X-RateLimit-Limit": String(result.limit),
-							"X-RateLimit-Remaining": "0",
-							"X-RateLimit-Reset": String(Math.ceil(result.resetAt / 1000)),
+	private _storage: RateLimitStorage | null = null;
+	private _rules: RateLimitRule[] = [];
+	private _defaultKey: NonNullable<LimiterConfig["defaultKey"]> | null = null;
+	private _defaultReject: NonNullable<LimiterConfig["defaultReject"]> | null = null;
+
+	constructor() {
+		// DI sets @Inject fields before first use.
+	}
+
+	get storage(): RateLimitStorage {
+		if (!this._storage) {
+			this._storage = (this.config ?? {}).storage ?? new MemoryRateLimitStorage();
+		}
+		return this._storage;
+	}
+
+	get rules(): RateLimitRule[] {
+		if (!this._rules.length && this.config?.rules) {
+			this._rules = this.config.rules;
+		}
+		return this._rules;
+	}
+
+	get defaultKey(): NonNullable<LimiterConfig["defaultKey"]> {
+		if (!this._defaultKey) {
+			this._defaultKey =
+				(this.config ?? {}).defaultKey ??
+				((c: any) => {
+					const fwd = c?.req?.header?.("x-forwarded-for");
+					if (fwd) return fwd.split(",")[0]?.trim() ?? "unknown";
+					return c?.req?.raw?.["conn"]?.remoteAddr?.hostname ?? "unknown";
+				});
+		}
+		return this._defaultKey;
+	}
+
+	get defaultReject(): NonNullable<LimiterConfig["defaultReject"]> {
+		if (!this._defaultReject) {
+			this._defaultReject =
+				(this.config ?? {}).defaultReject ??
+				((_c, result) =>
+					new Response(
+						JSON.stringify({
+							error: "Too Many Requests",
+							limit: result.limit,
+							remaining: 0,
+							retryAfter: result.retryAfter,
+						}),
+						{
+							status: 429,
+							headers: {
+								"Content-Type": "application/json",
+								"Retry-After": String(result.retryAfter),
+								"X-RateLimit-Limit": String(result.limit),
+								"X-RateLimit-Remaining": "0",
+								"X-RateLimit-Reset": String(Math.ceil(result.resetAt / 1000)),
+							},
 						},
-					},
-				));
+					));
+		}
+		return this._defaultReject;
 	}
 
 	/**

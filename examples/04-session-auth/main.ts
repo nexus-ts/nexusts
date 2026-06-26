@@ -19,15 +19,15 @@
 //   ctx.session.get("user") / ctx.session.set("key", val)
 
 import {
-  Application, Controller, Get, Post, Module, Inject, Injectable,
+  Application, Controller, Get, Post, Module, Injectable,
 } from "@nexusts/core";
-import { SessionService, SessionModule, Session } from "@nexusts/session";
+import { SessionService, SessionModule } from "@nexusts/session";
 import type { Context } from "hono";
 
 @Injectable()
 @Controller("/")
 class AuthController {
-  @Inject(SessionService.TOKEN) declare sessions: SessionService;
+  declare sessions: SessionService;
 
   @Post("/login")
   async login(ctx: Context) {
@@ -68,7 +68,7 @@ class AppModule {}
 
 const app = new Application(AppModule);
 const sessions = app.container.resolve(SessionService.TOKEN) as SessionService;
-app.server.app.use("*", async (c, next) => {
+app.server.app.use("*", async (c: any, next: any) => {
   const cookie = c.req.header("cookie") ?? "";
   const match = cookie.match(/sid=([^;]+)/);
   if (match) {

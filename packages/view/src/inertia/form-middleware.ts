@@ -19,8 +19,7 @@
  * The middleware does NOT enforce a specific redirect strategy — the
  * `InertiaFormBuilder` handles that at the action level (303 + PRG).
  */
-import type { Context, Next } from "hono";
-import type { Middleware } from "@nexusts/core";
+import type { Context, Next, MiddlewareHandler } from "hono";
 
 export interface InertiaFormMiddlewareOptions {
 	/**
@@ -61,7 +60,7 @@ const FORM_METHODS = new Set(["POST", "PUT", "PATCH", "DELETE"]);
 
 export function inertiaFormMiddleware(
 	options: InertiaFormMiddlewareOptions = {},
-): Middleware {
+): MiddlewareHandler {
 	const csrfHeader = (options.csrfHeader ?? "X-CSRF-Token").toLowerCase();
 	const csrfField = options.csrfField ?? "_token";
 	const csrfSharedKey = options.csrfSharedKey ?? "csrfToken";

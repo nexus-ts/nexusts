@@ -4,6 +4,8 @@
   <img src="./webpage/public/logo.svg" alt="NexusTS" width="320">
 </p>
 
+[![npm (core)](https://img.shields.io/npm/v/@nexusts/core?label=@nexusts/core)](https://www.npmjs.com/package/@nexusts/core)
+[![npm (create-nexusts)](https://img.shields.io/npm/v/create-nexusts?label=create-nexusts)](https://www.npmjs.com/package/create-nexusts)
 [![CI (Bun)](https://github.com/nexus-ts/nexusts/actions/workflows/ci.yml/badge.svg?label=Bun)](https://github.com/nexus-ts/nexusts/actions/workflows/ci.yml)
 [![CI (Node.js)](https://github.com/nexus-ts/nexusts/actions/workflows/ci.yml/badge.svg?label=Node.js+22)](https://github.com/nexus-ts/nexusts/actions/workflows/ci.yml)
 [![CI (Workers)](https://github.com/nexus-ts/nexusts/actions/workflows/ci-workers.yml/badge.svg)](https://github.com/nexus-ts/nexusts/actions/workflows/ci-workers.yml)

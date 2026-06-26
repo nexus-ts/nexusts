@@ -1,5 +1,4 @@
 /**
-import { safeGetMeta, safeDefineMeta, safeHasMeta } from "@nexusts/core/di/safe-reflect";
  * `@nexusts/mail` — outbound email.
  *
  *   const mail = new MailService({ transport: new SmtpTransport({ host: 'smtp.gmail.com' }) });

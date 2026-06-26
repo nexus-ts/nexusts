@@ -15,7 +15,6 @@ import { Module } from "@nexusts/core";
 import { MailService } from "./mail.service.js";
 import { NullTransport } from "./transports/null.js";
 import type { MailConfig } from "./types.js";
-import { safeGetMeta, safeDefineMeta, safeHasMeta } from "@nexusts/core/di/safe-reflect";
 
 @Module({
 	providers: [

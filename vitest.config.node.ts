@@ -32,7 +32,6 @@ export default defineConfig({
 			"tests/drizzle/drizzle.test.ts",
 			"tests/e2e/**",
 			"tests/events/**",
-			"tests/grpc/**",
 			"tests/kysely/**",
 			"tests/health/**",
 			"tests/i18n/**",

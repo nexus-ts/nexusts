@@ -166,44 +166,338 @@ constructor(@Inject(Service) private service: Service) {}
 
 ### 내장 모듈 (서드파티 불필요)
 
+NestJS가 `@nestjs/*` 커뮤니티 패키지에 의존하는 반면, NexusTS는 동등한 기능을 자체 모듈로 제공합니다:
+
 | 필요 기능 | NestJS | NexusTS |
 |-----------|--------|---------|
-| ORM | TypeORM / Prisma | `@nexusts/drizzle` |
-| GraphQL | `@nestjs/graphql` | `@nexusts/graphql` |
-| gRPC | `@nestjs/microservices` | `@nexusts/grpc` |
-| WebSocket | `@nestjs/websockets` | `@nexusts/ws` |
-| Queue | `@nestjs/bull` | `@nexusts/queue` |
-| Scheduler | `@nestjs/schedule` | `@nexusts/schedule` |
-| Cache | `@nestjs/cache-manager` | `@nexusts/cache` |
-| Auth | `@nestjs/passport` | `@nexusts/auth` |
+| HTTP 프레임워크 | Express / Fastify (플랫폼 어댑터) | **Hono** (내장, Bun/Node/Workers) |
+| ORM | TypeORM / Prisma / MikroORM / Mongoose / Sequelize | `@nexusts/drizzle` (5개 방언) |
+| GraphQL | `@nestjs/graphql` + `@nestjs/apollo` | `@nexusts/graphql` (SDL + code-first) |
+| gRPC | `@nestjs/microservices` | `@nexusts/grpc` (리플렉션 기반, 4가지 call 타입) |
+| WebSocket | `@nestjs/websockets` + `@nestjs/platform-socket.io` | `@nexusts/ws` (Bun + Node) |
+| SSE | Express/Hono 수동 구현 | `@nexusts/sse` (내장) |
+| Queue | `@nestjs/bull` / `@nestjs/bullmq` | `@nexusts/queue` (BullMQ + Cloudflare + memory) |
+| Scheduler | `@nestjs/schedule` | `@nexusts/schedule` (인트리 cron 파서) |
+| Cache | `@nestjs/cache-manager` | `@nexusts/cache` (memory + Drizzle + Redis) |
+| Rate Limiting | `@nestjs/throttler` | `@nexusts/limiter` (3가지 전략, Drizzle storage) |
+| Auth | `@nestjs/passport` + `@nestjs/jwt` | `@nexusts/auth` (better-auth, 올인원) |
+| Session | `@nestjs/session` | `@nexusts/session` (cookie + memory + Drizzle) |
+| Config | `@nestjs/config` | `@nexusts/config` (Zod 검증) |
+| Logger | `@nestjs/common` Logger | `@nexusts/logger` (Pino, 구조화, 요청 스코프) |
+| OpenAPI | `@nestjs/swagger` | `@nexusts/openapi` (Zod → OpenAPI 3.1 + Scalar UI) |
+| Health check | `@nestjs/terminus` | `@nexusts/health` (내장 indicator) |
+| Static files | `@nestjs/serve-static` | `@nexusts/static` (ETag, Range, SPA fallback) |
+| Email | `@nestjs/mailer` | `@nexusts/mail` (SMTP + File + Null, MJML) |
+| File upload | `@nestjs/platform-express` + multer | `@nexusts/upload` (`@Upload` / `@UploadedFile`) |
+| Events | `@nestjs/event-emitter` | `@nexusts/events` (wildcard, 우선순위, 가드) |
+| i18n | `nestjs-i18n` | `@nexusts/i18n` (`Intl` 기반, 복수형) |
+| Metrics | `@willsoto/nestjs-prometheus` | `@nexusts/metrics` (Counter, Histogram, Summary) |
+| Tracing | `@nestjs/opentelemetry` | `@nexusts/tracing` (lazy SDK, 자동 HTTP, W3C/B3) |
+| Resilience | `@nestjs/bull` (retry) 또는 DIY | `@nexusts/resilience` (retry + circuit + bulkhead) |
+| Compression | `@nestjs/compression` | Hono `compress()` 미들웨어 |
+| CORS | `@nestjs/common` CORS 옵션 | Hono `cors()` 미들웨어 |
+| Testing | `@nestjs/testing` | Vitest + `new Application()` (테스트 모듈 불필요) |
+| HTTP client | `@nestjs/axios` | Fetch API (Bun/Node 내장) |
 
-### 의존성 주입 토큰
+**NexusTS에는 있고 NestJS에는 없는 기능**:
 
-Bun이 `design:paramtypes`를 내보내지 않으므로 명시적 `@Inject(Token)`이 필요합니다:
+| 기능 | NexusTS | NestJS 대안 |
+|------|---------|------------|
+| Feature flags / canary | `@nexusts/feature-flag` | ❌ first-party 없음 |
+| File storage (S3/R2/Local) | `@nexusts/drive` | ❌ first-party 없음 (multer/S3 SDK 수동) |
+| Encryption / hashing | `@nexusts/crypto` | ❌ first-party 없음 (DIY `crypto` 또는 `bcrypt`) |
+| Redis client | `@nexusts/redis` (멀티 런타임) | ❌ first-party 없음 (`ioredis` 직접 사용) |
+| Runtime | Bun / Node / Cloudflare Workers | ❌ Express / Fastify만 |
+
+### 요청 본문 접근 (Request Body Access)
+
+NestJS에서는 `@Body()` 또는 `@Body('field')` 데코레이터를 사용합니다. NexusTS 표준 모드에서는 body를 직접 접근합니다:
 
 ```ts
-// NestJS — @Inject 없이 동작
-constructor(private readonly service: UserService) {}
+// NestJS
+@Post()
+async create(@Body() dto: CreateUserDto) {}
 
-// NexusTS — 명시적 @Inject 필요
-@Inject(UserService) declare service: UserService;
-
-// 또는 직접 생성 (DI 불필요)
-private service = new UserService();
+// NexusTS
+@Post('/')
+async create(ctx: Context) {
+  const dto = await ctx.req.json() as CreateUserDto;
+}
 ```
 
-### Hono Context 사용
+검증은 Zod의 `parse()`를 직접 사용합니다:
 
-NexusTS는 Hono 기반. Express 대신 Hono Context 사용:
+```ts
+const dto = CreateUserSchema.parse(await ctx.req.json());
+```
+
+### 의존성 주입 (Dependency Injection)
+
+NexusTS는 두 가지 DI 패턴을 지원합니다:
+
+| 패턴 | 사용 시기 | 예제 |
+|------|----------|------|
+| **필드 인젝션** (권장) | 표준 데코레이터 | `@Inject(Service) declare service: Service;` |
+| **생성자 인젝션** (레거시) | `experimentalDecorators: true` | `constructor(@Inject(Service) private service: Service) {}` |
+| **직접 생성** | DI 불필요 시 | `private service = new Service();` |
+
+### Hono Context 사용 (Express 대신)
+
+NexusTS는 Hono 기반. Express 대신 Hono Context를 사용합니다:
 
 | NestJS (Express) | NexusTS (Hono) |
 |------------------|----------------|
 | `req.params.id` | `ctx.req.param('id')` |
 | `req.query.page` | `ctx.req.query('page')` |
 | `req.body` | `await ctx.req.json()` |
+| `req.headers` | `ctx.req.header('name')` |
 | `res.status(200).json(...)` | `ctx.json(data)` |
+| `res.status(404).send(...)` | `ctx.text('Not found', 404)` |
+
+### 의존성 주입 토큰
+
+Bun이 `design:paramtypes`를 내보내지 않으므로 명시적 `@Inject(Token)` 또는 필드 인젝션이 필요합니다:
+
+```ts
+// NestJS — @Inject 없이 동작 (design:paramtypes)
+constructor(private readonly service: UserService) {}
+
+// NexusTS — 명시적 @Inject 필요  필드 인젝션
+@Inject(UserService) declare service: UserService;
+
+// 또는 직접 생성 (DI 불필요)
+private service = new UserService();
+```
 
 ---
+
+
+
+
+### 주요 모듈 비교 예제
+
+#### Health Check
+
+**NestJS (`@nestjs/terminus`):**
+
+```ts
+import { Module } from '@nestjs/common';
+import { TerminusModule } from '@nestjs/terminus';
+import { HealthController } from './health.controller';
+
+@Module({
+  imports: [TerminusModule],
+  controllers: [HealthController],
+})
+export class HealthModule {}
+```
+
+**NexusTS (`@nexusts/health`):**
+
+```ts
+import { Module } from '@nexusts/core';
+import { HealthModule } from '@nexusts/health';
+
+@Module({
+  imports: [
+    HealthModule.forRoot({
+      builtIn: { memory: true, disk: { threshold: 0.1 } },
+    }),
+  ],
+})
+export class AppModule {}
+
+// 자동 등록되는 엔드포인트:
+// GET /health/live     → liveness probe
+// GET /health/ready    → readiness probe
+// GET /health/startup  → startup probe
+```
+
+---
+
+#### 설정 (Configuration)
+
+**NestJS (`@nestjs/config`):**
+
+```ts
+import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+
+@Module({
+  imports: [ConfigModule.forRoot({ isGlobal: true })],
+})
+export class AppModule {}
+
+@Injectable()
+export class DatabaseService {
+  constructor(private configService: ConfigService) {
+    const host = this.configService.get<string>('DB_HOST');
+    const port = this.configService.get<number>('DB_PORT', 5432);
+  }
+}
+```
+
+**NexusTS (`@nexusts/config`):**
+
+```ts
+import { z } from 'zod';
+import { Module } from '@nexusts/core';
+import { ConfigModule } from '@nexusts/config';
+
+const schema = z.object({
+  DB_HOST: z.string().default('localhost'),
+  DB_PORT: z.coerce.number().default(5432),
+  DATABASE_URL: z.string(),
+});
+
+@Module({
+  imports: [ConfigModule.forRoot({ schema, exitOnError: true })],
+})
+export class AppModule {}
+
+@Injectable()
+export class DatabaseService {
+  @Inject(ConfigService) declare config: ConfigService;
+
+  getHost() { return this.config.get('DB_HOST'); }
+}
+```
+
+---
+
+#### 정적 파일 서빙
+
+**NestJS (`@nestjs/serve-static`):**
+
+```ts
+import { Module } from '@nestjs/common';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
+
+@Module({
+  imports: [
+    ServeStaticModule.forRoot({ rootPath: join(__dirname, '..', 'public') }),
+  ],
+})
+export class AppModule {}
+```
+
+**NexusTS (`@nexusts/static`):**
+
+```ts
+import { StaticModule } from '@nexusts/static';
+
+const staticMiddleware = StaticModule.mount({
+  root: './public',
+  prefix: '/static',
+});
+
+const app = new Application(AppModule, {
+  middleware: [staticMiddleware],
+});
+```
+
+---
+
+#### 캐시
+
+**NestJS (`@nestjs/cache-manager`):**
+
+```ts
+import { Module } from '@nestjs/common';
+import { CacheModule } from '@nestjs/cache-manager';
+
+@Module({
+  imports: [CacheModule.register({ ttl: 60 })],
+})
+export class AppModule {}
+```
+
+**NexusTS (`@nexusts/cache`):**
+
+```ts
+import { Module } from '@nexusts/core';
+import { CacheModule } from '@nexusts/cache';
+
+@Module({
+  imports: [CacheModule.forRoot({ defaultTtl: 60 })],
+})
+export class AppModule {}
+
+@Injectable()
+export class ProductService {
+  @Inject(CacheService) declare cache: CacheService;
+
+  async getProduct(id: number) {
+    const cached = await this.cache.get(`product:${id}`);
+    if (cached) return cached;
+    const product = await this.db.findProduct(id);
+    await this.cache.set(`product:${id}`, product);
+    return product;
+  }
+}
+```
+
+태그 기반 무효화 내장:
+
+```ts
+await this.cache.set('dashboard:stats', data, { tags: ['dashboard'] });
+await this.cache.invalidateByTag('dashboard');
+```
+
+---
+
+#### 이메일
+
+**NestJS (`@nestjs/mailer`):**
+
+```ts
+import { Module } from '@nestjs/common';
+import { MailerModule } from '@nestjs-modules/mailer';
+
+@Module({
+  imports: [
+    MailerModule.forRoot({
+      transport: 'smtps://user@example.com:pass@smtp.example.com',
+      defaults: { from: '"No Reply" <noreply@example.com>' },
+    }),
+  ],
+})
+export class AppModule {}
+```
+
+**NexusTS (`@nexusts/mail`):**
+
+```ts
+import { Module } from '@nexusts/core';
+import { MailModule, FileTransport } from '@nexusts/mail';
+
+@Module({
+  imports: [
+    MailModule.forRoot({
+      transport: new FileTransport({ dir: './outbox' }),
+      defaults: { from: '"No Reply" <noreply@example.com>' },
+    }),
+  ],
+})
+export class AppModule {}
+
+@Injectable()
+export class NotificationService {
+  @Inject(MailService) declare mail: MailService;
+
+  async sendWelcome(email: string) {
+    await this.mail.send({
+      to: email,
+      subject: 'Welcome!',
+      html: '<h1>Hello</h1>',
+    });
+  }
+}
+```
+
+---
+
 
 ## 빠른 마이그레이션 체크리스트
 

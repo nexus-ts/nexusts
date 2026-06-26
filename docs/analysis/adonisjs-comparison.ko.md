@@ -167,27 +167,215 @@ app.server.router.add('GET', '/users', UserController, 'index');
 app.server.router.raw('GET', '/users', (c) => c.json([]));
 ```
 
-### 뷰 엔진
+### 내장 모듈 (Batteries Included)
 
-AdonisJS는 Edge 템플릿을 사용합니다. NexusTS는 세 가지 엔진 지원:
+AdonisJS는 "batteries included" 철학으로 유명합니다. NexusTS는 모든 배터리를 일치 또는 초과하는 first-party 모듈로 제공합니다:
 
-| 엔진 | 확장자 | 설명 |
-|-------|---------|------|
-| **Rendu** (기본) | `.html`, `.rendu` | PHP 스타일 `<?= expr ?>` |
-| **Edge** | `.edge` | Adonis 스타일 `{{ expr }}` |
-| **Eta** | `.eta` | EJS 스타일 `<%= expr %>` |
+| 필요 기능 | AdonisJS | NexusTS |
+|-----------|----------|---------|
+| HTTP 서버 | `@adonisjs/core` (HTTP + 라우터) | **Hono** (내장, Bun/Node/Workers) |
+| ORM | Lucid (`@adonisjs/lucid`) | `@nexusts/drizzle` (5개 방언) |
+| 검증 | VineJS | Zod (직접 사용, 래퍼 불필요) |
+| Auth | `@adonisjs/auth` | `@nexusts/auth` (better-auth) |
+| 세션 | `@adonisjs/session` | `@nexusts/session` (cookie + memory + Drizzle) |
+| 캐시 | `@adonisjs/cache` | `@nexusts/cache` (memory + Drizzle + Redis) |
+| 로거 | `@adonisjs/logger` | `@nexusts/logger` (Pino, 요청 스코프) |
+| 암호화 | `@adonisjs/encryption` | `@nexusts/crypto` (AES-256-GCM + HMAC + scrypt) |
+| Hash | `@adonisjs/hash` | `@nexusts/crypto` (HashService) |
+| Shield (CSRF/CORS) | `@adonisjs/shield` | `@nexusts/shield` (CSRF + HSTS + CSP) |
+| Rate Limiting | `@adonisjs/throttler` | `@nexusts/limiter` (3 전략, Drizzle storage) |
+| 메일 | `@adonisjs/mail` | `@nexusts/mail` (SMTP + File + Null, MJML) |
+| Drive (파일 저장소) | `@adonisjs/drive` | `@nexusts/drive` (Local + S3 + R2 + memory) |
+| Queue | `@adonisjs/queue` | `@nexusts/queue` (BullMQ + Cloudflare + memory) |
+| 스케줄러 | `@adonisjs/scheduler` | `@nexusts/schedule` (인트리 cron 파서) |
+| 이벤트 | `@adonisjs/events` | `@nexusts/events` (wildcard, 우선순위, 가드) |
+| Static | `@adonisjs/static` | `@nexusts/static` (ETag, Range, SPA fallback) |
+| Health check | `@adonisjs/health` | `@nexusts/health` (내장 indicator, 멀티 백엔드) |
+| i18n | `@adonisjs/i18n` | `@nexusts/i18n` (`Intl` 기반, 복수형) |
+| 뷰 템플릿 | `@adonisjs/view` (Edge) | Rendu / Edge / Eta (3개 엔진, 자동 감지) |
+| Inertia | `@adonisjs/inertia` | `@nexusts/view` (Inertia v3, React/Vue SSR) |
+| Config | `@adonisjs/config` | `@nexusts/config` (Zod 검증) |
+| Bodyparser | `@adonisjs/bodyparser` | Hono 내장 + `@nexusts/upload` |
+| CLI | Ace + `@adonisjs/assembler` | `@nexusts/cli` (`nx`, ACE 스타일) |
+| REPL | `node ace repl` | `nx repl` (DI 해석, 인트로스펙션) |
+| Testing | `@adonisjs/testing` | Vitest + `new Application()` |
+| OpenAPI / Swagger | ❌ first-party 없음 | `@nexusts/openapi` (Zod → OpenAPI 3.1 + Scalar UI) |
+| SSE | ❌ first-party 없음 | `@nexusts/sse` (내장) |
+| GraphQL | ❌ first-party 없음 | `@nexusts/graphql` (SDL + code-first) |
+| gRPC | ❌ first-party 없음 | `@nexusts/grpc` (4개 call 타입) |
+| WebSocket | ❌ first-party 없음 | `@nexusts/ws` (Bun + Node) |
+| Metrics | ❌ first-party 없음 | `@nexusts/metrics` (Counter, Histogram, Summary) |
+| Tracing | ❌ first-party 없음 | `@nexusts/tracing` (lazy SDK, 자동 HTTP, W3C/B3) |
+| Feature flags | ❌ first-party 없음 | `@nexusts/feature-flag` (rollout, allowlist) |
+| Resilience | ❌ first-party 없음 | `@nexusts/resilience` (retry + circuit + bulkhead) |
 
-확장자로 자동 감지됩니다.
+### 주요 모듈 비교 예제
 
-### 아키텍처 차이
+#### Health Check
 
-| 항목 | AdonisJS | NexusTS |
-|-------|----------|---------|
-| ORM | Lucid (Active Record) | Drizzle (Data Mapper) |
-| 마이그레이션 | `node ace migration:run` | `nx db:migrate` |
-| 검증 | VineJS | Zod |
-| CLI | `node ace` | `nx` |
-| 데코레이터 | 레거시 (`experimentalDecorators`) | 표준 (TC39) + 레거시 폴백 |
+**AdonisJS (`@adonisjs/health`):**
+
+```ts
+import { HealthCheckController } from '@adonisjs/health';
+import { DiskHealthCheck } from '@adonisjs/health/drivers';
+
+const controller = new HealthCheckController([new DiskHealthCheck({ threshold: 0.9 })]);
+router.get('/health', ({ response }) => controller.run(response));
+```
+
+**NexusTS (`@nexusts/health`):**
+
+```ts
+import { Module } from '@nexusts/core';
+import { HealthModule } from '@nexusts/health';
+
+@Module({
+  imports: [HealthModule.forRoot({ builtIn: { memory: true, disk: { threshold: 0.1 } } })],
+})
+export class AppModule {}
+// 자동 등록: GET /health/live, /health/ready, /health/startup
+```
+
+---
+
+#### 캐시
+
+**AdonisJS (`@adonisjs/cache`):**
+
+```ts
+import { Cache } from '@adonisjs/cache/services/main';
+
+class PostService {
+  async find(id: number) {
+    const cached = await Cache.get(`post:${id}`);
+    if (cached) return cached;
+    const post = await Post.find(id);
+    await Cache.set(`post:${id}`, post);
+    return post;
+  }
+}
+```
+
+**NexusTS (`@nexusts/cache`):**
+
+```ts
+import { Module } from '@nexusts/core';
+import { CacheModule, CacheService } from '@nexusts/cache';
+
+@Module({ imports: [CacheModule.forRoot({ defaultTtl: 60 })] })
+export class AppModule {}
+
+@Injectable()
+class ProductService {
+  @Inject(CacheService) declare cache: CacheService;
+
+  async getProduct(id: number) {
+    const cached = await this.cache.get(`product:${id}`);
+    if (cached) return cached;
+    const product = await this.db.findProduct(id);
+    await this.cache.set(`product:${id}`, product);
+    return product;
+  }
+}
+```
+
+태그 기반 무효화 내장:
+
+```ts
+this.cache.set('stats', data, { tags: ['dashboard'] });
+this.cache.invalidateByTag('dashboard');
+```
+
+---
+
+#### 메일
+
+**AdonisJS (`@adonisjs/mail`):**
+
+```ts
+import { Mail } from '@adonisjs/mail/services/main';
+
+class NotificationService {
+  async sendWelcome(email: string) {
+    await Mail.send((m) => m.to(email).subject('Welcome!').html('<h1>Hello</h1>'));
+  }
+}
+```
+
+**NexusTS (`@nexusts/mail`):**
+
+```ts
+import { Module } from '@nexusts/core';
+import { MailModule, MailService, FileTransport } from '@nexusts/mail';
+
+@Module({ imports: [MailModule.forRoot({ transport: new FileTransport({ dir: './outbox' }) })] })
+export class AppModule {}
+
+@Injectable()
+class NotificationService {
+  @Inject(MailService) declare mail: MailService;
+
+  async sendWelcome(email: string) {
+    await this.mail.send({ to: email, subject: 'Welcome!', html: '<h1>Hello</h1>' });
+  }
+}
+```
+
+---
+
+#### 스케줄러
+
+**AdonisJS (`@adonisjs/scheduler`):**
+
+```ts
+import Scheduler from '@adonisjs/scheduler/services/main';
+Scheduler.command('*/5 * * * *', async () => { await cleanupExpiredTokens(); });
+```
+
+**NexusTS (`@nexusts/schedule`):**
+
+```ts
+import { Injectable } from '@nexusts/core';
+import { Cron } from '@nexusts/schedule';
+
+@Injectable()
+class CleanupJob {
+  @Cron('*/5 * * * *')
+  async cleanupExpiredTokens() { /* ... */ }
+}
+```
+
+---
+
+#### Drive (파일 저장소)
+
+**AdonisJS (`@adonisjs/drive`):**
+
+```ts
+import Drive from '@adonisjs/drive/services/main';
+await Drive.put('avatars/1.jpg', file.content);
+return Drive.getUrl('avatars/1.jpg');
+```
+
+**NexusTS (`@nexusts/drive`):**
+
+```ts
+import { Module } from '@nexusts/core';
+import { DriveModule, DriveService } from '@nexusts/drive';
+
+@Module({ imports: [DriveModule.forRoot({ driver: 'local', root: './storage' })] })
+export class AppModule {}
+
+@Injectable()
+class AvatarService {
+  @Inject(DriveService) declare drive: DriveService;
+
+  async upload(file: Buffer) {
+    await this.drive.put('avatars/1.jpg', file);
+    return this.drive.url('avatars/1.jpg');
+  }
+}
+```
 
 ---
 

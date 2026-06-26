@@ -229,29 +229,255 @@ AdonisJS organizes routes in `start/routes.ts` with `Route.group()` and `Route.r
 
 NexusTS also supports **Adonis-style route tables** (`router.add()`) and **functional Hono-style routes** (`router.raw()`) — you can mix all three in the same app.
 
-### View Engines
+### Built-in Modules, Not Community Packages
 
-AdonisJS uses Edge templates. NexusTS supports three engines:
+AdonisJS is known for its "batteries included" philosophy. NexusTS matches or exceeds every battery with first-party modules:
 
-| Engine | Extension | Description |
-|--------|-----------|-------------|
-| **Rendu** (default) | `.html`, `.rendu` | PHP-style `<?= expr ?>` — works everywhere |
-| **Edge** | `.edge` | Adonis-style `{{ expr }}` — familiar for Adonis migrants |
-| **Eta** | `.eta` | EJS-style `<%= expr %>` |
+| What you need | AdonisJS | NexusTS |
+|---------------|----------|---------|
+| HTTP server | `@adonisjs/core` (HTTP + router) | **Hono** (built-in, Bun/Node/Workers) |
+| ORM | Lucid (`@adonisjs/lucid`) | `@nexusts/drizzle` (5 dialects) |
+| Validation | VineJS | Zod (directly, no wrapper) |
+| Auth | `@adonisjs/auth` | `@nexusts/auth` (better-auth) |
+| Session | `@adonisjs/session` | `@nexusts/session` (cookie + memory + Drizzle) |
+| Cache | `@adonisjs/cache` | `@nexusts/cache` (memory + Drizzle + Redis) |
+| Logger | `@adonisjs/logger` | `@nexusts/logger` (Pino, request-scoped) |
+| Encryption | `@adonisjs/encryption` | `@nexusts/crypto` (AES-256-GCM + HMAC + scrypt) |
+| Hash | `@adonisjs/hash` | `@nexusts/crypto` (HashService) |
+| Shield (CSRF / CORS) | `@adonisjs/shield` | `@nexusts/shield` (CSRF + HSTS + CSP) |
+| Rate Limiting | `@adonisjs/throttler` | `@nexusts/limiter` (3 strategies, Drizzle storage) |
+| Mail | `@adonisjs/mail` | `@nexusts/mail` (SMTP + File + Null, MJML) |
+| Drive (file storage) | `@adonisjs/drive` | `@nexusts/drive` (Local + S3 + R2 + memory) |
+| Queue | `@adonisjs/queue` | `@nexusts/queue` (BullMQ + Cloudflare + memory) |
+| Scheduler | `@adonisjs/scheduler` | `@nexusts/schedule` (in-tree cron parser) |
+| Events | `@adonisjs/events` | `@nexusts/events` (wildcards, priorities, guards) |
+| Static files | `@adonisjs/static` | `@nexusts/static` (ETag, Range, SPA fallback) |
+| Health checks | `@adonisjs/health` | `@nexusts/health` (built-in indicators, multi-backend) |
+| i18n | `@adonisjs/i18n` | `@nexusts/i18n` (`Intl`-based, pluralization) |
+| Edge templates | `@adonisjs/view` (Edge) | Rendu / Edge / Eta (3 engines, auto-detected) |
+| Inertia | `@adonisjs/inertia` | `@nexusts/view` (Inertia v3, React/Vue SSR) |
+| Config / Env | `@adonisjs/config` | `@nexusts/config` (Zod-validated) |
+| Bodyparser | `@adonisjs/bodyparser` | Built into Hono + `@nexusts/upload` |
+| Compiler / CLI | `@adonisjs/assembler` + Ace | `@nexusts/cli` (`nx`, ACE-style) |
+| REPL | `node ace repl` | `nx repl` (DI-resolved, introspection) |
+| Testing | `@adonisjs/testing` | Vitest + `new Application()` |
+| OpenAPI / Swagger | ❌ No first-party | `@nexusts/openapi` (Zod → OpenAPI 3.1 + Scalar UI) |
+| SSE | ❌ No first-party | `@nexusts/sse` (built-in) |
+| GraphQL | ❌ No first-party | `@nexusts/graphql` (SDL + code-first) |
+| gRPC | ❌ No first-party | `@nexusts/grpc` (4 call types) |
+| WebSocket | ❌ No first-party | `@nexusts/ws` (Bun + Node) |
+| Metrics / Prometheus | ❌ No first-party | `@nexusts/metrics` (Counters, Histograms, Summaries) |
+| Tracing / OpenTelemetry | ❌ No first-party | `@nexusts/tracing` (lazy SDK, auto-HTTP, W3C/B3) |
+| Feature flags | ❌ No first-party | `@nexusts/feature-flag` (rollout, allowlist) |
+| Resilience | ❌ No first-party | `@nexusts/resilience` (retry + circuit + bulkhead) |
 
-Auto-detected by file extension — just return `{ view: 'users.html', data }` from your controller.
+### Side-by-Side: Common Module Examples
 
-### Entity Differences
+#### Health Check
 
-| Feature | AdonisJS | NexusTS |
-|---------|----------|---------|
-| ORM | Lucid (Active Record) | Drizzle (Data Mapper) |
-| Migrations | `node ace migration:run` | `nx db:migrate` |
-| Validation | VineJS (Zod-inspired) | Zod directly |
-| CLI | `node ace` | `nx` |
-| Decorators | Legacy (`experimentalDecorators`) | Standard (TC39) + legacy fallback |
-| Session | Cookie-based | Cookie/memory/Drizzle backends |
-| Inertia | `@adonisjs/inertia` | Built-in `@nexusts/view` + `Inertia` |
+**AdonisJS (`@adonisjs/health`):**
+
+```ts
+import { HealthCheckController } from '@adonisjs/health';
+import { DiskHealthCheck } from '@adonisjs/health/drivers';
+
+// config/health.ts
+const healthCheckController = new HealthCheckController([
+  new DiskHealthCheck({ threshold: 0.9 }),
+]);
+
+// start/routes.ts
+router.get('/health', ({ response }) => healthCheckController.run(response));
+```
+
+**NexusTS (`@nexusts/health`):**
+
+```ts
+import { Module } from '@nexusts/core';
+import { HealthModule } from '@nexusts/health';
+
+@Module({
+  imports: [
+    HealthModule.forRoot({
+      builtIn: { memory: true, disk: { threshold: 0.1 } },
+    }),
+  ],
+})
+export class AppModule {}
+
+// Auto-registered endpoints:
+// GET /health/live, GET /health/ready, GET /health/startup
+```
+
+---
+
+#### Cache
+
+**AdonisJS (`@adonisjs/cache`):**
+
+```ts
+import { Cache } from '@adonisjs/cache/services/main';
+
+class PostService {
+  async find(id: number) {
+    const cached = await Cache.get(`post:${id}`);
+    if (cached) return cached;
+    const post = await Post.find(id);
+    await Cache.set(`post:${id}`, post);
+    return post;
+  }
+}
+```
+
+**NexusTS (`@nexusts/cache`):**
+
+```ts
+import { Module } from '@nexusts/core';
+import { CacheModule, CacheService } from '@nexusts/cache';
+
+@Module({
+  imports: [CacheModule.forRoot({ defaultTtl: 60 })],
+})
+export class AppModule {}
+
+@Injectable()
+class PostService {
+  @Inject(CacheService) declare cache: CacheService;
+
+  async find(id: number) {
+    const cached = await this.cache.get(`post:${id}`);
+    if (cached) return cached;
+    const post = await this.db.find(id);
+    await this.cache.set(`post:${id}`, post);
+    return post;
+  }
+}
+```
+
+Tag-based invalidation is built in — bust related caches at once:
+
+```ts
+await this.cache.set('dashboard:stats', data, { tags: ['dashboard'] });
+await this.cache.invalidateByTag('dashboard');
+```
+
+---
+
+#### Mail
+
+**AdonisJS (`@adonisjs/mail`):**
+
+```ts
+import { Mail } from '@adonisjs/mail/services/main';
+
+class NotificationService {
+  async sendWelcome(email: string) {
+    await Mail.send((message) => {
+      message.to(email).subject('Welcome!').html('<h1>Hello</h1>');
+    });
+  }
+}
+```
+
+**NexusTS (`@nexusts/mail`):**
+
+```ts
+import { Module } from '@nexusts/core';
+import { MailModule, MailService, FileTransport } from '@nexusts/mail';
+
+@Module({
+  imports: [
+    MailModule.forRoot({
+      transport: new FileTransport({ dir: './outbox' }),
+    }),
+  ],
+})
+export class AppModule {}
+
+@Injectable()
+class NotificationService {
+  @Inject(MailService) declare mail: MailService;
+
+  async sendWelcome(email: string) {
+    await this.mail.send({
+      to: email,
+      subject: 'Welcome!',
+      html: '<h1>Hello</h1>',
+    });
+  }
+}
+```
+
+---
+
+#### Scheduler
+
+**AdonisJS (`@adonisjs/scheduler`):**
+
+```ts
+// start/scheduler.ts
+import Scheduler from '@adonisjs/scheduler/services/main';
+
+Scheduler.command('*/5 * * * *', async () => {
+  await cleanupExpiredTokens();
+});
+```
+
+**NexusTS (`@nexusts/schedule`):**
+
+```ts
+import { Injectable } from '@nexusts/core';
+import { Cron } from '@nexusts/schedule';
+
+@Injectable()
+class CleanupJob {
+  @Cron('*/5 * * * *')
+  async cleanupExpiredTokens() {
+    // ...
+  }
+}
+```
+
+---
+
+#### Drive (File Storage)
+
+**AdonisJS (`@adonisjs/drive`):**
+
+```ts
+import Drive from '@adonisjs/drive/services/main';
+
+class AvatarService {
+  async upload(file: MultipartFile) {
+    await Drive.put('avatars/1.jpg', file.content);
+    return Drive.getUrl('avatars/1.jpg');
+  }
+}
+```
+
+**NexusTS (`@nexusts/drive`):**
+
+```ts
+import { Module } from '@nexusts/core';
+import { DriveModule, DriveService } from '@nexusts/drive';
+
+@Module({
+  imports: [DriveModule.forRoot({ driver: 'local', root: './storage' })],
+})
+export class AppModule {}
+
+@Injectable()
+class AvatarService {
+  @Inject(DriveService) declare drive: DriveService;
+
+  async upload(file: Buffer) {
+    await this.drive.put('avatars/1.jpg', file);
+    return this.drive.url('avatars/1.jpg');
+  }
+}
+```
+
+---
 
 ---
 

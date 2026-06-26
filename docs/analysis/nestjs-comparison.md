@@ -185,25 +185,311 @@ NestJS relies on `@nestjs/*` community packages. NexusTS ships equivalent functi
 
 | What you need | NestJS | NexusTS |
 |---------------|--------|---------|
-| ORM | TypeORM / Prisma / MikroORM | `@nexusts/drizzle` (5 dialects) |
-| GraphQL | `@nestjs/graphql` | `@nexusts/graphql` (SDL + code-first) |
+| HTTP framework | Express / Fastify (via platform adapter) | **Hono** (built-in, Bun/Node/Workers) |
+| ORM | TypeORM / Prisma / MikroORM / Mongoose / Sequelize | `@nexusts/drizzle` (5 dialects) |
+| GraphQL | `@nestjs/graphql` + `@nestjs/apollo` | `@nexusts/graphql` (SDL + code-first) |
 | gRPC | `@nestjs/microservices` | `@nexusts/grpc` (reflection-based, 4 call types) |
 | WebSocket | `@nestjs/websockets` + `@nestjs/platform-socket.io` | `@nexusts/ws` (Bun + Node) |
-| SSE | Manual Hono adapter | `@nexusts/sse` |
-| Queue | `@nestjs/bull` + BullMQ | `@nexusts/queue` (BullMQ + Cloudflare + memory) |
-| Scheduler | `@nestjs/schedule` | `@nexusts/schedule` (in-tree cron parser) |
+| SSE | Manual Hono / Express adapter | `@nexusts/sse` (built-in) |
+| Queue / Jobs | `@nestjs/bull` / `@nestjs/bullmq` | `@nexusts/queue` (BullMQ + Cloudflare + memory) |
+| Scheduler / Cron | `@nestjs/schedule` | `@nexusts/schedule` (in-tree cron parser) |
 | Cache | `@nestjs/cache-manager` | `@nexusts/cache` (memory + Drizzle + Redis) |
 | Rate Limiting | `@nestjs/throttler` | `@nexusts/limiter` (3 strategies, Drizzle storage) |
-| Auth | `@nestjs/passport` + strategies | `@nexusts/auth` (better-auth) |
+| Auth | `@nestjs/passport` + `@nestjs/jwt` + strategies | `@nexusts/auth` (better-auth, all-in-one) |
 | Session | `@nestjs/session` | `@nexusts/session` (cookie + memory + Drizzle) |
-| Config | `@nestjs/config` | `@nexusts/config` (Zod-validated) |
-| Logger | `@nestjs/common` Logger | `@nexusts/logger` (Pino, structured) |
-| OpenAPI | `@nestjs/swagger` | `@nexusts/openapi` (Zod → OpenAPI 3.1) |
-| Metrics | `@willsoto/nestjs-prometheus` | `@nexusts/metrics` (Prometheus) |
-| Tracing | `@nestjs/opentelemetry` | `@nexusts/tracing` (OpenTelemetry) |
-| File upload | `@nestjs/platform-express` + multer | `@nexusts/upload` |
-| i18n | `nestjs-i18n` | `@nexusts/i18n` |
-| Resilience | `@nestjs/bull` (retry) or custom | `@nexusts/resilience` (retry + circuit + bulkhead) |
+| Config / Env | `@nestjs/config` | `@nexusts/config` (Zod-validated) |
+| Logger | `@nestjs/common` Logger | `@nexusts/logger` (Pino, structured, request-scoped) |
+| OpenAPI / Swagger | `@nestjs/swagger` | `@nexusts/openapi` (Zod → OpenAPI 3.1 + Scalar UI) |
+| Health checks | `@nestjs/terminus` | `@nexusts/health` (built-in indicators) |
+| Static files | `@nestjs/serve-static` | `@nexusts/static` (ETag, Range, SPA fallback) |
+| Email | `@nestjs/mailer` | `@nexusts/mail` (SMTP + File + Null, MJML) |
+| File upload | `@nestjs/platform-express` + multer | `@nexusts/upload` (`@Upload` / `@UploadedFile`) |
+| Events | `@nestjs/event-emitter` | `@nexusts/events` (wildcards, priorities, guards) |
+| i18n | `nestjs-i18n` | `@nexusts/i18n` (`Intl`-based, pluralization) |
+| Metrics / Prometheus | `@willsoto/nestjs-prometheus` | `@nexusts/metrics` (Counters, Histograms, Summaries) |
+| Tracing / OpenTelemetry | `@nestjs/opentelemetry` | `@nexusts/tracing` (lazy SDK, auto-HTTP, W3C/B3) |
+| Resilience | `@nestjs/bull` (retry only) or DIY | `@nexusts/resilience` (retry + circuit + bulkhead) |
+| Compression | `@nestjs/compression` | Hono's `compress()` middleware |
+| CORS | `@nestjs/common` CORS option | Hono's `cors()` middleware |
+| Testing | `@nestjs/testing` | Vitest + `new Application()` (no test module needed) |
+| HTTP client | `@nestjs/axios` | Fetch API (built-in Bun/Node) |
+
+**What NestJS lacks that NexusTS provides**:
+
+| Feature | NexusTS | NestJS alternative |
+|---------|---------|-------------------|
+| Feature flags / canary | `@nexusts/feature-flag` | ❌ No first-party support |
+| File storage (S3/R2/Local) | `@nexusts/drive` | ❌ No first-party support (DIY multer/S3 SDK) |
+| Encryption / hashing | `@nexusts/crypto` | ❌ No first-party support (DIY `crypto` or `bcrypt`) |
+| Redis client | `@nexusts/redis` (multi-runtime) | ❌ No first-party (use `ioredis` directly) |
+| Runtime adapters | Bun / Node / Cloudflare Workers | ❌ Express / Fastify only |
+
+
+### Side-by-Side: Common Module Examples
+
+#### Health Check
+
+**NestJS (`@nestjs/terminus`):**
+
+```ts
+import { Module } from '@nestjs/common';
+import { TerminusModule } from '@nestjs/terminus';
+import { HealthController } from './health.controller';
+
+@Module({
+  imports: [TerminusModule],
+  controllers: [HealthController],
+})
+export class HealthModule {}
+
+// health.controller.ts
+import { Controller, Get } from '@nestjs/common';
+import { HealthCheckService, HttpHealthIndicator } from '@nestjs/terminus';
+
+@Controller('health')
+export class HealthController {
+  constructor(
+    private health: HealthCheckService,
+    private http: HttpHealthIndicator,
+  ) {}
+
+  @Get()
+  check() {
+    return this.health.check([
+      () => this.http.pingCheck('nestjs-docs', 'https://docs.nestjs.com'),
+    ]);
+  }
+}
+```
+
+**NexusTS (`@nexusts/health`):**
+
+```ts
+import { Module } from '@nexusts/core';
+import { HealthModule } from '@nexusts/health';
+
+@Module({
+  imports: [
+    HealthModule.forRoot({
+      builtIn: { memory: true, disk: { threshold: 0.1 } },
+    }),
+  ],
+})
+export class AppModule {}
+
+// Endpoints auto-registered:
+// GET /health/live     → liveness probe
+// GET /health/ready    → readiness probe (checks DB, cache, etc.)
+// GET /health/startup  → startup probe
+```
+
+---
+
+#### Configuration
+
+**NestJS (`@nestjs/config`):**
+
+```ts
+import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+
+@Module({
+  imports: [ConfigModule.forRoot({ isGlobal: true })],
+})
+export class AppModule {}
+
+@Injectable()
+export class DatabaseService {
+  constructor(private configService: ConfigService) {
+    const host = this.configService.get<string>('DB_HOST');
+    const port = this.configService.get<number>('DB_PORT', 5432);
+  }
+}
+```
+
+**NexusTS (`@nexusts/config`):**
+
+```ts
+import { z } from 'zod';
+import { Module } from '@nexusts/core';
+import { ConfigModule } from '@nexusts/config';
+
+const schema = z.object({
+  DB_HOST: z.string().default('localhost'),
+  DB_PORT: z.coerce.number().default(5432),
+  DATABASE_URL: z.string(),
+});
+
+@Module({
+  imports: [ConfigModule.forRoot({ schema, exitOnError: true })],
+})
+export class AppModule {}
+
+// Validation at boot — invalid env fails fast.
+@Injectable()
+export class DatabaseService {
+  @Inject(ConfigService) declare config: ConfigService;
+
+  getHost() { return this.config.get('DB_HOST'); }
+}
+```
+
+---
+
+#### Static File Serving
+
+**NestJS (`@nestjs/serve-static`):**
+
+```ts
+import { Module } from '@nestjs/common';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
+
+@Module({
+  imports: [
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'public'),
+    }),
+  ],
+})
+export class AppModule {}
+```
+
+**NexusTS (`@nexusts/static`):**
+
+```ts
+import { Module } from '@nexusts/core';
+import { StaticModule } from '@nexusts/static';
+
+const staticMiddleware = StaticModule.mount({
+  root: './public',
+  prefix: '/static',
+});
+
+const app = new Application(AppModule, {
+  middleware: [staticMiddleware],
+});
+```
+
+`StaticModule.mount()` returns a Hono middleware with ETag, Range
+request support, and SPA fallback for client-side routing.
+
+---
+
+#### Cache
+
+**NestJS (`@nestjs/cache-manager`):**
+
+```ts
+import { Module } from '@nestjs/common';
+import { CacheModule } from '@nestjs/cache-manager';
+
+@Module({
+  imports: [CacheModule.register({ ttl: 60 })],
+})
+export class AppModule {}
+
+@Injectable()
+export class ProductService {
+  constructor(@Inject(CACHE_MANAGER) private cache: Cache) {}
+
+  async getProduct(id: number) {
+    const cached = await this.cache.get(`product:${id}`);
+    if (cached) return cached;
+    const product = await this.db.findProduct(id);
+    await this.cache.set(`product:${id}`, product, 60);
+    return product;
+  }
+}
+```
+
+**NexusTS (`@nexusts/cache`):**
+
+```ts
+import { Module } from '@nexusts/core';
+import { CacheModule } from '@nexusts/cache';
+
+@Module({
+  imports: [CacheModule.forRoot({ defaultTtl: 60 })],
+})
+export class AppModule {}
+
+@Injectable()
+export class ProductService {
+  @Inject(CacheService) declare cache: CacheService;
+
+  async getProduct(id: number) {
+    const cached = await this.cache.get(`product:${id}`);
+    if (cached) return cached;
+    const product = await this.db.findProduct(id);
+    await this.cache.set(`product:${id}`, product);
+    return product;
+  }
+}
+```
+
+Tag-based invalidation is built in:
+
+```ts
+await this.cache.set('dashboard:stats', data, { tags: ['dashboard'] });
+await this.cache.invalidateByTag('dashboard'); // busts all dashboard caches
+```
+
+---
+
+#### Email
+
+**NestJS (`@nestjs/mailer`):**
+
+```ts
+import { Module } from '@nestjs/common';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter';
+
+@Module({
+  imports: [
+    MailerModule.forRoot({
+      transport: 'smtps://user@example.com:pass@smtp.example.com',
+      defaults: { from: '"No Reply" <noreply@example.com>' },
+      template: { adapter: new PugAdapter(), dir: 'templates' },
+    }),
+  ],
+})
+export class AppModule {}
+```
+
+**NexusTS (`@nexusts/mail`):**
+
+```ts
+import { Module } from '@nexusts/core';
+import { MailModule, FileTransport } from '@nexusts/mail';
+
+@Module({
+  imports: [
+    MailModule.forRoot({
+      transport: new FileTransport({ dir: './outbox' }),
+      defaults: { from: '"No Reply" <noreply@example.com>' },
+    }),
+  ],
+})
+export class AppModule {}
+
+@Injectable()
+export class NotificationService {
+  @Inject(MailService) declare mail: MailService;
+
+  async sendWelcome(email: string) {
+    await this.mail.send({
+      to: email,
+      subject: 'Welcome!',
+      html: '<h1>Hello</h1>',
+    });
+  }
+}
+```
+
+---
+
 
 ### Request Body Access
 

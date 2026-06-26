@@ -36,7 +36,7 @@ export const TRACING_CONFIG_TOKEN = Symbol.for("nexus:TracingConfig");
 
 @Injectable()
 export class TracingConfigHolder {
-	constructor(@Inject(TRACING_CONFIG_TOKEN) public readonly config: Required<TracingConfig>) {}
+	@Inject(TRACING_CONFIG_TOKEN) declare public readonly config: Required<TracingConfig>;
 }
 
 @Injectable()
@@ -81,10 +81,12 @@ export class TracingModule {
 			exports: [TracingServiceWithLifecycle, TRACING_CONFIG_TOKEN, TRACING_SERVICE_TOKEN],
 		})
 		class ConfiguredTracingModule {
-			constructor(@Inject(TracingServiceWithLifecycle) private svc: TracingServiceWithLifecycle) {
+			@Inject(TracingServiceWithLifecycle) declare private _svc: TracingServiceWithLifecycle;
+
+			constructor() {
 				// Side-effect: start the SDK & register the global.
-				void svc.startSdk(fullConfig);
-				setTracingService(svc);
+				void this._svc.startSdk(fullConfig);
+				setTracingService(this._svc);
 			}
 		}
 		Object.defineProperty(ConfiguredTracingModule, "name", { value: "ConfiguredTracingModule" });

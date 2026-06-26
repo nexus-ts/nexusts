@@ -60,11 +60,13 @@ interface DB {
 // ---------------------------------------------------------------------------
 
 describe("KyselyService (config + lifecycle)", () => {
-  it("throws when used before open()", async () => {
+  it("auto-opens on construction", async () => {
     const dialect = await createMemoryDialect();
     const svc = new KyselyService<DB>({ dialect });
 
-    expect(() => (svc as any).db).toThrow(/not opened/);
+    // KyselyService now auto-opens synchronously on construction.
+    // The .db getter should return the Kysely instance, not throw.
+    expect((svc as any).db).toBeTruthy();
     await svc.close();
   });
 

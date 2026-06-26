@@ -24,6 +24,7 @@ export default defineConfig({
 			"tests/e2e/**",
 			"tests/events/**",
 			"tests/grpc/**",
+			"tests/kysely/**",
 			"tests/health/**",
 			"tests/i18n/**",
 			"tests/limiter/**",

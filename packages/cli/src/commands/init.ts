@@ -16,7 +16,8 @@
  *   --style <name>    Routing style (nest|adonis|functional)
  *   --view <name>     View engine (rendu|edge|eta|inertia|none)
  *   --orm <name>      ORM driver (drizzle|kysely|none)
- *   --db <name>       Database driver (sqlite|postgres|mysql|none)
+ *   --runtime <name>  Runtime target (bun|cloudflare)
+ *   --db <name>       Database (sqlite|postgres|mysql|none)
  *   --frontend <name> Inertia frontend (react|vue|svelte|solid)
  *   --no-ssr          Disable Inertia SSR
  *   --force           Overwrite existing files
@@ -55,7 +56,7 @@ export const initCommand: Command = {
 		{ name: "style", description: "Routing style (nest|adonis|functional)" },
 		{ name: "view", description: "View engine (rendu|edge|eta|inertia|none)" },
 		{ name: "orm", description: "ORM driver (drizzle|kysely|none)" },
-		{ name: "db", description: "Database driver (sqlite|postgres|mysql|none)" },
+		{ name: "db", description: "Database (sqlite|postgres|mysql|none)" },
 		{
 			name: "frontend",
 			description: "Inertia frontend (react|vue|svelte|solid)",

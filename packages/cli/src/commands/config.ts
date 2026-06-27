@@ -30,7 +30,7 @@
  *   --style <name>     Routing style (nest|adonis|functional)
  *   --view <name>      View engine (rendu|edge|inertia|none)
  *   --orm <name>       ORM driver (drizzle|kysely|none)
- *   --db <name>        Database driver
+ *   --db <name>        Database
  *   --db-url <url>     Database URL (used when DATABASE_URL is unset)
  *   --frontend <name>  Inertia frontend (react|vue|svelte|solid)
  *   --ssr              Enable Inertia SSR
@@ -155,7 +155,7 @@ export const configCommand: Command = {
 		{
 			name: "db",
 			description:
-				"Database driver (sqlite|postgres|mysql|none)",
+				"Database (sqlite|postgres|mysql|none)",
 		},
 		{
 			name: "db-url",
@@ -233,7 +233,7 @@ export const configCommand: Command = {
 				})) ?? values.orm;
 			values.dbDriver =
 				(await select(
-					"Database driver",
+					"Database",
 					["sqlite",  "postgres", "mysql", "none"],
 					{ interactive, default: values.dbDriver },
 				)) ?? values.dbDriver;

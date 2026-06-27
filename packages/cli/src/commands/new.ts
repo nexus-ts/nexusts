@@ -29,7 +29,7 @@ export const newCommand: Command = {
 		{ name: "style", description: "Routing style (nest|adonis|functional)" },
 		{ name: "view", description: "View engine (rendu|edge|eta|inertia|none)" },
 		{ name: "orm", description: "ORM driver (drizzle|kysely|none)" },
-		{ name: "db", description: "Database driver" },
+		{ name: "db", description: "Database" },
 		{ name: "frontend", description: "Inertia frontend (react|vue|svelte|solid)" },
 		{ name: "no-ssr", description: "Disable SSR" },
 	],

@@ -18,16 +18,27 @@ import { safeGetMeta, safeDefineMeta, safeHasMeta, safeParamTypes } from "../di/
 import { METADATA_KEY } from "../constants.js";
 import type { ValidationMetadata } from "../di/tokens.js";
 
-export function Validate(options: ValidationMetadata): MethodDecorator {
-	return (
-		target: object,
-		propertyKey: string | symbol,
-		descriptor: PropertyDescriptor,
-	) => {
+export function Validate(options: ValidationMetadata): any {
+	return (...args: any[]): void => {
+		// Standard decorator mode (TC39): args = (target, context)
+		if (args.length >= 2 && typeof args[1] === "object" && args[1]?.kind === "method") {
+			const [, context] = args as [object, DecoratorContext];
+			const target = args[0];
+			const ctor = typeof target === "function"
+				? (target.prototype?.constructor ?? target)
+				: (target as any)?.constructor;
+			if (ctor) {
+				safeDefineMeta(METADATA_KEY.VALIDATE, options, ctor, context.name as string);
+			}
+			return;
+		}
+		// Legacy decorator mode (experimentalDecorators): args = (target, propertyKey, descriptor)
+		const target = args[0] as object;
+		const propertyKey = args[1] as string | symbol;
 		safeDefineMeta(
 			METADATA_KEY.VALIDATE,
 			options,
-			target.constructor,
+			(target as any)?.constructor ?? target,
 			propertyKey,
 		);
 	};

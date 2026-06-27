@@ -2,8 +2,8 @@
  * Unit tests for the DI container.
  */
 import { describe, it, expect } from 'vitest';
-import { DIContainer } from '@core/di/container';
-import { Injectable, Inject } from '@core/decorators/injectable';
+import { DIContainer } from '@nexusts/core';
+import { Injectable, Inject } from '@nexusts/core';
 
 describe('DIContainer', () => {
   it('resolves a class provider with field injection (via @Inject)', () => {

@@ -11,12 +11,12 @@
  * - Multiple errors on the same field accumulate
  */
 import { describe, it, expect, beforeEach } from 'vitest';
-import { Application } from '@core/application';
-import { Module } from '@core/decorators/module';
-import { Controller } from '@core/decorators/controller';
-import { Get, Post } from '@core/decorators/http-methods';
-import { Inject } from '@core/decorators/injectable';
-import { Inertia } from '@/view/inertia';
+import { Application } from '@nexusts/core';
+import { Module } from '@nexusts/core';
+import { Controller } from '@nexusts/core';
+import { Get, Post } from '@nexusts/core';
+import { Inject } from '@nexusts/core';
+import { Inertia } from '@nexusts/view';
 
 @Controller('/users')
 class UsersFormController {

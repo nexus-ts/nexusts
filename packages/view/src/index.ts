@@ -36,6 +36,7 @@ export { RenduAdapter } from "./rendu.js";
 export { EdgeAdapter } from "./edge.js";
 export { EtaAdapter } from "./eta.js";
 export { Inertia } from "./inertia/inertia-adapter.js";
+export { lazy } from "./inertia/helpers.js";
 export {
 	defer,
 	always,

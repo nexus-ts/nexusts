@@ -6,12 +6,12 @@
  * related props.
  */
 import { describe, it, expect, beforeEach } from 'vitest';
-import { Application } from '@core/application';
-import { Module } from '@core/decorators/module';
-import { Controller } from '@core/decorators/controller';
-import { Get } from '@core/decorators/http-methods';
-import { Inject } from '@core/decorators/injectable';
-import { Inertia, lazy } from '@/view/inertia';
+import { Application } from '@nexusts/core';
+import { Module } from '@nexusts/core';
+import { Controller } from '@nexusts/core';
+import { Get } from '@nexusts/core';
+import { Inject } from '@nexusts/core';
+import { Inertia, lazy } from '@nexusts/view';
 
 @Controller('/lazy')
 class LazyController {

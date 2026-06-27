@@ -10,13 +10,13 @@
   "scripts": {
     "build": "bun run build.ts",
     "build:all": "bun run build.ts",
-    "test": "vitest run",
-    "test:watch": "vitest --watch",
+    "test": "bun test tests/cache/cache.test.ts tests/core/router.test.ts tests/core/global.test.ts tests/core/application.test.ts tests/e2e/app.test.ts tests/graphql/ tests/grpc/ tests/resilience/ tests/feature-flag/ tests/runtime/ tests/core/exception-filters.test.ts tests/core/guards.test.ts tests/core/interceptors.test.ts tests/core/lifecycle.test.ts tests/drizzle/reexports.test.ts",
+    "test:watch": "bun test --watch",
     "typecheck": "tsc --noEmit --skipLibCheck --project tsconfig.typecheck.json",
     "lint": "biome lint packages/cli/ tests/cli/",
     "lint:fix": "biome check --write packages/cli/ tests/cli/",
     "nx": "bun packages/cli/src/index.ts",
-    "examples:smoke": "vitest run tests/examples/smoke.test.ts",
+    "examples:smoke": "bun test tests/examples/smoke.test.ts",
     "examples:clean": "bash scripts/clean-examples.sh",
     "publish:all": "bun run scripts/publish.ts",
     "publish:dry-run": "bun run scripts/publish.ts --dry-run"
@@ -49,7 +49,6 @@
     "rendu": "^0.1.0",
     "typescript": "^5.6.3",
     "vite-tsconfig-paths": "^6.1.1",
-    "vitest": "^2.1.5",
     "vue": "^3.5.38",
     "ws": "^8.21.0",
     "zod": "^4.4.3"

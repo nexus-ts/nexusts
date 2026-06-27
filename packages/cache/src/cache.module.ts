@@ -30,7 +30,11 @@ export class CacheModule {
 	static forRoot(config: CacheConfig = {}) {
 		@Module({
 			providers: [
-				CacheService,
+				{
+					provide: CacheService,
+					useFactory: (cfg: CacheConfig) => new CacheService(cfg),
+					inject: ["CACHE_CONFIG"],
+				},
 				{ provide: CacheService.TOKEN, useExisting: CacheService },
 				{
 					provide: "CACHE_CONFIG",

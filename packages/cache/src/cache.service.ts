@@ -13,7 +13,7 @@
  *   - `applyDecorators(target)` — wires @Cacheable / @CacheInvalidate
  *     onto an existing service instance.
  */
-import { Inject, Injectable } from "@nexusts/core";
+import { Injectable } from "@nexusts/core";
 import { MemoryStore } from "./stores/memory.js";
 import type { CacheConfig, CacheStore } from "./types.js";
 import {
@@ -26,14 +26,16 @@ export class CacheService {
 	/** DI token. */
 	static readonly TOKEN = Symbol.for("nexus:CacheService");
 
-	store: CacheStore;
-	defaultTtl: number;
-	prefix: string;
+	store!: CacheStore;
+	defaultTtl!: number;
+	prefix!: string;
 
-	constructor(@Inject("CACHE_CONFIG") config: CacheConfig = {}) {
-		this.store = config.store ?? new MemoryStore();
-		this.defaultTtl = config.defaultTtl ?? 60;
-		this.prefix = config.prefix ?? "nexusts";
+	constructor(config?: CacheConfig) {
+		if (config) {
+			this.store = config.store ?? new MemoryStore();
+			this.defaultTtl = config.defaultTtl ?? 60;
+			this.prefix = config.prefix ?? "nexusts";
+		}
 	}
 
 	private key(k: string): string {

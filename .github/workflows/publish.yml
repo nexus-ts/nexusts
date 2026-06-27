@@ -5,7 +5,7 @@ name: Publish packages to npm
 #   - on workflow_dispatch (manual trigger)
 #
 # Modes for workflow_dispatch:
-#   - publish       : real publish, 3s between packages, 5s batch break
+#   - publish       : real publish, 2s between packages, 4s batch break
 #   - publish-batch : slower publish, 10s between packages, 15s batch break
 #   - dry-run       : validate package.json only
 #   - build         : build only, no registry interaction
@@ -46,7 +46,7 @@ jobs:
         run: bun run build:all || bun run build
 
       # Regular publish — release OR manual dispatch with mode=publish.
-      # Default delays: 3s between packages, 5s batch break every 5.
+      # Default delays: 2s between packages, 4s batch break every 5.
       - name: Publish to npm (regular)
         if: >
           github.event_name == 'release'

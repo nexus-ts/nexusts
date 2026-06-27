@@ -36,7 +36,7 @@ const packageDirs = readdirSync(PACKAGES_DIR, { withFileTypes: true })
 console.log(`[build] found ${packageDirs.length} packages`);
 
 let totalOutputs = 0;
-let failed: string[] = [];
+const failed: string[] = [];
 
 for (const pkg of packageDirs) {
 	const srcDir = join(PACKAGES_DIR, pkg, "src");
@@ -113,7 +113,7 @@ console.log(`\n[build] done: ${totalOutputs} runtime files written`);
 // best-effort step: if a package's types do not resolve cleanly
 // across the workspace (a known issue with the monorepo layout),
 // we log a warning and keep the runtime .js — the build is still
-// usable from a JavaScript consumer or via `// @ts-ignore`.
+// usable from a JavaScript consumer or via `// @ts-expect-error`.
 console.log("[build] generating type declarations via tsc…");
 for (const pkg of packageDirs) {
 	const srcDir = join(PACKAGES_DIR, pkg, "src");
@@ -135,7 +135,6 @@ for (const pkg of packageDirs) {
 			"--moduleResolution",
 			"Bundler",
 			"--experimentalDecorators",
-			"--emitDecoratorMetadata",
 			"--useDefineForClassFields",
 			"false",
 			"--skipLibCheck",

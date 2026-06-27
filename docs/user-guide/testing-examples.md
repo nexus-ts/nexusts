@@ -76,7 +76,6 @@ example folder in `beforeAll`:
 {
   "compilerOptions": {
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
     "useDefineForClassFields": false,
     "noEmit": true,
     "types": ["bun-types"]

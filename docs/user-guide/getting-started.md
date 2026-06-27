@@ -54,7 +54,6 @@ bun add @nexusts/queue              # if you need background jobs
     "module": "ESNext",
     "moduleResolution": "bundler",
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,

@@ -69,7 +69,6 @@ const EXAMPLE_TSCONFIG = {
 		moduleResolution: "Bundler",
 		lib: ["ES2022", "DOM"],
 		experimentalDecorators: true,
-		emitDecoratorMetadata: true,
 		useDefineForClassFields: false,
 		esModuleInterop: true,
 		skipLibCheck: true,

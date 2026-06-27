@@ -68,7 +68,6 @@ export const newCommand: Command = {
     "module": "ESNext",
     "moduleResolution": "bundler",
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,

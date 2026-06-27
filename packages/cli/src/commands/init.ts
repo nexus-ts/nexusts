@@ -130,7 +130,6 @@ export const initCommand: Command = {
 				if (exists) {
 					mergeTsconfig(abs, {
 						experimentalDecorators: true,
-						emitDecoratorMetadata: true,
 					});
 					merged.push(entry.path);
 				} else {
@@ -242,7 +241,6 @@ function defaultTsconfig(): string {
     "module": "ESNext",
     "moduleResolution": "bundler",
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,

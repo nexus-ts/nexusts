@@ -74,7 +74,6 @@ Runner는 `beforeAll`에서 각 예제 폴더에 stub `tsconfig.json` 을 써넣
 {
   "compilerOptions": {
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
     "useDefineForClassFields": false,
     "noEmit": true,
     "types": ["bun-types"]

@@ -139,7 +139,6 @@ describe("nx init — fresh install", () => {
 		// tsconfig.json: experimentalDecorators added
 		const ts = JSON.parse(await readFile(join(target, "tsconfig.json"), "utf8"));
 		expect(ts.compilerOptions.experimentalDecorators).toBe(true);
-		expect(ts.compilerOptions.emitDecoratorMetadata).toBe(true);
 		expect(ts.include).toContain("app/**/*.ts");
 		expect(ts.include).toContain("nx.config.ts");
 	});

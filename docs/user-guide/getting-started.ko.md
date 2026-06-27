@@ -40,7 +40,6 @@ bun add -d @types/bun typescript vitest
     "module": "ESNext",
     "moduleResolution": "bundler",
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
@@ -53,7 +52,6 @@ bun add -d @types/bun typescript vitest
 | 플래그 | 필수? | 이유 |
 | ---- | --------- | --- |
 | `experimentalDecorators` | 예 | `@Controller`, `@Inject` 등을 활성화 |
-| `emitDecoratorMetadata` | 권장 | bare-type 생성자 주입 활성화 (`tsc`/`ts-node`에서 동작; Bun transformer는 무시) |
 | `moduleResolution: "bundler"` | 권장 | Bun + ESM에 대한 최선의 지원 |
 | `strict` | 권장 | 표준 TS 위생 |
 

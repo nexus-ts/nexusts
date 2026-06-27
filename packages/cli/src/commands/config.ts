@@ -109,7 +109,6 @@ function parseExistingConfig(path: string): NxConfigValues {
 function driverToDialect(driver: string): string {
 	switch (driver) {
 		case "sqlite":
-		case "sqlite":
 			return "sqlite";
 		case "postgres":
 			return "postgresql";

@@ -9,9 +9,9 @@
 
 import { readdirSync, statSync } from "node:fs";
 import { resolve } from "node:path";
+import { safeGetMeta } from "@nexusts/core/di/safe-reflect";
 import type { Command, CommandContext } from "../core/index.js";
 import { colors, logger } from "../core/index.js";
-import { safeGetMeta } from "@nexusts/core/di/safe-reflect";
 
 interface DiscoveredRoute {
 	method: string;

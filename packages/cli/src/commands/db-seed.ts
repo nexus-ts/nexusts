@@ -40,7 +40,7 @@
 
 import { spawn } from "node:child_process";
 import { existsSync } from "node:fs";
-import { mkdir, readdir, writeFile, unlink } from "node:fs/promises";
+import { mkdir, readdir, unlink, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import type { Command, CommandContext } from "../core/index.js";
 import { logger } from "../core/index.js";

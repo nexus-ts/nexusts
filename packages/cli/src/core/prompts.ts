@@ -84,6 +84,7 @@ export async function select(
 
 /** Valid values for each interactive project-scaffold prompt. */
 export const VALID_PROJECT_OPTIONS = {
+	runtime: ["bun", "cloudflare"] as const,
 	style: ["nest", "adonis", "functional"] as const,
 	view: ["rendu", "edge", "eta", "inertia", "none"] as const,
 	orm: ["drizzle", "kysely", "none"] as const,

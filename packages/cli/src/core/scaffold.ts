@@ -8,8 +8,8 @@
  */
 import { mkdirSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { render } from "./template.js";
 import { templates } from "../templates/index.js";
+import { render } from "./template.js";
 
 export interface ScaffoldOptions {
 	target: string;
@@ -263,11 +263,11 @@ export function generateProjectFiles(target: string, opts: ScaffoldOptions): str
 		let ormBlock = '';
 		if (isDrizzle) {
 			ormImport = `import { DrizzleModule } from '@nexusts/drizzle';\n`;
-			const d = opts.db === 'sqlite' ? 'sqlite' : 'sqlite';
-			ormBlock = "    DrizzleModule.forRoot({\n      dialect: '" + d + "',\n      connection: { filename: '" + (opts.dbUrl || "app.db") + "' },\n      logging: true,\n    })";
+			const d = 'sqlite';
+			ormBlock = `    DrizzleModule.forRoot({\n      dialect: '${d}',\n      connection: { filename: '${opts.dbUrl || "app.db"}' },\n      logging: true,\n    })`;
 		} else if (isKysely) {
 			ormImport = "import { KyselyModule, BunSqliteDialect } from '@nexusts/kysely';\nimport { SqliteDialect } from 'kysely';\nimport { Database } from 'bun:sqlite';\n";
-			ormBlock = "    KyselyModule.forRoot({\n      config: {\n        dialect: new SqliteDialect({\n          database: BunSqliteDialect.wrap(new Database('" + (opts.dbUrl || "app.db") + "')),\n        }),\n      },\n      logging: true,\n    })";
+			ormBlock = `    KyselyModule.forRoot({\n      config: {\n        dialect: new SqliteDialect({\n          database: BunSqliteDialect.wrap(new Database('${opts.dbUrl || "app.db"}')),\n        }),\n      },\n      logging: true,\n    })`;
 		}
 		const isInertia = opts.view === "inertia";
 		const inertiaImport = isInertia ? `import { Inertia } from '@nexusts/view';\n` : '';

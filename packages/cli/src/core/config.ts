@@ -12,12 +12,13 @@
 import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
+export type RuntimeType = "bun" | "cloudflare";
+
 export type RoutingStyle = "nest" | "adonis" | "functional" | "mixed";
 export type ViewEngine = "rendu" | "edge" | "inertia" | "none";
 export type OrmDriver = "drizzle" | "kysely" | "none";
 export type InertiaFrontend = "react" | "vue" | "svelte" | "solid";
-export type DatabaseDriver =
-	| "sqlite"
+export type Database =
 	| "sqlite"
 	| "postgres"
 	| "mysql"
@@ -77,6 +78,8 @@ export interface NxAuthConfig {
 }
 
 export interface NxConfig {
+	/** Runtime target. Default: "bun". */
+	runtime: RuntimeType;
 	/** Routing style for `make:controller` templates. */
 	routing: RoutingStyle;
 	/** View engine for view templates. */
@@ -84,10 +87,10 @@ export interface NxConfig {
 	/** ORM driver. */
 	orm: OrmDriver;
 	/** Drizzle dialect (when `orm === 'drizzle'`). */
-	dialect?: "postgres" | "mysql" | "sqlite" | "sqlite" | "d1";
+	dialect?: "postgres" | "mysql" | "sqlite" | "d1";
 	/** Database driver. */
 	database: {
-		driver: DatabaseDriver;
+		driver: Database;
 		url: string;
 	};
 	/** Inertia-specific config (only consulted when `view === 'inertia'`). */
@@ -135,6 +138,7 @@ export interface NxConfig {
 }
 
 export const DEFAULT_CONFIG: NxConfig = {
+	runtime: "bun",
 	routing: "nest",
 	view: "inertia",
 	orm: "drizzle",
@@ -267,11 +271,12 @@ function mergeWithEnv(base: NxConfig, override: Partial<NxConfig>): NxConfig {
 		paths: { ...base.paths, ...(override.paths ?? {}) },
 	};
 
+	if (env.NX_RUNTIME) merged.runtime = env.NX_RUNTIME as RuntimeType;
 	if (env.NX_ROUTING) merged.routing = env.NX_ROUTING as RoutingStyle;
 	if (env.NX_VIEW) merged.view = env.NX_VIEW as ViewEngine;
 	if (env.NX_ORM) merged.orm = env.NX_ORM as OrmDriver;
 	if (env.NX_DATABASE_DRIVER)
-		merged.database.driver = env.NX_DATABASE_DRIVER as DatabaseDriver;
+		merged.database.driver = env.NX_DATABASE_DRIVER as Database;
 	if (env.NX_DATABASE_URL) merged.database.url = env.NX_DATABASE_URL as string;
 	if (env.NX_INERTIA_FRONTEND)
 		merged.inertia.frontend = env.NX_INERTIA_FRONTEND as InertiaFrontend;

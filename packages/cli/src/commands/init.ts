@@ -50,6 +50,7 @@ export const initCommand: Command = {
 		"nx init --force",
 	],
 	flags: [
+		{ name: "runtime", description: "Runtime target (bun|cloudflare)" },
 		{ name: "target", description: "Target directory (default: cwd)" },
 		{ name: "style", description: "Routing style (nest|adonis|functional)" },
 		{ name: "view", description: "View engine (rendu|edge|eta|inertia|none)" },
@@ -71,6 +72,7 @@ export const initCommand: Command = {
 			ctx.cwd,
 			(ctx.flags.target as string | undefined) ?? ".",
 		);
+		await resolveProjectOption(ctx.flags, "runtime", VALID_PROJECT_OPTIONS.runtime, "bun", interactive);
 		const routing = await resolveProjectOption(ctx.flags, "style", VALID_PROJECT_OPTIONS.style, "nest", interactive);
 		const view = await resolveProjectOption(ctx.flags, "view", VALID_PROJECT_OPTIONS.view, "rendu", interactive);
 		const orm = await resolveProjectOption(ctx.flags, "orm", VALID_PROJECT_OPTIONS.orm, "drizzle", interactive);
@@ -78,7 +80,7 @@ export const initCommand: Command = {
 		const frontend = await resolveProjectOption(ctx.flags, "frontend", VALID_PROJECT_OPTIONS.frontend, "react", interactive);
 		const ssr = !flagBool(ctx.flags, "no-ssr", false);
 		const name = target.split("/").pop() ?? "nexus-app";
-		const dbUrl = db === "sqlite" || db === "sqlite" ? "app.db" : "";
+		const dbUrl = db === "sqlite" ? "app.db" : "";
 
 		const plan: PlanEntry[] = [
 			{ path: "package.json", mode: "merge-pkg" },

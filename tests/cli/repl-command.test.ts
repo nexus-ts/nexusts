@@ -9,17 +9,17 @@
  * 4. Behavior with --no-boot (error handling for missing app)
  */
 
-import { describe, it, expect, beforeEach } from "vitest";
-import { writeFile, mkdir } from "node:fs/promises";
+import { mkdir, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { beforeEach, describe, expect, it } from "vitest";
 import {
-	replCommand,
-	isIncomplete,
-	formatResult,
 	formatError,
+	formatResult,
+	isIncomplete,
 	listServices,
 	preloadService,
+	replCommand,
 } from "../../src/cli/commands/repl.js";
 
 async function makeTmp(): Promise<string> {

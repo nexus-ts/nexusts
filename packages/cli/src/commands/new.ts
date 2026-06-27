@@ -25,6 +25,7 @@ export const newCommand: Command = {
 		"nx new my-app --view inertia --frontend vue",
 	],
 	flags: [
+		{ name: "runtime", description: "Runtime target (bun|cloudflare)" },
 		{ name: "style", description: "Routing style (nest|adonis|functional)" },
 		{ name: "view", description: "View engine (rendu|edge|eta|inertia|none)" },
 		{ name: "orm", description: "ORM driver (drizzle|kysely|none)" },
@@ -47,6 +48,8 @@ export const newCommand: Command = {
 			return 1;
 		}
 
+		// Resolve runtime (reserved for future driver mapping)
+		await resolveProjectOption(ctx.flags, "runtime", VALID_PROJECT_OPTIONS.runtime, "bun", interactive);
 		const routing = await resolveProjectOption(ctx.flags, "style", VALID_PROJECT_OPTIONS.style, "nest", interactive);
 		const view = await resolveProjectOption(ctx.flags, "view", VALID_PROJECT_OPTIONS.view, "rendu", interactive);
 		const orm = await resolveProjectOption(ctx.flags, "orm", VALID_PROJECT_OPTIONS.orm, "drizzle", interactive);
@@ -56,7 +59,7 @@ export const newCommand: Command = {
 
 		mkdirSync(target, { recursive: true });
 
-		const dbUrl = db === "sqlite" || db === "sqlite" ? "app.db" : "";
+		const dbUrl = db === "sqlite" ? "app.db" : "";
 
 		ensureDirectories(target, view);
 

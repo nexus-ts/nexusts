@@ -14,9 +14,9 @@ import {
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import type { CommandContext } from "../../src/cli/core/index.js";
 import { makeMigrationCommand } from "../../src/cli/commands/make-migration.js";
 import { makeModelCommand } from "../../src/cli/commands/make-model.js";
+import type { CommandContext } from "../../src/cli/core/index.js";
 
 async function makeTmp(): Promise<string> {
 	const d = join(

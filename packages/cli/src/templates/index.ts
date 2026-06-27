@@ -5,6 +5,8 @@
  * Adding a new template is a one-line change here.
  */
 
+import authInstance from "./auth/auth-instance.js";
+import authEnvExample from "./auth/env-example.js";
 import controllerAdonis from "./controller/adonis.js";
 import controllerFunctional from "./controller/functional.js";
 import controllerNest from "./controller/nest.js";
@@ -12,6 +14,7 @@ import crudController from "./crud/controller.js";
 import crudDto from "./crud/dto.js";
 import crudModule from "./crud/module.js";
 import crudTest from "./crud/test.js";
+import listener from "./listener/listener.js";
 import middleware from "./middleware/middleware.js";
 import migrationDrizzle from "./migration/drizzle.js";
 import migrationKysely from "./migration/kysely.js";
@@ -19,15 +22,12 @@ import migrationSql from "./migration/sql.js";
 import modelDrizzle from "./model/drizzle.js";
 import modelKysely from "./model/kysely.js";
 import module from "./module/module.js";
-import projectNxConfig from "./project/nx.config.js";
 import projectDrizzleConfig from "./project/drizzle.config.js";
-import repositoryDrizzle from "./repository/repository.js";
-import repositoryKysely from "./repository/kysely-repository.js";
-import authInstance from "./auth/auth-instance.js";
-import authEnvExample from "./auth/env-example.js";
-import listener from "./listener/listener.js";
-import queueWorker from "./queue/worker.js";
+import projectNxConfig from "./project/nx.config.js";
 import queueJob from "./queue/job.js";
+import queueWorker from "./queue/worker.js";
+import repositoryKysely from "./repository/kysely-repository.js";
+import repositoryDrizzle from "./repository/repository.js";
 import scheduleTask from "./schedule/task.js";
 import service from "./service/service.js";
 import sessionHelper from "./session/session.js";

@@ -66,7 +66,7 @@ bun add @nexusts/queue              # if you need background jobs
 | Flag | Required? | Why |
 | ---- | --------- | --- |
 | `experimentalDecorators` | yes | Enables `@Controller`, `@Inject`, etc. |
-| `emitDecoratorMetadata` | recommended | Enables bare-type constructor injection (works under `tsc`/`ts-node`; Bun's transformer ignores it) |
+| `emitDecoratorMetadata` | not needed | Ignored by Bun — safe to remove |
 | `moduleResolution: "bundler"` | recommended | Best support for Bun + ESM |
 | `strict` | recommended | Standard TS hygiene |
 

@@ -437,9 +437,8 @@ Bun 1.3+는 기본적으로 **TC39 stage-3 decorator**를 사용하지만, Nexus
 ```json
 {
   "compilerOptions": {
-    "experimentalDecorators": true,         // ← 필수
-    "emitDecoratorMetadata": true,          // ← 권장
-    "useDefineForClassFields": false        // ← 필수 (legacy mode)
+    "experimentalDecorators": true,         // ← 필요시 (legacy mode)
+    "useDefineForClassFields": false        // ← 필요시 (legacy mode)
   }
 }
 ```

@@ -13,6 +13,46 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.9.9] — 2026-06-27
+
+### Added
+
+- **`@nexusts/graphql`**: Dual-mode decorators (`@Resolver`, `@Query`,
+  `@Mutation`) now support TC39 standard decorators via `args` option
+  (replaces `@Arg` parameter decorator). Parameter decorators (`@Arg`)
+  continue to work in legacy mode.
+
+### Changed
+
+- **Runtime targets**: Official support is now **Bun + Cloudflare Workers**
+  only. Node.js and Deno references removed from all documentation.
+- **Test runner**: Migrated from `vitest` (esbuild) to `bun test` (Bun
+  native). Removed `vitest.config.ts`, `vitest.config.node.ts`, and
+  `vitest` dependency. All 253+ tests pass with `bun test`.
+- **`experimentalDecorators`**: Removed from root `tsconfig.json`.
+  Retained only in `tsconfig.typecheck.json` (for tsc).
+- **`emitDecoratorMetadata`**: Removed from all config files. No longer
+  needed.
+- **`@Validate` decorator**: Converted to dual-mode (standard + legacy).
+- **CLI templates**: `make:listener`, `make:queue:job`, `make:queue:worker`,
+  `make:session` now generate field injection by default.
+- **`CacheService`**: Converted to factory pattern. Constructor accepts
+  optional `config` param. Module uses `useFactory` for DI.
+- **Docs**: All `npm`/`npx` commands replaced with `bun` equivalents.
+  Removed 3 obsolete doc files. Bun minimum version unified to 1.3.10.
+
+### Fixed
+
+- **`@nexusts/core/di/safe-reflect`**: Error messages now recommend
+  field injection (`@Inject(Svc) declare svc: Svc`).
+- **`@nexusts/view`**: `lazy()` helper now exported from package index.
+- **`tests/core/router.test.ts`**: Full rewrite to standard mode.
+  Guards/ExceptionFilter duplicate tests removed.
+- **`tests/e2e/app.test.ts`**: Validation test works without `@Validate`.
+- **CI workflow**: Updated for `bun test` migration.
+
+---
+
 ## [0.9.8] — 2026-06-27
 
 ### Added

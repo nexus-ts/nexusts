@@ -1,6 +1,6 @@
 {
   "name": "@nexusts/queue",
-  "version": "0.9.8",
+  "version": "0.9.9",
   "description": "Background jobs (BullMQ / Cloudflare / memory)",
   "type": "module",
   "main": "./dist/index.js",

@@ -1,6 +1,6 @@
 {
   "name": "@nexusts/logger",
-  "version": "0.9.8",
+  "version": "0.9.9",
   "description": "Pino-backed structured logging",
   "type": "module",
   "main": "./dist/index.js",

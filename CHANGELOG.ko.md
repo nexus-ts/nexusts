@@ -13,6 +13,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.9.9] — 2026-06-27
+
+### 추가
+
+- **`@nexusts/graphql`**: `@Resolver`/`@Query`/`@Mutation` 데코레이터가
+  TC39 표준 모드와 레거시 모드를 모두 지원. `args` 옵션으로 인수 타입 선언.
+
+### 변경
+
+- **런타임 지원**: **Bun + Cloudflare Workers**만 공식 지원.
+  Node.js/Deno 참조 제거.
+- **테스트 러너**: `vitest` → `bun test`로 마이그레이션.
+  `vitest.config.ts`, `vitest` 의존성 제거.
+- **`experimentalDecorators`**: root `tsconfig.json`에서 제거.
+- **`emitDecoratorMetadata`**: 모든 설정 파일에서 제거.
+- **`@Validate` 데코레이터**: 듀얼 모드 변환.
+- **CLI 템플릿**: 필드 인젝션 생성으로 변경.
+- **`CacheService`**: 팩토리 패턴으로 변환.
+- **문서**: 모든 `npm`/`npx` → `bun` 명령어로 변경. 불필요 문서 3개 삭제.
+
+### 수정
+
+- **`@nexusts/core/di/container.ts`**: 에러 메시지에서 필드 인젝션 권장.
+- **`@nexusts/view`**: `lazy()` 헬퍼 패키지 인덱스에서 export.
+- **`tests/core/router.test.ts`**: 표준 모드로 재작성.
+- **CI 워크플로우**: `bun test` 마이그레이션 반영.
+
+---
+
 ## [0.9.8] — 2026-06-27
 
 ### 추가

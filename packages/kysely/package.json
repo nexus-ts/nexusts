@@ -1,6 +1,6 @@
 {
   "name": "@nexusts/kysely",
-  "version": "0.9.8",
+  "version": "0.9.9",
   "description": "Kysely typed SQL query builder integration — first-party module",
   "type": "module",
   "main": "./dist/index.js",

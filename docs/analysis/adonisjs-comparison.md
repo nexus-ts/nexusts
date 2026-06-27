@@ -235,7 +235,7 @@ AdonisJS is known for its "batteries included" philosophy. NexusTS matches or ex
 
 | What you need | AdonisJS | NexusTS |
 |---------------|----------|---------|
-| HTTP server | `@adonisjs/core` (HTTP + router) | **Hono** (built-in, Bun/Node/Workers) |
+| HTTP server | `@adonisjs/core` (HTTP + router) | **Hono** (built-in, Bun + Cloudflare Workers) |
 | ORM | Lucid (`@adonisjs/lucid`) | `@nexusts/drizzle` (5 dialects) |
 | Validation | VineJS | Zod (directly, no wrapper) |
 | Auth | `@adonisjs/auth` | `@nexusts/auth` (better-auth) |
@@ -265,7 +265,7 @@ AdonisJS is known for its "batteries included" philosophy. NexusTS matches or ex
 | SSE | ❌ No first-party | `@nexusts/sse` (built-in) |
 | GraphQL | ❌ No first-party | `@nexusts/graphql` (SDL + code-first) |
 | gRPC | ❌ No first-party | `@nexusts/grpc` (4 call types) |
-| WebSocket | ❌ No first-party | `@nexusts/ws` (Bun + Node) |
+| WebSocket | ❌ No first-party | `@nexusts/ws` (Bun) |
 | Metrics / Prometheus | ❌ No first-party | `@nexusts/metrics` (Counters, Histograms, Summaries) |
 | Tracing / OpenTelemetry | ❌ No first-party | `@nexusts/tracing` (lazy SDK, auto-HTTP, W3C/B3) |
 | Feature flags | ❌ No first-party | `@nexusts/feature-flag` (rollout, allowlist) |

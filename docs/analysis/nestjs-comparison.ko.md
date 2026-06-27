@@ -170,11 +170,11 @@ NestJS가 `@nestjs/*` 커뮤니티 패키지에 의존하는 반면, NexusTS는 
 
 | 필요 기능 | NestJS | NexusTS |
 |-----------|--------|---------|
-| HTTP 프레임워크 | Express / Fastify (플랫폼 어댑터) | **Hono** (내장, Bun/Node/Workers) |
+| HTTP 프레임워크 | Express / Fastify (플랫폼 어댑터) | **Hono** (내장, Bun + Cloudflare Workers) |
 | ORM | TypeORM / Prisma / MikroORM / Mongoose / Sequelize | `@nexusts/drizzle` (5개 방언) + `@nexusts/kysely` (typed SQL builder) |
 | GraphQL | `@nestjs/graphql` + `@nestjs/apollo` | `@nexusts/graphql` (SDL + code-first) |
 | gRPC | `@nestjs/microservices` | `@nexusts/grpc` (리플렉션 기반, 4가지 call 타입) |
-| WebSocket | `@nestjs/websockets` + `@nestjs/platform-socket.io` | `@nexusts/ws` (Bun + Node) |
+| WebSocket | `@nestjs/websockets` + `@nestjs/platform-socket.io` | `@nexusts/ws` (Bun) |
 | SSE | Express/Hono 수동 구현 | `@nexusts/sse` (내장) |
 | Queue | `@nestjs/bull` / `@nestjs/bullmq` | `@nexusts/queue` (BullMQ + Cloudflare + memory) |
 | Scheduler | `@nestjs/schedule` | `@nexusts/schedule` (인트리 cron 파서) |
@@ -197,7 +197,7 @@ NestJS가 `@nestjs/*` 커뮤니티 패키지에 의존하는 반면, NexusTS는 
 | Compression | `@nestjs/compression` | Hono `compress()` 미들웨어 |
 | CORS | `@nestjs/common` CORS 옵션 | Hono `cors()` 미들웨어 |
 | Testing | `@nestjs/testing` | Vitest + `new Application()` (테스트 모듈 불필요) |
-| HTTP client | `@nestjs/axios` | Fetch API (Bun/Node 내장) |
+| HTTP client | `@nestjs/axios` | Fetch API (Bun 내장) |
 
 **NexusTS에는 있고 NestJS에는 없는 기능**:
 
@@ -207,7 +207,7 @@ NestJS가 `@nestjs/*` 커뮤니티 패키지에 의존하는 반면, NexusTS는 
 | File storage (S3/R2/Local) | `@nexusts/drive` | ❌ first-party 없음 (multer/S3 SDK 수동) |
 | Encryption / hashing | `@nexusts/crypto` | ❌ first-party 없음 (DIY `crypto` 또는 `bcrypt`) |
 | Redis client | `@nexusts/redis` (멀티 런타임) | ❌ first-party 없음 (`ioredis` 직접 사용) |
-| Runtime | Bun / Node / Cloudflare Workers | ❌ Express / Fastify만 |
+| Runtime | Bun + Cloudflare Workers | ❌ Express / Fastify만 |
 
 ### 요청 본문 접근 (Request Body Access)
 

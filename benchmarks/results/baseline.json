@@ -1,68 +1,68 @@
 {
-  "timestamp": "2026-06-27T10:47:52.406Z",
+  "timestamp": "2026-06-28T04:37:35.736Z",
   "results": [
     {
       "suite": "hello",
       "framework": "nexusts",
-      "reqPerSec": 28304,
-      "avgLatencyMs": 1.77,
-      "p99LatencyMs": 4.04,
+      "reqPerSec": 30410,
+      "avgLatencyMs": 1.64,
+      "p99LatencyMs": 3.97,
       "errors": 0
     },
     {
       "suite": "json",
       "framework": "nexusts",
-      "reqPerSec": 22447,
-      "avgLatencyMs": 2.23,
-      "p99LatencyMs": 5.03,
+      "reqPerSec": 36088,
+      "avgLatencyMs": 1.39,
+      "p99LatencyMs": 3.04,
       "errors": 0
     },
     {
       "suite": "di",
       "framework": "nexusts",
-      "reqPerSec": 13912,
-      "avgLatencyMs": 3.59,
-      "p99LatencyMs": 7.8,
+      "reqPerSec": 19512,
+      "avgLatencyMs": 2.56,
+      "p99LatencyMs": 4.98,
       "errors": 0
     },
     {
       "suite": "middleware",
       "framework": "nexusts",
-      "reqPerSec": 27888,
-      "avgLatencyMs": 1.79,
-      "p99LatencyMs": 3.92,
+      "reqPerSec": 34692,
+      "avgLatencyMs": 1.44,
+      "p99LatencyMs": 3.3,
       "errors": 0
     },
     {
       "suite": "hello",
       "framework": "hono",
-      "reqPerSec": 54673,
-      "avgLatencyMs": 0.91,
-      "p99LatencyMs": 2.05,
+      "reqPerSec": 49935,
+      "avgLatencyMs": 1,
+      "p99LatencyMs": 2.24,
       "errors": 0
     },
     {
       "suite": "json",
       "framework": "hono",
-      "reqPerSec": 40364,
-      "avgLatencyMs": 1.24,
-      "p99LatencyMs": 3.27,
+      "reqPerSec": 46172,
+      "avgLatencyMs": 1.08,
+      "p99LatencyMs": 2.48,
       "errors": 0
     },
     {
       "suite": "di",
       "framework": "hono",
-      "reqPerSec": 40024,
-      "avgLatencyMs": 1.25,
-      "p99LatencyMs": 3.29,
+      "reqPerSec": 47977,
+      "avgLatencyMs": 1.04,
+      "p99LatencyMs": 2.48,
       "errors": 0
     },
     {
       "suite": "middleware",
       "framework": "hono",
-      "reqPerSec": 44715,
-      "avgLatencyMs": 1.12,
-      "p99LatencyMs": 2.74,
+      "reqPerSec": 47772,
+      "avgLatencyMs": 1.05,
+      "p99LatencyMs": 2.44,
       "errors": 0
     }
   ]

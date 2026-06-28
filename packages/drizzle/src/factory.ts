@@ -43,7 +43,7 @@ export class Factory<TData extends Record<string, unknown>> {
 
 	#getFaker(): Promise<any> {
 		if (!this.#fakerCache) {
-			// @ts-expect-error — optional peer dep; runtime fallback via Proxy below
+			// @ts-ignore — optional peer dep; runtime fallback via Proxy below
 			this.#fakerCache = import("@faker-js/faker")
 				.then((m) => m.faker ?? (m as any).default?.faker ?? m)
 				.catch(

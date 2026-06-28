@@ -173,7 +173,7 @@ AdonisJS는 "batteries included" 철학으로 유명합니다. NexusTS는 모든
 
 | 필요 기능 | AdonisJS | NexusTS |
 |-----------|----------|---------|
-| HTTP 서버 | `@adonisjs/core` (HTTP + 라우터) | **Hono** (내장, Bun/Node/Workers) |
+| HTTP 서버 | `@adonisjs/core` (HTTP + 라우터) | **Hono** (내장, Bun + Cloudflare Workers) |
 | ORM | Lucid (`@adonisjs/lucid`) | `@nexusts/drizzle` (5개 방언) |
 | 검증 | VineJS | Zod (직접 사용, 래퍼 불필요) |
 | Auth | `@adonisjs/auth` | `@nexusts/auth` (better-auth) |
@@ -203,7 +203,7 @@ AdonisJS는 "batteries included" 철학으로 유명합니다. NexusTS는 모든
 | SSE | ❌ first-party 없음 | `@nexusts/sse` (내장) |
 | GraphQL | ❌ first-party 없음 | `@nexusts/graphql` (SDL + code-first) |
 | gRPC | ❌ first-party 없음 | `@nexusts/grpc` (4개 call 타입) |
-| WebSocket | ❌ first-party 없음 | `@nexusts/ws` (Bun + Node) |
+| WebSocket | ❌ first-party 없음 | `@nexusts/ws` (Bun) |
 | Metrics | ❌ first-party 없음 | `@nexusts/metrics` (Counter, Histogram, Summary) |
 | Tracing | ❌ first-party 없음 | `@nexusts/tracing` (lazy SDK, 자동 HTTP, W3C/B3) |
 | Feature flags | ❌ first-party 없음 | `@nexusts/feature-flag` (rollout, allowlist) |

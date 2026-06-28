@@ -17,7 +17,7 @@
  * TypeScript reflection of the property's design:type metadata.
  */
 import { OPENAPI_META, type ApiPropertyOptions } from "../types.js";
-import { safeGetMeta, safeDefineMeta, safeHasMeta } from "@nexusts/core/di/safe-reflect";
+import { safeGetMeta, safeDefineMeta, } from "@nexusts/core/di/safe-reflect";
 
 export function ApiProperty(options: ApiPropertyOptions = {}): PropertyDecorator {
 	return (target: object, propertyKey: string | symbol) => {

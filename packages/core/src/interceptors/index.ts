@@ -20,7 +20,7 @@
  * slowRoute() { ... }
  * ```
  */
-import { safeGetMeta, safeDefineMeta, safeHasMeta, safeParamTypes } from "../di/safe-reflect.js";
+import { safeGetMeta, safeDefineMeta, } from "../di/safe-reflect.js";
 import {
 	INTERCEPTORS_METADATA,
 	CONTROLLER_INTERCEPTORS_METADATA,

@@ -18,6 +18,14 @@ import. The runtime is built on **TC39 standard ES decorators**
 
 **The non-negotiables** (do not change these without a major version):
 
+- **Runtime targets.** NexusTS supports **Bun** (primary) and
+  **Cloudflare Workers** (edge). **Node.js is NOT supported.**
+  All code must be compatible with both Bun's native runtime and
+  Cloudflare Workers' edge runtime. Do not add Node.js-specific APIs
+  (`fs`, `net`, `child_process`) directly — use platform-abstracted
+  patterns or conditional imports. The CI matrix includes Bun
+  (1.3.10 + latest) and Workers (via `wrangler`).
+
 - **Decorator semantics.** We use **TC39 standard ES decorators** as
   the default. Bun 1.3+ ships stage-3 by default. Legacy decorators
   (`experimentalDecorators: true`) are supported through a dual-mode
@@ -81,7 +89,7 @@ nexusts/                          # Monorepo root
 │   └── clean-examples.sh         # Kills leftover example processes + port 3000
 ├── build.ts                      # Per-package Bun.build + tsc loop
 ├── package.json                  # Workspace root (npm workspaces: "packages/*")
-├── tsconfig.json                 # Root config (uses experimentalDecorators + useDefineForClassFields:false)
+├── tsconfig.json                 # Root config (standard decorators; useDefineForClassFields:false for Bun compat)
 └── vitest.config.ts              # Vitest with @nexusts/* → packages/*/src aliases
 ```
 

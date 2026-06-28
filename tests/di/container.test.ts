@@ -2,11 +2,11 @@
  * Unit tests for the DI container.
  */
 import { describe, it, expect } from 'vitest';
-import { DIContainer } from '@core/di/container';
-import { Injectable, Inject } from '@core/decorators/injectable';
+import { DIContainer } from '@nexusts/core';
+import { Injectable, Inject } from '@nexusts/core';
 
 describe('DIContainer', () => {
-  it('resolves a class provider with constructor injection (via @Inject)', () => {
+  it('resolves a class provider with field injection (via @Inject)', () => {
     @Injectable()
     class Logger {
       log(msg: string) { return `[log] ${msg}`; }
@@ -14,7 +14,7 @@ describe('DIContainer', () => {
 
     @Injectable()
     class App {
-      constructor(@Inject(Logger) public logger: Logger) {}
+      @Inject(Logger) declare logger: Logger;
     }
 
     const c = new DIContainer();
@@ -70,11 +70,11 @@ describe('DIContainer', () => {
 
     @Injectable()
     class RealA {
-      constructor(@Inject(TOK_B) public b: any) {}
+      @Inject(TOK_B) declare a: any;
     }
     @Injectable()
     class RealB {
-      constructor(@Inject(TOK_A) public a: any) {}
+      @Inject(TOK_A) declare b: any;
     }
 
     const c = new DIContainer();

@@ -78,7 +78,7 @@ Inertia 어댑터는 [Inertia.js 프로토콜](https://inertiajs.com/the-protoco
 인스턴스는 또한 `Inertia.TOKEN`(`Symbol.for('nexus:Inertia')`)으로 DI 컨테이너에 등록되므로 컨트롤러는 다음과 같이 주입할 수 있습니다.
 
 ```ts
-constructor(@Inject(Inertia.TOKEN) private inertia: Inertia) {}
+@Inject(Inertia.TOKEN) declare private inertia: Inertia;
 ```
 
 ---

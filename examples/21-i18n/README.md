@@ -43,7 +43,7 @@ const messages = {
 @Injectable()
 @Controller("/")
 class AppController {
-  constructor(@Inject(I18N_SERVICE_TOKEN) private i18n: I18nService) {}
+  @Inject(I18N_SERVICE_TOKEN) declare private i18n: I18nService;
 
   @Get("/greet")
   greet(@Ctx() c: any) {
@@ -89,7 +89,7 @@ I18nModule.forRoot({
 ```ts
 @Injectable()
 class WelcomeService {
-  constructor(@Inject(I18nService.TOKEN) private i18n: I18nService) {}
+  @Inject(I18nService.TOKEN) declare private i18n: I18nService;
 
   send(user: { locale: string; name: string }) {
     return this.i18n.t(user.locale, "welcome_message", { name: user.name });

@@ -174,17 +174,17 @@ bun install
 bun run dev
 ```
 
-Or use npm:
+Or use bun:
 
 ```bash
-npx create-nexusts my-app
+bun create nexusts my-app
 ```
 
 ### Manual setup in an existing project
 
 ```bash
 bun add @nexusts/core zod hono
-npx @nexusts/core init
+bunx @nexusts/core init
 ```
 
 Add the modules you need:
@@ -975,7 +975,7 @@ entry point. It ships three adapters:
 |---------|-----------|-------|----------------|
 | **Rendu** (default) | `.html`, `.rendu` | PHP-style `<?= expr ?>` | Bun / Node / Cloudflare Workers |
 | **Edge** | `.edge` | Mustache-style `{{ expr }}` | Bun / Node |
-| **Eta** | `.eta` | EJS-style `<%= expr %>` | Bun / Node / Deno / Workers |
+| **Eta** | `.eta` | EJS-style `<%= expr %>` | Bun / Node /  Workers |
 
 ### Auto-detection by file extension
 
@@ -1166,7 +1166,7 @@ v1.0, only major bumps will.
 - **v0.7.9** (2026-06-24) — Bun decorator diagnostics, GitHub repo metadata.
 - **v0.8.0** (2026-06-24) — `ResilienceAdminModule` (HTTP admin endpoints), eager `applyResilience()` auto-wrap, CORS in ShieldModule. **31 modules.**
 - **v0.8.1** (2026-06-24) — Cross-pod circuit breaker store: `RedisResilienceStore`, `DrizzleResilienceStore`, `MemoryResilienceStore`. Configurable `syncIntervalMs`, last-writer-wins conflict resolution.
-- **v0.8.2** (2026-06-24) — gRPC streaming v2: `@GrpcServerStream`, `@GrpcClientStream`, `@GrpcBidiStream`. Multi-runtime CI (Bun + Node.js 22 + Cloudflare Workers + Drizzle dialects). HTTP benchmark suite with auto-regression check.
+- **v0.8.2** (2026-06-24) — gRPC streaming v2: `@GrpcServerStream`, `@GrpcClientStream`, `@GrpcBidiStream`. Multi-runtime CI (Bun 22 + Cloudflare Workers + Drizzle dialects). HTTP benchmark suite with auto-regression check.
 - **v0.8.3** (2026-06-25) — Static analysis CI (Biome lint + tsc typecheck). **32 modules**: `@nexusts/feature-flag` (canary / A–B testing, rollout %, allowlist/denylist), `@nexusts/cache` Redis backend, `@nexusts/drizzle` seeding `Factory<T>`.
 - **v0.8.4** (2026-06-25) — Inertia v3 scaffold (React/Vue SSR with `nx init`/`nx new`), CLI input validation & `--no-interaction` fix, `InertiaConfig.scripts` for client script injection, scaffold deduplication to `scaffold.ts`. `@inertiajs/react`/`@inertiajs/vue3` `^3.0.0`.
 - **v0.9.0** (2026-06-25) — **Standard decorator migration.** Migrate from legacy `experimentalDecorators` to TC39 standard ES decorators. Remove `reflect-metadata` dependency (~16KB savings). Field injection (`@Inject(Token) declare field: Type`) instead of constructor injection. `ctx.req.*` methods instead of `@Param`/`@Body`/`@Query` parameter decorators. Dual-mode backward compatibility with legacy decorator code. See [migration guide](./docs/design/standard-decorators-migration.md).
@@ -1175,6 +1175,10 @@ v1.0, only major bumps will.
   Reflect Metadata polyfill (no npm package needed). WebSocket decorators
   dual-mode (`@WebSocketGateway`, `@OnWebSocket*`). SSE `onAbort()` alias.
   WS client ID persistence fix. `bunAdapter` WebSocket env fix. with `KyselyService`, `KyselyRepository` (Lucid-style), `KyselyModule.forRoot()`, built-in Migrator. CLI integration: `nx db:generate`/`db:migrate --orm kysely`, `make:crud`/`make:model`/`make:migration` Kysely templates. `BunSqliteDialect` for bun:sqlite. **33 modules.** Prisma removed from CLI options.
+- **v0.9.13** (2026-06-27) — **CLI prompt refinement + `nx init` runtime flag.**
+  "Database driver" → "Database" across all CLI commands. `nx init` now
+  accepts `--runtime bun|cloudflare` to specify the target runtime when
+  scaffolding a new project.
 
 ### Planned
 
@@ -1196,7 +1200,7 @@ file for the full text.
 ### Third-party notices
 
 NexusTS depends on several open-source projects. Their licenses are
-reproduced at install time via `bun install` (and `npm install`).
+reproduced at install time via `bun install` (and `bun add`).
 Notable runtime dependencies:
 
 - **Hono** — MIT (web framework)

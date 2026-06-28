@@ -10,7 +10,7 @@
  *   @Injectable()
  *   @WebSocketGateway('/ws')
  *   class ChatGateway {
- *     constructor(@Inject(WEBSOCKET_SERVICE_TOKEN) private ws: WebSocketService) {}
+ *     @Inject(WEBSOCKET_SERVICE_TOKEN) declare private ws: WebSocketService;
  *
  *     @OnWebSocketOpen()
  *     onOpen(client: WebSocketClient) {

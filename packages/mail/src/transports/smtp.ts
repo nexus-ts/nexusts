@@ -48,7 +48,7 @@ export class SmtpTransport implements MailTransport {
 				maxConnections: this.opts.maxConnections,
 				...this.opts.extras,
 			});
-		} catch (err) {
+		} catch (_err) {
 			throw new Error(
 				"SmtpTransport requires nodemailer. Install it with: bun add nodemailer",
 			);

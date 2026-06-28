@@ -39,8 +39,8 @@ describe("renderDrizzleDialect", () => {
 		expect(out).toContain("timestamp('created_at')");
 	});
 
-	it("renders a bun-sqlite table with integer id", () => {
-		const tpl = renderDrizzleDialect("bun-sqlite");
+	it("renders a sqlite table with integer id", () => {
+		const tpl = renderDrizzleDialect("sqlite");
 		const out = render(tpl, {
 			name: "Note",
 			snake: "notes",
@@ -78,7 +78,7 @@ describe("renderDrizzleDialect", () => {
 
 describe("mapDrizzleType", () => {
 	it("maps 'text' / 'string' / 'varchar' to text for all dialects", () => {
-		for (const d of ["postgres", "mysql", "sqlite", "bun-sqlite", "d1"]) {
+		for (const d of ["postgres", "mysql", "sqlite", "sqlite", "d1"]) {
 			expect(mapDrizzleType(d, "text")).toBe("text");
 			expect(mapDrizzleType(d, "string")).toBe("text");
 			expect(mapDrizzleType(d, "varchar")).toBe("text");
@@ -89,12 +89,12 @@ describe("mapDrizzleType", () => {
 		expect(mapDrizzleType("postgres", "int")).toBe("integer");
 		expect(mapDrizzleType("mysql", "int")).toBe("int");
 		expect(mapDrizzleType("sqlite", "int")).toBe("integer");
-		expect(mapDrizzleType("bun-sqlite", "int")).toBe("integer");
+		expect(mapDrizzleType("sqlite", "int")).toBe("integer");
 		expect(mapDrizzleType("d1", "int")).toBe("integer");
 	});
 
 	it("maps boolean to 'boolean' for all dialects", () => {
-		for (const d of ["postgres", "mysql", "sqlite", "bun-sqlite", "d1"]) {
+		for (const d of ["postgres", "mysql", "sqlite", "sqlite", "d1"]) {
 			expect(mapDrizzleType(d, "boolean")).toBe("boolean");
 		}
 	});

@@ -12,7 +12,7 @@
  *   container for global providers. Exports propagate tokens upward.
  * - The container is lazy: nothing is instantiated until first resolve.
  */
-import { safeGetMeta, safeDefineMeta, safeHasMeta, safeParamTypes } from "./safe-reflect.js";
+import { safeGetMeta, } from "./safe-reflect.js";
 import { METADATA_KEY } from "../constants.js";
 import {
 	getScope as getScopeStandard,
@@ -140,7 +140,7 @@ export class DIContainer {
 	private readClassDependencies(cls: Type<any>): Set<InjectionToken<any>> {
 		const set = new Set<InjectionToken<any>>();
 
-		// Legacy: design:paramtypes (requires emitDecoratorMetadata).
+		// Legacy: design:paramtypes (tsc-only; Bun doesn't emit it).
 		const paramTypes: any[] =
 			safeGetMeta(METADATA_KEY.PARAMTYPES, cls) || [];
 		for (const t of paramTypes) {
@@ -224,8 +224,8 @@ export class DIContainer {
 				name === "undefined" || name === ""
 					? " Possible cause: @Inject on a constructor parameter property " +
 					  "(e.g. `constructor(@Inject(Svc) private svc: Svc)`) can cause " +
-					  "Bun to lose the token — use explicit assignment instead: " +
-					  "`svc: Svc; constructor(@Inject(Svc) svc: Svc) { this.svc = svc; }`."
+					  "Bun to lose the token — use field injection instead: " +
+					  "`@Inject(Svc) declare svc: Svc;`."
 					: "";
 			throw new Error(
 				`No provider for "${name}". ` +
@@ -309,7 +309,7 @@ export class DIContainer {
 							`reflect-metadata was not emitted by your toolchain (Bun's ` +
 							`native transpiler doesn't emit decorator metadata). Use the ` +
 							`@Inject(Token) parameter decorator to specify the dependency ` +
-							`explicitly, e.g. \`constructor(@Inject(UserService) private users: UserService)\`.`,
+							`explicitly, e.g. \`@Inject(UserService) declare users: UserService\`.`,
 					);
 				}
 				params[index] = this.resolve(type);

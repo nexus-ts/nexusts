@@ -17,7 +17,7 @@ import { EventService, OnEvent } from '@nexusts/events';
  */
 @Injectable()
 export class {{ name }}Listener {
-  constructor(@Inject(EventService.TOKEN) private readonly events: EventService) {}
+  @Inject(EventService.TOKEN) declare private readonly events: EventService;
 
   // TODO: add @OnEvent('your.event') handlers below.
 

@@ -74,7 +74,7 @@ NexusTS ships **33 independent packages** under the `@nexusts/*` namespace. Each
 | `@nexusts/i18n` | Internationalization. Intl-based date/number/currency formatting. JSON message catalogs. |
 | `@nexusts/mail` | Outbound email. Null / File / SMTP transports. MJML rendering. |
 | `@nexusts/queue` | Job queue. BullMQ / Redis backends. |
-| `@nexusts/redis` | Runtime-aware Redis client (Bun / Node / Workers KV). |
+| `@nexusts/redis` | Runtime-aware Redis client (Bun / Workers KV). |
 | `@nexusts/schedule` | Cron / Interval / Timeout scheduler. In-tree cron parser, zero deps. |
 | `@nexusts/static` | Static file serving with ETag, Range, path-traversal protection. |
 | `@nexusts/upload` | File upload helper. |

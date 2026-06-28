@@ -8,7 +8,7 @@
  * Usage:
  *   @Injectable()
  *   class UserListeners {
- *     constructor(@Inject(EventService.TOKEN) private events: EventService) {}
+ *     @Inject(EventService.TOKEN) declare private events: EventService;
  *
  *     @OnEvent('user.created')
  *     async onUserCreated(payload: { userId: string; email: string }) {

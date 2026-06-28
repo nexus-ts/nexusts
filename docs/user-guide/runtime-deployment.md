@@ -2,7 +2,7 @@
 
 > 한국어 버전: [`runtime-deployment.ko.md`](./runtime-deployment.ko.md)
 
-NexusTS targets **Bun, Node.js, and Cloudflare Workers** through a
+NexusTS targets **Bun and Cloudflare Workers** through a
 single `Application` API. The framework auto-detects the runtime and
 loads the appropriate adapter.
 
@@ -36,32 +36,7 @@ The `bun:sqlite` module is also available for native SQLite.
 
 ---
 
-## 2. Node.js
-
-The framework includes a Node adapter (`node:http` based) that's used
-when `globalThis.Bun` is not present.
-
-### 2.1 Build first, then run
-
-```bash
-bun run build           # produces dist/
-node dist/main.js       # or bun dist/main.js
-```
-
-### 2.2 tsx / ts-node
-
-For a build-free workflow:
-
-```bash
-npx tsx app/main.ts
-```
-
-Both `tsx` and `ts-node` respect `tsconfig.json` and emit
-`design:paramtypes`, so bare-type constructor injection works.
-
----
-
-## 3. Cloudflare Workers
+## 2. Cloudflare Workers
 
 ```ts
 // app/worker.ts
@@ -100,8 +75,8 @@ bunx wrangler deploy
 
 - **No filesystem access at request time** — pre-bundle any templates
   or assets.
-- **`emitDecoratorMetadata` is ignored** by Cloudflare's esbuild — use
-  explicit `@Inject(...)` everywhere.
+- **`emitDecoratorMetadata` is ignored** by Cloudflare's esbuild — always
+  use explicit `@Inject(Token)` or field injection (`@Inject(Token) declare field`).
 - **Inertia SSR is edge-friendly** because the framework ships a
   pluggable adapter; pick a runtime-compatible renderer (React works
   fine; Svelte 4 with the standalone `svelte/server` is fine too).
@@ -160,12 +135,12 @@ if (!result.success) {
 }
 ```
 
-For multi-target builds (Bun + Node + Workers), add entries to
+For multi-target builds (Bun + Workers), add entries to
 `entrypoints`:
 
 ```ts
 entrypoints: [
-  'app/main.ts',         // Bun / Node entry
+  'app/main.ts',         // Bun entry
   'app/worker.ts',           // Cloudflare entry
 ],
 ```
@@ -219,12 +194,11 @@ For Workers, use `wrangler deploy` directly — no Docker needed.
 | Runtime | Process model | Notes |
 | ------- | ------------- | ----- |
 | **Bun** | Single event loop | All `await`s are non-blocking; use async I/O |
-| **Node** | Single event loop | Same as Bun; use `node:` built-ins |
 | **Workers** | Per-request isolate | Cold start cost; keep imports lean |
 
 For long-running tasks (queue jobs, scheduled work), use:
 
-- **Bun / Node** — BullMQ, sidekiq-like workers
+- **Bun** — BullMQ, sidekiq-like workers
 - **Workers** — Cloudflare Queues, Durable Objects, Cron Triggers
 
 These will be first-class in v0.2.
@@ -260,7 +234,6 @@ process.on('SIGINT', () => {
   process.exit(0);
 });
 
-// Node (similar via node:http)
 ```
 
 Workers don't need explicit shutdown — Cloudflare tears down the
@@ -273,8 +246,6 @@ isolate after the request.
 | Need | Best target |
 | ---- | ----------- |
 | Local development, fastest iteration | **Bun** |
-| Long-running server with systemd / PM2 | **Node** |
 | Global edge, low latency, no ops | **Cloudflare Workers** |
 | Native SQLite | **Bun** (`bun:sqlite`) |
-| Maximum ecosystem compatibility | **Node** |
-| Streaming SSR | **Bun** or **Node** (Workers has size limits) |
+| Streaming SSR | **Bun** (Workers has size limits) |

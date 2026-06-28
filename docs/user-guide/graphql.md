@@ -41,19 +41,18 @@ await app.listen(3000);
 ### Approach 2: Code-first with `autoSchema: true`
 
 ```ts
-import { Resolver, Query, Arg } from "@nexusts/graphql";
+import { Resolver, Query } from "@nexusts/graphql";
 
 @Resolver()
 class HelloResolver {
-  @Query()
-  hello(@Arg("name", "String!") name: string): string {
+  @Query({ args: { name: "String!" } })
+  hello(name: string): string {
     return `Hello, ${name}!`;
   }
 }
 
 @Module({
   imports: [GraphQLModule.forRoot({ autoSchema: true })],
-  providers: [HelloResolver],
 })
 class AppModule {}
 ```
@@ -179,10 +178,43 @@ GraphQLModule.forRoot({
 ## Code-first via decorators (stable)
 
 The module exports `@Resolver`, `@Query`, `@Mutation`,
-`@Subscription`, and `@Arg` decorators for a code-first approach.
+`@Subscription` decorators for a code-first approach.
 Set `autoSchema: true` in `GraphQLModule.forRoot()` and the
 framework synthesizes the SDL from your decorator metadata
 automatically — no hand-written `typeDefs` needed.
+
+### Standard mode (recommended, v0.9+)
+
+Use the `args` option on `@Query`/`@Mutation`/`@Subscription` to
+declare argument types. This works with both TC39 standard decorators
+and legacy `experimentalDecorators` mode.
+
+```ts
+import { Resolver, Query, Mutation } from "@nexusts/graphql";
+
+@Resolver()
+class UserResolver {
+  @Query({ args: { limit: "Int" } })
+  users(limit: number): User[] {
+    return this.userService.findAll(limit);
+  }
+
+  @Mutation({ args: { name: "String!" } })
+  addUser(name: string): User {
+    return this.userService.create({ name });
+  }
+}
+
+@Module({
+  imports: [GraphQLModule.forRoot({ autoSchema: true })],
+})
+class AppModule {}
+```
+
+### Legacy mode (`@Arg` parameter decorator)
+
+When using `experimentalDecorators: true`, you can alternatively use
+the `@Arg` parameter decorator:
 
 ```ts
 import { Resolver, Query, Mutation, Arg } from "@nexusts/graphql";
@@ -199,12 +231,6 @@ class UserResolver {
     return this.userService.create({ name });
   }
 }
-
-@Module({
-  imports: [GraphQLModule.forRoot({ autoSchema: true })],
-  providers: [UserResolver],
-})
-class AppModule {}
 ```
 
 ### How it works
@@ -214,7 +240,7 @@ class AppModule {}
 2. When `autoSchema: true` (or any `@Resolver` class exists),
    the SDL synthesis engine (`mergeSDLWithDecorators()`) reads
    each resolver's `@Query`, `@Mutation`, `@Subscription` and
-   `@Arg` metadata and builds the corresponding
+   `@Arg` metadata (legacy mode) or `args` option (standard mode) and builds the corresponding
    `type Query / Mutation / Subscription` SDL blocks.
 3. If your `typeDefs` already defines one of these root types,
    the synthesiser uses `extend type Query { ... }` to merge
@@ -230,11 +256,26 @@ class AppModule {}
 ones — the deep-merge helper ensures auto-wired fields are not
 clobbered.
 
-### `@Arg` return type normalization
+### Argument types
 
-The `type` option in `@Arg` accepts GraphQL SDL strings or
-TypeScript aliases — they are normalized to canonical GraphQL
-scalars:
+In **standard decorator mode** (v0.9+, recommended), provide argument
+types via the `args` option on `@Query`/`@Mutation`:
+
+```ts
+@Query({ args: { name: "String!", limit: "Int" } })
+myQuery(name: string, limit: number): string { ... }
+```
+
+In **legacy mode** (`experimentalDecorators: true`), use the `@Arg`
+parameter decorator:
+
+```ts
+@Query()
+myQuery(@Arg("name", "String!") name: string, @Arg("limit", "Int") limit: number): string { ... }
+```
+
+Both modes accept GraphQL SDL strings or TypeScript aliases —
+they are normalized to canonical GraphQL scalars:
 
 | TypeScript alias | GraphQL scalar |
 |-----------------|----------------|

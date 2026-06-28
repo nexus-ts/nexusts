@@ -26,7 +26,7 @@
  *   import { QueueService } from '@nexusts/queue';
  *
  *   class SignupController {
- *     constructor(@Inject(QueueService.TOKEN) private queue: QueueService) {}
+ *     @Inject(QueueService.TOKEN) declare private queue: QueueService;
  *
  *     @Post('/')
  *     async signup(@Body() body: { email: string }) {
@@ -37,7 +37,7 @@
  *
  *   // any service — register a worker
  *   class EmailWorker {
- *     constructor(@Inject(QueueService.TOKEN) private queue: QueueService) {}
+ *     @Inject(QueueService.TOKEN) declare private queue: QueueService;
  *     @OnQueueReady()
  *     async register() {
  *       await this.queue.process('send-welcome-email', this.handle);

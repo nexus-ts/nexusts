@@ -6,7 +6,7 @@
  * scratch.
  *
  *   nx new my-app
- *   nx new my-app --style nest --view inertia --orm drizzle --db bun-sqlite
+ *   nx new my-app --style nest --view inertia --orm drizzle --db sqlite
  */
 
 import { existsSync, mkdirSync, writeFileSync } from "node:fs";
@@ -25,10 +25,11 @@ export const newCommand: Command = {
 		"nx new my-app --view inertia --frontend vue",
 	],
 	flags: [
+		{ name: "runtime", description: "Runtime target (bun|cloudflare)" },
 		{ name: "style", description: "Routing style (nest|adonis|functional)" },
 		{ name: "view", description: "View engine (rendu|edge|eta|inertia|none)" },
 		{ name: "orm", description: "ORM driver (drizzle|kysely|none)" },
-		{ name: "db", description: "Database driver" },
+		{ name: "db", description: "Database" },
 		{ name: "frontend", description: "Inertia frontend (react|vue|svelte|solid)" },
 		{ name: "no-ssr", description: "Disable SSR" },
 	],
@@ -47,28 +48,27 @@ export const newCommand: Command = {
 			return 1;
 		}
 
+		const runtime = await resolveProjectOption(ctx.flags, "runtime", VALID_PROJECT_OPTIONS.runtime, "bun", interactive);
 		const routing = await resolveProjectOption(ctx.flags, "style", VALID_PROJECT_OPTIONS.style, "nest", interactive);
 		const view = await resolveProjectOption(ctx.flags, "view", VALID_PROJECT_OPTIONS.view, "rendu", interactive);
 		const orm = await resolveProjectOption(ctx.flags, "orm", VALID_PROJECT_OPTIONS.orm, "drizzle", interactive);
-		const db = await resolveProjectOption(ctx.flags, "db", VALID_PROJECT_OPTIONS.db, "bun-sqlite", interactive);
+		const db = await resolveProjectOption(ctx.flags, "db", VALID_PROJECT_OPTIONS.db, "sqlite", interactive);
 		const frontend = await resolveProjectOption(ctx.flags, "frontend", VALID_PROJECT_OPTIONS.frontend, "react", interactive);
 		const ssr = !flagBool(ctx.flags, "no-ssr", false);
 
 		mkdirSync(target, { recursive: true });
 
-		const dbUrl = db === "bun-sqlite" || db === "node-sqlite" ? "app.db" : "";
+		const dbUrl = db === "sqlite" ? "app.db" : "";
 
 		ensureDirectories(target, view);
 
 		writeFileSync(
 			resolve(target, "tsconfig.json"),
 			`{
-  "compilerOptions": {
+			"compilerOptions": {
     "target": "ES2022",
     "module": "ESNext",
     "moduleResolution": "bundler",
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
@@ -83,7 +83,7 @@ export const newCommand: Command = {
 		const pkgJson = buildPackageJson(name, deps, devDeps, view, frontend);
 		writeFileSync(resolve(target, "package.json"), `${JSON.stringify(pkgJson, null, 2)}\n`);
 
-		const opts = { target, name, routing, view, orm, db, frontend, ssr, dbUrl };
+		const opts = { target, name, runtime, routing, view, orm, db, frontend, ssr, dbUrl };
 		const files = generateProjectFiles(target, opts);
 
 		logger.success(`created ${name}`);

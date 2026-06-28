@@ -63,12 +63,12 @@ list and resolves it lazily on first use.
 
 TypeScript can read constructor parameter types from
 `design:paramtypes` metadata — **but only** when you compile with `tsc`
-and `emitDecoratorMetadata: true`. Bun's native TypeScript transformer
+and `emitDecoratorMetadata: true` (no longer needed — removed). Bun's native TypeScript transformer
 does **not** emit that metadata.
 
 NexusTS therefore standardizes on **explicit `@Inject(Token)`** on each
 parameter. This makes the framework portable across `tsc`, `ts-node`,
-Bun, and Deno.
+Bun, and Cloudflare Workers.
 
 ```ts
 // Always portable — recommended.
@@ -325,9 +325,9 @@ Break a cycle by introducing a factory:
 ```ts
 // Before: A imports B, B imports A → cycle.
 @Injectable()
-class A { constructor(@Inject(B) b: B) {} }
+class A { @Inject(B) declare b: B; }
 @Injectable()
-class B { constructor(@Inject(A) a: A) {} }
+class B { @Inject(A) declare a: A; }
 
 // After: B receives A via a forward-reference factory.
 @Injectable()
@@ -522,4 +522,4 @@ Output:
 | `@Inject(SomeClass)` works but `@Inject(SomeClass.TOKEN)` doesn't | Only the class is registered | Register both: `providers: [SomeClass, { provide: SomeClass.TOKEN, useExisting: SomeClass }]` |
 
 > For a complete walkthrough of these patterns with real examples see
-> **[common-pitfalls.md](./common-pitfalls.md)**.
+> **[debugging guide](../design/architecture.md)**.

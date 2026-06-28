@@ -84,10 +84,11 @@ export async function select(
 
 /** Valid values for each interactive project-scaffold prompt. */
 export const VALID_PROJECT_OPTIONS = {
+	runtime: ["bun", "cloudflare"] as const,
 	style: ["nest", "adonis", "functional"] as const,
 	view: ["rendu", "edge", "eta", "inertia", "none"] as const,
 	orm: ["drizzle", "kysely", "none"] as const,
-	db: ["bun-sqlite", "node-sqlite", "libsql", "postgres", "mysql", "none"] as const,
+	db: ["sqlite",  "postgres", "mysql", "none"] as const,
 	frontend: ["react", "vue", "svelte", "solid"] as const,
 } as const;
 
@@ -113,15 +114,19 @@ export async function resolveProjectOption(
 		logger.warn(`"${flagVal}" is not valid for --${key}. Please choose from the list.`);
 	}
 
-	const label = key === "style"
-		? "Routing style" as const
-		: key === "view"
-			? "View engine" as const
-			: key === "orm"
-				? "ORM driver" as const
-				: key === "db"
-					? "Database driver" as const
-					: "Inertia frontend" as const;
+	const label = key === "runtime"
+		? "Runtime target" as const
+		: key === "style"
+			? "Routing style" as const
+			: key === "view"
+				? "View engine" as const
+				: key === "orm"
+					? "ORM" as const
+					: key === "db"
+						? "Database" as const
+						: key === "frontend"
+							? "Inertia frontend" as const
+							: key;
 
 	// Loop until the user provides a valid value (interactive only).
 	for (;;) {

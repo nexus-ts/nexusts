@@ -16,7 +16,7 @@ import type { {{ name }}Data } from './{{ kebab }}.worker.js';
  */
 @Injectable()
 export class {{ name }}Job {
-  constructor(@Inject(QueueService.TOKEN) private readonly queue: QueueService) {}
+  @Inject(QueueService.TOKEN) declare private readonly queue: QueueService;
 
   /** Enqueue a single {{ name }} job. */
   async enqueue(data: {{ name }}Data, options?: {

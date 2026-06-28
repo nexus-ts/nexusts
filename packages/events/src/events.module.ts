@@ -11,7 +11,7 @@
  *   // any service
  *   @Injectable()
  *   class EmailListeners {
- *     constructor(@Inject(EventService.TOKEN) private events: EventService) {}
+ *     @Inject(EventService.TOKEN) declare private events: EventService;
  *
  *     @OnEvent('user.created')
  *     async onUserCreated(p: { email: string }) {
@@ -29,7 +29,6 @@
 import { Module } from "@nexusts/core";
 import { EventService } from "./event.service.js";
 import type { EventsConfig } from "./types.js";
-import { safeGetMeta, safeDefineMeta, safeHasMeta } from "@nexusts/core/di/safe-reflect";
 
 @Module({
 	providers: [

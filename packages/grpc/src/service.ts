@@ -159,7 +159,7 @@ export class GrpcService {
 				handlers[entry.protoName] = makeHandler(fn, instance, entry.streamType);
 			}
 
-			this.#server!.addService((svcSpec as { service: any }).service, handlers);
+			this.#server?.addService((svcSpec as { service: any }).service, handlers);
 			this.#clientCtors.set(
 				svcName,
 				svcSpec as unknown as new (...a: any[]) => any,
@@ -297,7 +297,6 @@ export class GrpcService {
 			const methodName =
 				protoName.charAt(0).toLowerCase() + protoName.slice(1);
 
-			// @ts-ignore — method exists on prototype at runtime
 			const fn = underlying[methodName];
 			if (typeof fn !== "function") continue;
 

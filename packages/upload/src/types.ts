@@ -25,7 +25,6 @@
  */
 
 import { METADATA_KEY } from "@nexusts/core";
-import { safeGetMeta, safeDefineMeta, safeHasMeta } from "@nexusts/core/di/safe-reflect";
 
 // ---------------------------------------------------------------------------
 // Types

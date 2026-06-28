@@ -22,7 +22,6 @@
 
 import { randomBytes } from "node:crypto";
 import { EncryptionService } from "@nexusts/crypto";
-import { safeGetMeta, safeDefineMeta, safeHasMeta } from "@nexusts/core/di/safe-reflect";
 
 /** CSRF protection configuration. */
 export interface CsrfConfig {

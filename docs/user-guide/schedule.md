@@ -309,7 +309,7 @@ const schedule = app.container.resolve(ScheduleService);
 
 ## 11. Known issues
 
-- **`setInterval` drift** — Bun / Node's `setInterval` is accurate to
+- **`setInterval` drift** — Bun's `setInterval` is accurate to
   ~10ms; minute-precision schedules can drift slightly. The
   `maxDriftMs` config caps how far a task is allowed to fall behind.
 - **Cron timezone** — currently the host's local timezone. Proper

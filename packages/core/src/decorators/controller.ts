@@ -15,7 +15,7 @@
  *
  * Legacy mode (experimentalDecorators: true) continues to work identically.
  */
-import { safeGetMeta, safeDefineMeta, safeHasMeta, safeParamTypes } from "../di/safe-reflect.js";
+import { safeDefineMeta, } from "../di/safe-reflect.js";
 import { METADATA_KEY } from "../constants.js";
 import { initNexusMeta, getMeta, hasMeta } from "../di/standard-meta.js";
 import type { ControllerMetadata } from "../di/tokens.js";

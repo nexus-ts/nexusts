@@ -25,7 +25,6 @@
  *   server.listen(3000);
  */
 
-import type { Hono } from "hono";
 import { getGatewayPath, getLifecycleHandlers } from "../decorators.js";
 import type { WebSocketService } from "../service.js";
 import { WebSocketClientImpl } from "../client.js";
@@ -51,10 +50,9 @@ export class NodeWsAdapter {
 		let WS: typeof import("ws");
 		try {
 			WS = (await import("ws")).default ? await import("ws") : (await import("ws"));
-			// @ts-ignore - ws exports shape varies
 			const WebSocketServer = (WS as any).WebSocketServer ?? (WS as any).Server ?? (WS as any).default?.WebSocketServer;
 			if (!WebSocketServer) throw new Error("no WebSocketServer export");
-		} catch (err) {
+		} catch (_err) {
 			throw new Error(
 				"WebSocketModule.forRoot() on Node requires the `ws` package. " +
 					"Install with: bun add ws",
@@ -74,7 +72,6 @@ export class NodeWsAdapter {
 			});
 		}
 
-		// @ts-ignore - WS is dynamically imported
 		const wss = new (WS as any).WebSocketServer({ noServer: true });
 		const opts = this.options;
 		const service = this.service;
@@ -131,7 +128,7 @@ export class NodeWsAdapter {
 			handleUpgrade(req: any, socket: any, head: any, callback?: (ws: any) => void) {
 				const url = new URL(req.url ?? "/", "http://localhost");
 				const handler = handlers.get(url.pathname);
-				if (!handler || !handler(req)) {
+				if (!handler?.(req)) {
 					socket.write("HTTP/1.1 404 Not Found\r\n\r\n");
 					socket.destroy();
 					return;

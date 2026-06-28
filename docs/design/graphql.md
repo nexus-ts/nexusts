@@ -224,11 +224,29 @@ SDL-default-derived map has built.
 ## Decorator API & global resolver registry
 
 The framework exports `@Resolver`, `@Query`, `@Mutation`,
-`@Subscription`, and `@Arg` decorators. The metadata they write is
-read by `GraphQLService` to build the resolver map:
+`@Subscription`, and `@Arg` (legacy) decorators. The metadata they
+write is read by `GraphQLService` to build the resolver map.
+
+### Standard mode (v0.9+, recommended)
+
+Use `args` option on `@Query`/`@Mutation`:
 
 ```ts
-@Injectable()
+@Resolver("User")
+class UserResolver {
+  @Query("currentUser")
+  me(ctx: Context) { return (ctx as any).state?.user; }
+
+  @Mutation({ args: { name: "String!" } })
+  updateProfile(name: string) { ... }
+}
+```
+
+### Legacy mode (`experimentalDecorators: true`)
+
+Use `@Arg` parameter decorator:
+
+```ts
 @Resolver("User")
 class UserResolver {
   @Query("currentUser")

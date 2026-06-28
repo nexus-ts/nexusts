@@ -78,7 +78,7 @@ export class KyselyService<DB extends DatabaseSchema = any> {
       if (this._logger) {
         mergedConfig.log = (event: any) => {
           if (event.level === "query" && event.query) {
-            this._logger!(event.query.sql, event.query.parameters as unknown[]);
+            this._logger?.(event.query.sql, event.query.parameters as unknown[]);
           }
         };
       }
@@ -103,7 +103,7 @@ export class KyselyService<DB extends DatabaseSchema = any> {
     if (this._logger) {
       mergedConfig.log = (event: any) => {
         if (event.level === "query" && event.query) {
-          this._logger!(event.query.sql, event.query.parameters as unknown[]);
+          this._logger?.(event.query.sql, event.query.parameters as unknown[]);
         }
       };
     }

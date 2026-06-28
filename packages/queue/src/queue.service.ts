@@ -51,10 +51,6 @@ export class QueueService {
 	#listeners = new Set<QueueEventListener>();
 	#started = false;
 
-	constructor() {
-		// DI sets @Inject fields before first use.
-	}
-
 	// ===========================================================================
 	// Producer API
 	// ===========================================================================

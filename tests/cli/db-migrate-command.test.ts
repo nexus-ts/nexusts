@@ -14,9 +14,9 @@ import {
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import type { CommandContext } from "../../src/cli/core/index.js";
 import { makeMigrationCommand } from "../../src/cli/commands/make-migration.js";
 import { makeModelCommand } from "../../src/cli/commands/make-model.js";
+import type { CommandContext } from "../../src/cli/core/index.js";
 
 async function makeTmp(): Promise<string> {
 	const d = join(
@@ -71,11 +71,11 @@ describe("make:model with --dialect", () => {
 		await rm(cwd, { recursive: true, force: true });
 	});
 
-	it("renders a bun-sqlite table by default (when dialect is unset)", async () => {
+	it("renders a sqlite table by default (when dialect is unset)", async () => {
 		const cwd = await makeTmp();
 		await fsWriteFile(
 			join(cwd, "nx.config.ts"),
-			`export default { routing: 'nest', view: 'none', orm: 'drizzle', database: { driver: 'bun-sqlite', url: '' }, inertia: { frontend: 'react', ssr: false, version: '1.0.0' }, paths: { app: 'src/app', controllers: 'src/app/controllers', services: 'src/app/services', modules: 'src/app/modules', models: 'src/app/models', migrations: 'src/app/database/migrations', middleware: 'src/app/middleware', dto: 'src/app/dto' }, controllersExtra: [] };`,
+			`export default { routing: 'nest', view: 'none', orm: 'drizzle', database: { driver: 'sqlite', url: '' }, inertia: { frontend: 'react', ssr: false, version: '1.0.0' }, paths: { app: 'src/app', controllers: 'src/app/controllers', services: 'src/app/services', modules: 'src/app/modules', models: 'src/app/models', migrations: 'src/app/database/migrations', middleware: 'src/app/middleware', dto: 'src/app/dto' }, controllersExtra: [] };`,
 		);
 		await mkdir(join(cwd, "src/app/models"), { recursive: true });
 
@@ -87,7 +87,7 @@ describe("make:model with --dialect", () => {
 				routing: "nest",
 				view: "none",
 				orm: "drizzle",
-				database: { driver: "bun-sqlite", url: "" },
+				database: { driver: "sqlite", url: "" },
 				inertia: { frontend: "react", ssr: false, version: "1.0.0" },
 				paths: {
 					app: "src/app",

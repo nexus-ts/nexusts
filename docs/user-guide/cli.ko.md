@@ -68,7 +68,7 @@ bun add @nexusts/cli zod hono
 nx new my-app
 # 인터랙티브 — 라우팅/view/orm/db 선택
 
-nx new my-app --style nest --view inertia --orm drizzle --db bun-sqlite --no-interaction
+nx new my-app --style nest --view inertia --orm drizzle --db sqlite --no-interaction
 # 비대화형
 ```
 
@@ -105,7 +105,7 @@ bun run dev
 nx init
 # routing / view / orm / db / frontend를 물어봄
 
-nx init --style nest --view inertia --orm drizzle --db bun-sqlite --no-interaction
+nx init --style nest --view inertia --orm drizzle --db sqlite --no-interaction
 # 프롬프트 건너뜀
 
 nx init --merge
@@ -125,7 +125,7 @@ export default {
   view: 'inertia',
   orm: 'drizzle',
   database: {
-    driver: 'bun-sqlite',
+    driver: 'sqlite',
     url: process.env.DATABASE_URL ?? 'app.db',
   },
   inertia: {
@@ -329,7 +329,7 @@ nx info
   routing           nest
   view              inertia
   orm               drizzle
-  database.driver   bun-sqlite
+  database.driver   sqlite
   database.url      app.db
   inertia.frontend  react
   inertia.ssr       true

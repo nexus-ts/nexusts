@@ -40,7 +40,7 @@ export class BunRedisAdapter implements RedisClient {
 	private readonly defaultTtlSeconds: number;
 
 	constructor(config: RedisConfig = {}) {
-		this.url = config.url ?? process.env["REDIS_URL"] ?? "redis://localhost:6379";
+		this.url = config.url ?? process.env.REDIS_URL ?? "redis://localhost:6379";
 		this.keyPrefix = config.keyPrefix ?? "";
 		this.defaultTtlSeconds = config.defaultTtlSeconds ?? 0;
 	}

@@ -2,8 +2,6 @@
 
 > English: [`ws.md`](./ws.md)
 > v0.5 신규. Hono의 런타임별 WebSocket 지원을 단일 관용적 API로 통합.
-> **Bun** (기본) 및 **Node.js** (`ws` 패키지 경유)에서 작동. Cloudflare
-> Workers는 범위 밖 — 아래 [Cloudflare 섹션](#8-cloudflare-workers) 참조.
 
 `@nexusts/ws`가 제공하는 것:
 
@@ -11,7 +9,6 @@
 - **`@OnWebSocketOpen()`, `@OnWebSocketMessage()`, `@OnWebSocketClose()`, `@OnWebSocketError()`** — 메서드 데코레이터. 라이프사이클 이벤트를 특정 메서드에 바인딩.
 - **`WebSocketService`** — DI 친화적 서비스. 연결 추적, rooms, broadcasting.
 - **`WebSocketClient`** — 연결별 래퍼. `id`, `rooms`, `data`, `send()`, `close()`, `joinRoom()` / `leaveRoom()` 보유.
-- **런타임 자동 감지** — Bun은 자동 감지. Node에서는 프레임워크가 `ws` 패키지를 lazy-import.
 
 ---
 
@@ -77,16 +74,13 @@ Bun.serve({
 
 ---
 
-## 2. 빠른 시작 (Node.js)
 
 ```ts
 import { createServer } from "node:http";
 import { WebSocketServer } from "ws";
-import { NodeWsAdapter } from "@nexusts/ws";
 
 const app = new Application(AppModule);
 const service = app.container.resolve(WebSocketService);
-const adapter = new NodeWsAdapter(service);
 const { handleUpgrade } = await adapter.bind([ChatGateway]);
 
 const wss = new WebSocketServer({ noServer: true });

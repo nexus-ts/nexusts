@@ -7,11 +7,11 @@ export * from "./config.js";
 export * from "./fs.js";
 export * from "./logger.js";
 export * from "./loose-json.js";
+export { formatTimestamp, inferTableName } from "./naming.js";
 export * from "./prompts.js";
+export { buildPackageJson, computeDeps, ensureDirectories, generateProjectFiles } from "./scaffold.js";
 export * from "./template.js";
 export { VERSION } from "./version.js";
-export { ensureDirectories, computeDeps, buildPackageJson, generateProjectFiles } from "./scaffold.js";
-export { formatTimestamp, inferTableName } from "./naming.js";
 
 /**
  * The CLI command contract. Every command module exports a default

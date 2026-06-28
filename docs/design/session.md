@@ -7,7 +7,7 @@
 Provide a uniform session-storage abstraction that:
 
 1. **Works on every runtime** — Bun / Node / Cloudflare Workers /
-   Vercel / Deno Deploy.
+   Vercel .
 2. **Integrates with `@nexusts/auth`** without forcing it — better-auth
    manages its own DB-backed sessions; `SessionService` manages
    transient state (flash messages, guest carts, OAuth flow state).

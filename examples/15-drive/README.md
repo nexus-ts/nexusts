@@ -35,7 +35,7 @@ import { DriveService, DriveModule } from "@nexusts/drive";
 @Injectable()
 @Controller("/files")
 class FileController {
-  constructor(@Inject(DriveService) private drive: DriveService) {}
+  @Inject(DriveService) declare private drive: DriveService;
 
   @Post("/:name")
   async upload(@Param("name") name: string, @Body() content: any) {

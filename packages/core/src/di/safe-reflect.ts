@@ -42,31 +42,21 @@ if (typeof Reflect !== "undefined" && typeof (Reflect as any).metadata !== "func
 		return `${String(key)}|${targetId(target)}|${prop !== undefined ? String(prop) : ""}`;
 	}
 
-	(Reflect as any).defineMetadata = function (key: any, value: any, target: any, prop?: any): void {
+	(Reflect as any).defineMetadata = (key: any, value: any, target: any, prop?: any): void => {
 		metadataStore.set(metaKey(key, target, prop), value);
 	};
 
-	(Reflect as any).getMetadata = function (key: any, target: any, prop?: any): any {
-		return metadataStore.get(metaKey(key, target, prop));
-	};
+	(Reflect as any).getMetadata = (key: any, target: any, prop?: any): any => metadataStore.get(metaKey(key, target, prop));
 
-	(Reflect as any).getOwnMetadata = function (key: any, target: any, prop?: any): any {
-		return (Reflect as any).getMetadata(key, target, prop);
-	};
+	(Reflect as any).getOwnMetadata = (key: any, target: any, prop?: any): any => (Reflect as any).getMetadata(key, target, prop);
 
-	(Reflect as any).hasMetadata = function (key: any, target: any, prop?: any): boolean {
-		return metadataStore.has(metaKey(key, target, prop));
-	};
+	(Reflect as any).hasMetadata = (key: any, target: any, prop?: any): boolean => metadataStore.has(metaKey(key, target, prop));
 
-	(Reflect as any).deleteMetadata = function (key: any, target: any, prop?: any): boolean {
-		return metadataStore.delete(metaKey(key, target, prop));
-	};
+	(Reflect as any).deleteMetadata = (key: any, target: any, prop?: any): boolean => metadataStore.delete(metaKey(key, target, prop));
 
-	(Reflect as any).metadata = function (key: any, value: any): Function {
-		return function (target: any, prop?: any): void {
+	(Reflect as any).metadata = (key: any, value: any): Function => (target: any, prop?: any): void => {
 			(Reflect as any).defineMetadata(key, value, target, prop);
 		};
-	};
 }
 
 // Type declarations so TypeScript doesn't error.

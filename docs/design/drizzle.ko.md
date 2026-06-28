@@ -84,8 +84,8 @@
 |---------|--------|------------|---------|
 | `postgres` | `postgres.js` + `drizzle-orm/pg` | `postgres` | ✅ |
 | `mysql` | `mysql2` + `drizzle-orm/mysql` | `mysql2` | ⚠️ (Node compat 필요) |
-| `sqlite` | `bun:sqlite` + `drizzle-orm/sqlite` | `bun` 내장 | ✅ |
-| `bun-sqlite` | `better-sqlite3` + drizzle-orm` | `better-sqlite3` | ⚠️ |
+| 'sqlite' | `bun:sqlite` + `drizzle-orm/sqlite` | `bun` 내장 | ✅ |
+| `sqlite` | `better-sqlite3` + drizzle-orm` | `better-sqlite3` | ⚠️ |
 | `d1` | `@cloudflare/d1` + `drizzle-orm/d1` | `@cloudflare/d1` | ❌ (Workers only) |
 
 각 driver는 npm 패키지에서 lazily 로드되므로 사용하지 않는 driver는

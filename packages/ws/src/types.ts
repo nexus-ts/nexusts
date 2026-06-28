@@ -16,7 +16,7 @@
  * ------------------------------------------------------------------ */
 
 /** Mirrors the standard `WebSocket.readyState` enum. */
-export const enum WsReadyState {
+export enum WsReadyState {
 	CONNECTING = 0,
 	OPEN = 1,
 	CLOSING = 2,

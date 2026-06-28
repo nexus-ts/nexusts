@@ -24,7 +24,7 @@
  * }
  * ```
  */
-import { safeGetMeta, safeDefineMeta, safeHasMeta, safeParamTypes } from "./safe-reflect.js";
+import { safeGetMeta, safeDefineMeta, safeHasMeta, } from "./safe-reflect.js";
 import { METADATA_KEY } from "../constants.js";
 
 // ---- Runtime metadata key (stored on constructor) ----

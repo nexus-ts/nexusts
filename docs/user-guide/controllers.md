@@ -75,7 +75,6 @@ each route.
 > `@Controller` classes in a single `.ts` file can cause Bun to
 > misorder decorator execution, resulting in some routes not being
 > registered. Move each controller into its own file. See
-> [`common-pitfalls.md §2`](./common-pitfalls.md).
 
 ### 1.1 Nest style (class decorators)
 
@@ -91,7 +90,7 @@ const CreateUserSchema = z.object({
 
 @Controller('/users')
 export class UserController {
-  constructor(@Inject(UserService) private readonly users: UserService) {}
+  @Inject(UserService) declare private readonly users: UserService;
 
   @Get('/')
   @Validate({
@@ -125,20 +124,7 @@ export class UserController {
 }
 ```
 
-> **⚠ Bun note — `@Inject` + constructor parameter property**: On Bun
-> 1.3.x, `constructor(@Inject(Svc) private svc: Svc)` syntax can lose
-> the DI token. Use explicit assignment instead:
->
-> ```ts
-> // ✅ Recommended
-> svc: Svc;
-> constructor(@Inject(Svc) svc: Svc) { this.svc = svc; }
->
-> // ⚠ Unstable on Bun
-> @Inject(Svc) declare svc: Svc;
-> ```
->
-> See [`common-pitfalls.md §7`](./common-pitfalls.md).
+> **ℹ Standard decorator mode (v0.9+)**
 
 ### 1.2 Adonis style
 
@@ -585,28 +571,21 @@ class AppModule {}
 ```
 
 For the full debugging walkthrough see
-**[common-pitfalls.md §2](./common-pitfalls.md#2-한-파일에-여러-controller를-정의하면-라우터가-누락됨)**.
 
-### 10.2 Constructor injection on Bun: avoid `private readonly`
+### 10.2 Standard decorator mode: use field injection
 
-If you write `@Inject(...) private readonly x: X`, Bun's TypeScript
-transformer sometimes drops the decorator on Bun 1.3.14 (the param-property
-syntax interacts badly with legacy decorator metadata). The portable
-form is:
+With standard ES decorators (v0.9+), use field injection instead of
+constructor parameter injection:
 
 ```ts
 @Injectable()
 class FooService {
-  drizzle: DrizzleService;
-
-  constructor(@Inject(DrizzleService.TOKEN) drizzle: DrizzleService) {
-    this.drizzle = drizzle;   // ← explicit assignment
-  }
+  @Inject(DrizzleService.TOKEN) declare drizzle: DrizzleService;
 }
 ```
 
-This works under Bun, `tsc`+`node`, and `tsc`+`bun dist/` — same code
-everywhere.
+This avoids the Bun 1.3.x `private readonly` decorator-dropping bug entirely
+and works across Bun and `tsc`+`bun dist/`.
 
 ---
 
@@ -627,7 +606,7 @@ const CreateUserSchema = z.object({
 
 @Controller('/users')
 export class UserController {
-  constructor(@Inject(UserService) private readonly users: UserService) {}
+  @Inject(UserService) declare private readonly users: UserService;
 
   @Get('/')
   list() {

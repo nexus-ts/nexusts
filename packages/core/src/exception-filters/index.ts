@@ -26,7 +26,7 @@
  * class ApiController { ... }
  * ```
  */
-import { safeGetMeta, safeDefineMeta, safeHasMeta, safeParamTypes } from "../di/safe-reflect.js";
+import { safeGetMeta, safeDefineMeta, } from "../di/safe-reflect.js";
 import { HttpException } from "./http-exception.js";
 import {
 	ValidationError,
@@ -152,7 +152,7 @@ export function createDefaultExceptionFilter(): ExceptionFilter {
 				JSON.stringify({
 					error: message,
 					statusCode: 500,
-					...(process.env["NODE_ENV"] !== "production" && stack
+					...(process.env.NODE_ENV !== "production" && stack
 						? { stack }
 						: {}),
 				}),

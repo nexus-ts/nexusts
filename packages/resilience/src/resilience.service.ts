@@ -3,7 +3,7 @@
  * registry. Exposed via DI so multiple parts of an app can share
  * the same circuit for an external dependency.
  *
- *   constructor(@Inject(ResilienceService.TOKEN) private r: ResilienceService) {}
+ *   @Inject(ResilienceService.TOKEN) declare private r: ResilienceService;
  *
  *   const cb = this.r.getOrCreateCircuit("stripe", { threshold: 0.5 });
  *   const result = await cb.execute(() => stripeApi.charge(...));
@@ -197,10 +197,10 @@ export class ResilienceService {
 				raw = initialDelay * attempt;
 				break;
 			case "exponential":
-				raw = initialDelay * Math.pow(multiplier, attempt - 1);
+				raw = initialDelay * multiplier ** (attempt - 1);
 				break;
 			case "exponential-jitter":
-				raw = Math.random() * initialDelay * Math.pow(multiplier, attempt - 1);
+				raw = Math.random() * initialDelay * multiplier ** (attempt - 1);
 				break;
 		}
 		return Math.min(raw, maxDelay);

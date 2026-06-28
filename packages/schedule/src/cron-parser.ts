@@ -131,7 +131,7 @@ export class CronExpression {
 				return cur;
 			}
 			// Fast-forward: if the month doesn't match, jump to next month.
-			if (!this.fields[this.hasSeconds ? 4 : 3]!.contains(cur.getMonth() + 1)) {
+			if (!this.fields[this.hasSeconds ? 4 : 3]?.contains(cur.getMonth() + 1)) {
 				cur = new Date(cur.getFullYear(), cur.getMonth() + 1, 1, 0, 0, 0, 0);
 				continue;
 			}
@@ -167,7 +167,7 @@ export class CronExpression {
 				continue;
 			}
 			// If the hour doesn't match, jump to next hour.
-			if (!this.fields[this.hasSeconds ? 2 : 1]!.contains(cur.getHours())) {
+			if (!this.fields[this.hasSeconds ? 2 : 1]?.contains(cur.getHours())) {
 				cur = new Date(
 					cur.getFullYear(),
 					cur.getMonth(),
@@ -180,7 +180,7 @@ export class CronExpression {
 				continue;
 			}
 			// If the minute doesn't match, jump to next minute.
-			if (!this.fields[this.hasSeconds ? 1 : 0]!.contains(cur.getMinutes())) {
+			if (!this.fields[this.hasSeconds ? 1 : 0]?.contains(cur.getMinutes())) {
 				cur = new Date(
 					cur.getFullYear(),
 					cur.getMonth(),
@@ -193,7 +193,7 @@ export class CronExpression {
 				continue;
 			}
 			// If seconds field exists and doesn't match, jump to next second.
-			if (this.hasSeconds && !this.fields[0]!.contains(cur.getSeconds())) {
+			if (this.hasSeconds && !this.fields[0]?.contains(cur.getSeconds())) {
 				cur = new Date(cur.getTime() + 1000);
 				continue;
 			}
@@ -225,8 +225,8 @@ export class CronExpression {
 		// day-of-week when both are restricted (standard crontab behavior).
 		const domField = this.fields[this.hasSeconds ? 3 : 2]!;
 		const dowField = this.fields[this.hasSeconds ? 4 : 3]!;
-		const isWildDom = domField.values.size === FIELD_RANGES[2]![1]!;
-		const isWildDow = dowField.values.size === FIELD_RANGES[4]![1]! + 1;
+		const isWildDom = domField.values.size === FIELD_RANGES[2]?.[1];
+		const isWildDow = dowField.values.size === (FIELD_RANGES[4]?.[1] ?? 0) + 1;
 		const dayMatch =
 			isWildDom || isWildDow
 				? domField.contains(d.getDate()) || dowField.contains(d.getDay())
@@ -234,7 +234,7 @@ export class CronExpression {
 
 		for (let i = 0; i < this.fields.length; i++) {
 			if (i === (this.hasSeconds ? 3 : 2)) continue;
-			if (!this.fields[i]!.contains(fields[i]!)) return false;
+			if (!this.fields[i]?.contains(fields[i]!)) return false;
 		}
 		return dayMatch;
 	}

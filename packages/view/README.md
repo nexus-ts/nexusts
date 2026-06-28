@@ -1,12 +1,13 @@
 # @nexusts/view
 
-> **NexusTS** — Bun-native fullstack framework
+> **NexusTS View** — View engines (Rendu, Edge Templates, Eta) + Inertia.js v3 adapter for Bun and Cloudflare Workers.
 
-## Description
+## Features
 
-View engines (Rendu, Edge, Eta) + Inertia.js v3 adapter.
-
-3 engines: Rendu (default, every runtime), Edge (Adonis-style .edge), Eta (EJS-style .eta). Inertia v3 adapter for React + Vue SPAs and SSR.
+- **3 engines**: Rendu (default), Edge Templates (`.edge`), Eta (EJS-style `.eta`)
+- **Inertia.js v3** — React + Vue SPAs and SSR
+- **Field injection** — `@Inject(Inertia.TOKEN) declare inertia: Inertia` (standard decorators)
+- **No extra deps** — Rendu/Edge/Eta are built-in. Only need peer deps for Inertia React/Vue.
 
 ## Install
 
@@ -28,10 +29,24 @@ bun add @nexusts/view
 
 **None.** No external dependencies for Rendu / Edge / Eta. Inertia.js React requires `react` and `@inertiajs/react`; Inertia.js Vue requires `vue` and `@inertiajs/vue3`.
 
-## Usage
+## Quick start
+
+```bash
+bun add @nexusts/view
+```
 
 ```typescript
-import { /* public API */ } from "@nexusts/view";
+import { Inertia } from "@nexusts/view";
+import { Inject, Injectable } from "@nexusts/core";
+
+@Injectable()
+class PageController {
+  @Inject(Inertia.TOKEN) declare inertia: Inertia;
+
+  home() {
+    return this.inertia.render("Home", { greeting: "Hello!" });
+  }
+}
 ```
 
 See the [user guide](../../docs/user-guide/view.md) and the [example app](../../examples/) for a working demo.

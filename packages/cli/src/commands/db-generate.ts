@@ -44,7 +44,7 @@ export const dbGenerateCommand: Command = {
 		{
 			name: "dialect",
 			description:
-				"Database dialect (bun-sqlite|postgres|mysql|sqlite). Reads from nx.config.ts by default.",
+				"Database dialect (sqlite|postgres|mysql). Reads from nx.config.ts by default.",
 		},
 		{
 			name: "sql",
@@ -59,7 +59,7 @@ export const dbGenerateCommand: Command = {
 		const name = ctx.positional[0];
 		const orm = (ctx.flags.orm as string | undefined) ?? ctx.config.orm;
 		const dialect =
-			(ctx.flags.dialect as string | undefined) ?? ctx.config.dialect ?? "bun-sqlite";
+			(ctx.flags.dialect as string | undefined) ?? ctx.config.dialect ?? "sqlite";
 		const isSql = ctx.flags.sql === true;
 
 		if (isSql) {

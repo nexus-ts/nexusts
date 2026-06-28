@@ -21,8 +21,8 @@ function makeConfig(overrides: Record<string, unknown> = {}) {
 		routing: "nest" as const,
 		view: "none" as const,
 		orm: "drizzle" as const,
-		dialect: "bun-sqlite" as const,
-		database: { driver: "bun-sqlite" as const, url: ":memory:" },
+		dialect: "sqlite" as const,
+		database: { driver: "sqlite" as const, url: ":memory:" },
 		inertia: { frontend: "react" as const, ssr: false, version: "1.0.0" },
 		paths: {
 			app: "app",

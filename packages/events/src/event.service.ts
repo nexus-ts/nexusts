@@ -10,7 +10,6 @@
 import { Inject, Injectable } from '@nexusts/core';
 import {
 	NexusEventEmitter,
-	compilePattern,
 } from './emitter.js';
 import type {
 	EventEmitter,
@@ -19,7 +18,6 @@ import type {
 	EmitResult,
 	ListenerOptions,
 	EventsConfig,
-	EmitterEvent,
 	EmitterEventListener,
 } from './types.js';
 
@@ -28,10 +26,11 @@ export class EventService {
 	/** DI token — use with `@Inject(EventService.TOKEN)`. */
 	static readonly TOKEN = Symbol.for('nexus:EventService');
 
+	@Inject('EVENTS_CONFIG') declare private readonly config: EventsConfig;
 	readonly emitter: EventEmitter;
 
-	constructor(@Inject('EVENTS_CONFIG') private readonly config: EventsConfig = {}) {
-		this.emitter = new NexusEventEmitter(config);
+	constructor() {
+		this.emitter = new NexusEventEmitter(this.config);
 	}
 
 	// ===========================================================================
@@ -84,21 +83,5 @@ export class EventService {
 			return internal.onEmitterEvent(listener);
 		}
 		return () => {};
-	}
-
-	// ===========================================================================
-	// Internal
-	// ===========================================================================
-
-	#bridgeEmitterEvents(): void {
-		// Forward emitter events through our public EventService — useful
-		// for testing / debugging.
-		const internal = this.emitter as NexusEventEmitter;
-		if (typeof internal.onEmitterEvent === 'function') {
-			internal.onEmitterEvent((event: EmitterEvent) => {
-				// Reserved for future log/metric integration.
-				void event;
-			});
-		}
 	}
 }

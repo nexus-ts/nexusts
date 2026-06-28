@@ -12,7 +12,7 @@ import { safeGetMeta, safeDefineMeta, safeHasMeta } from "@nexusts/core/di/safe-
  *   })
  *
  *   class UserService {
- *     constructor(@Inject(DrizzleService.TOKEN) private db: DrizzleService) {}
+ *     @Inject(DrizzleService.TOKEN) declare private db: DrizzleService;
  *     list() { return this.db.select().from(users).all(); }
  *   }
  *
@@ -20,7 +20,7 @@ import { safeGetMeta, safeDefineMeta, safeHasMeta } from "@nexusts/core/di/safe-
  *   - `postgres`  — node-postgres / postgres.js
  *   - `mysql`     — mysql2
  *   - `sqlite`    — better-sqlite3 / libsql
- *   - `bun-sqlite`— bun:sqlite (built-in)
+ *   - `sqlite`— bun:sqlite (built-in)
  *   - `d1`        — Cloudflare D1 (Workers)
  *
  * Lucid gap closure:
@@ -43,7 +43,6 @@ export type DrizzleDialect =
 	| "postgres"
 	| "mysql"
 	| "sqlite"
-	| "bun-sqlite"
 	| "d1";
 
 // ---------------------------------------------------------------------------
@@ -93,7 +92,6 @@ export type ConnectionOptions =
 	| { dialect: "postgres"; connection: PostgresConnectionOptions }
 	| { dialect: "mysql"; connection: MysqlConnectionOptions }
 	| { dialect: "sqlite"; connection: SqliteConnectionOptions }
-	| { dialect: "bun-sqlite"; connection: SqliteConnectionOptions }
 	| { dialect: "d1"; connection: D1ConnectionOptions };
 
 // ---------------------------------------------------------------------------

@@ -74,18 +74,7 @@ const DIALECT_SPECS: Record<string, DialectSpec> = {
 		defaultTs: ".defaultNow()",
 		defaultTsUpdate: "",
 	},
-	"bun-sqlite": {
-		imports: ["sqliteTable", "integer", "text"],
-		importPath: "drizzle-orm/sqlite-core",
-		tableFn: "sqliteTable",
-		idHelper: "integer",
-		idOpts: "{ autoIncrement: true }",
-		tsTimestamp: "integer",
-		tsDateMode: ", { mode: 'timestamp' }",
-		defaultTs: ".$defaultFn(() => Date.now())",
-		defaultTsUpdate: ".$defaultFn(() => Date.now())",
-	},
-	sqlite: {
+	"sqlite": {
 		imports: ["sqliteTable", "integer", "text", "real"],
 		importPath: "drizzle-orm/sqlite-core",
 		tableFn: "sqliteTable",
@@ -287,6 +276,6 @@ export function renderDrizzleColumns(
 /** Check if a dialect string is valid for Drizzle. */
 export function isValidDialect(
 	d: string,
-): d is "postgres" | "mysql" | "sqlite" | "bun-sqlite" | "d1" {
-	return ["postgres", "mysql", "sqlite", "bun-sqlite", "d1"].includes(d);
+): d is "postgres" | "mysql" | "sqlite" | "d1" {
+	return ["postgres", "mysql", "sqlite", "d1"].includes(d);
 }

@@ -39,7 +39,7 @@ interface GatewayMetadata {
  *   class ChatGateway { ... }
  */
 export function WebSocketGateway(path: string): ClassDecorator {
-	return function (target: any, context?: any): void {
+	return (target: any, context?: any): void => {
 		// Standard decorator mode (TC39 stage-3)
 		if (context?.kind === "class") {
 			const proto = target.prototype;
@@ -70,7 +70,7 @@ export function WebSocketGateway(path: string): ClassDecorator {
 /** Read the gateway path. Internal — used by the framework. */
 export function getGatewayPath(target: object): string | undefined {
 	const t = target as any;
-	const meta: GatewayMetadata | undefined = t[GATEWAY_KEY];
+	const meta: GatewayMetadata | undefined = t[GATEWAY_KEY] ?? t.prototype?.[GATEWAY_KEY];
 	return meta?.path;
 }
 
@@ -79,19 +79,23 @@ export function getGatewayPath(target: object): string | undefined {
  * ------------------------------------------------------------------ */
 
 function makeLifecycleDecorator(lifecycle: WsLifecycle) {
-	return function (
+	return (
 		_target: object,
 		propertyKey: string | symbol,
 		descriptorOrContext?: PropertyDescriptor | any,
-	): any {
-		// Standard decorator mode (TC39 stage-3) — context-based
-		if (descriptorOrContext?.kind === "method") {
-			const meta: Record<string, string> = safeGetMeta(LIFECYCLE_KEY, _target, propertyKey) ?? {};
-			meta[lifecycle] = String(propertyKey);
-			safeDefineMeta(LIFECYCLE_KEY, meta, _target, propertyKey);
+	): any => {
+		// Standard decorator mode (TC39 stage-3) — context is second arg
+		if (propertyKey && typeof propertyKey === "object" && (propertyKey as any)?.kind === "method") {
+			const ctx = propertyKey as any;
+			const fn = _target;
+			const meta: Record<string, string> = safeGetMeta(LIFECYCLE_KEY, fn, ctx.name) ?? {};
+			meta[lifecycle] = String(ctx.name);
+			safeDefineMeta(LIFECYCLE_KEY, meta, fn, ctx.name);
+			if (!(fn as any)[LIFECYCLE_KEY]) (fn as any)[LIFECYCLE_KEY] = {};
+			(fn as any)[LIFECYCLE_KEY][lifecycle] = String(ctx.name);
 			return;
 		}
-		// Legacy decorator mode (experimentalDecorators) — descriptor-based
+		// Legacy decorator mode (experimentalDecorators)
 		const descriptor = descriptorOrContext as PropertyDescriptor;
 		const fn = descriptor?.value as Function & { [LIFECYCLE_KEY]?: Record<string, string> };
 		if (typeof fn !== "function") return descriptor;
@@ -126,16 +130,23 @@ export function getLifecycleHandlers(target: object): {
 	error?: string;
 } {
 	const t = target as any;
-	// 1. Prefer the metadata stored by @WebSocketGateway.
-	if (t[GATEWAY_KEY]?.handlers) return t[GATEWAY_KEY].handlers;
+	// 1. Prefer the metadata stored by @WebSocketGateway (if non-empty).
+	const meta: GatewayMetadata | undefined = t[GATEWAY_KEY] ?? t.prototype?.[GATEWAY_KEY];
+	if (meta?.handlers && Object.keys(meta.handlers).length > 0) return meta.handlers;
 	// 2. Walk the prototype and collect from method functions.
 	const out: Record<string, string> = {};
 	const proto = t.prototype ?? t;
 	for (const name of Object.getOwnPropertyNames(proto)) {
 		if (name === "constructor") continue;
 		const m = (proto as any)[name];
-		if (typeof m === "function" && (m as any)[LIFECYCLE_KEY]) {
-			Object.assign(out, (m as any)[LIFECYCLE_KEY]);
+		if (typeof m === "function") {
+			// Check LIFECYCLE_KEY (stashed by decorator in both modes)
+			if ((m as any)[LIFECYCLE_KEY]) {
+				Object.assign(out, (m as any)[LIFECYCLE_KEY]);
+			}
+			// Also check safeGetMeta (standard mode)
+			const fromMeta = safeGetMeta(LIFECYCLE_KEY, m, name) as Record<string, string> | undefined;
+			if (fromMeta) Object.assign(out, fromMeta);
 		}
 	}
 	return out;

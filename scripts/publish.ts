@@ -196,13 +196,13 @@ for (const pkg of publishOrder) {
 
 	// Wait briefly between publishes to avoid npm registry rate limits.
 	// Tunable via env:
-	//   PUBLISH_BATCH_DELAY_MS — per-package delay in ms (default 3_000 = 3s)
-	//   PUBLISH_BATCH_BREAK_MS  — extra delay every N packages (default 5_000 = 5s)
+	//   PUBLISH_BATCH_DELAY_MS — per-package delay in ms (default 2_000 = 2s)
+	//   PUBLISH_BATCH_BREAK_MS  — extra delay every N packages (default 4_000 = 4s)
 	//   PUBLISH_BATCH_BREAK_N   — packages per break (default 5)
 	if (pkg !== publishOrder[publishOrder.length - 1]) {
 		const remaining = publishOrder.length - publishOrder.indexOf(pkg) - 1;
-		const batchDelay = Number(process.env.PUBLISH_BATCH_DELAY_MS ?? 3_000);
-		const batchBreak = Number(process.env.PUBLISH_BATCH_BREAK_MS ?? 5_000);
+		const batchDelay = Number(process.env.PUBLISH_BATCH_DELAY_MS ?? 2_000);
+		const batchBreak = Number(process.env.PUBLISH_BATCH_BREAK_MS ?? 4_000);
 		const batchN = Number(process.env.PUBLISH_BATCH_BREAK_N ?? 5);
 
 		const publishedSoFar = publishOrder.length - remaining;

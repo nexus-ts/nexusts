@@ -19,7 +19,7 @@ export function tracingMiddleware(service: TracingService): MiddlewareHandler {
 	return async (c, next) => {
 		const incoming = c.req.raw.headers;
 		const flat: Record<string, string> = {};
-		incoming.forEach((v, k) => (flat[k] = v));
+		incoming.forEach((v, k) => { flat[k] = v; });
 		const extractedCtx: Context = service.extractContext(flat);
 
 		const method = c.req.method;

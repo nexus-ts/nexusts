@@ -31,7 +31,7 @@ class AppModule {}
 
 That single call:
 
-1. Registers Node.js process metrics (CPU, memory, GC, event-loop lag)
+1. Registers Bun process metrics (CPU, memory, GC, event-loop lag)
    with auto-collected values.
 2. Mounts `GET /metrics` with content negotiation (Prometheus 0.0.4 by
    default, OpenMetrics 1.0.0 when the client requests it).
@@ -43,7 +43,7 @@ $ curl http://localhost:3000/metrics
 # TYPE process_resident_memory_bytes gauge
 process_resident_memory_bytes{service="my-app"} 12345678
 
-# HELP nodejs_heap_size_used_bytes Node.js heap size used in bytes.
+# HELP bun_heap_size_used_bytes Bun heap size used in bytes.
 # TYPE nodejs_heap_size_used_bytes gauge
 nodejs_heap_size_used_bytes{service="my-app"} 4567890
 ...
@@ -189,7 +189,7 @@ and the trailing newline convention differ.
 
 ---
 
-## 6. Default Node.js process metrics
+## 6. Default Bun process metrics
 
 When `enableDefaultMetrics: true` (the default), the following
 gauges are registered with a `collect()` callback that runs at

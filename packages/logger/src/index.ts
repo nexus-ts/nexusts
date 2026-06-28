@@ -22,7 +22,7 @@
  *
  *   @Injectable()
  *   class MyService {
- *     constructor(@Inject(Logger.TOKEN) private logger: Logger) {}
+ *     @Inject(Logger.TOKEN) declare private logger: Logger;
  *
  *     async handle() {
  *       this.logger.info({ userId: 'u-1' }, 'user signed in');

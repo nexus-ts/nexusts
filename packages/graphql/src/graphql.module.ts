@@ -30,7 +30,6 @@ import type { Context } from "hono";
 import { Module } from "@nexusts/core";
 import { GraphQLService } from "./graphql.service.js";
 import type { GraphQLConfig } from "./types.js";
-import { safeGetMeta } from "@nexusts/core/di/safe-reflect";
 
 @Module({
 	providers: [

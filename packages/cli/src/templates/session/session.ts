@@ -18,7 +18,7 @@ import type { SessionRecord } from '@nexusts/session';
  */
 @Injectable()
 export class {{ name }}Session {
-  constructor(@Inject(SessionService.TOKEN) private readonly sessions: SessionService) {}
+  @Inject(SessionService.TOKEN) declare private readonly sessions: SessionService;
 
   /** Read the current session record (or null). */
   async getCurrent(sessionId: string | null | undefined) {

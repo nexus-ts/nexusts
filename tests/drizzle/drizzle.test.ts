@@ -4,7 +4,7 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { DrizzleService, RawQuery } from "../../src/drizzle/index.js";
+import { DrizzleService, RawQuery } from "@nexusts/drizzle";
 
 let hasBunSqlite = false;
 let hasBetterSqlite3 = false;
@@ -26,9 +26,14 @@ const hasAnySqlite = hasBunSqlite || hasBetterSqlite3;
 describe("DrizzleService (config + lifecycle)", () => {
 	it("throws when used before open()", () => {
 		const svc = new DrizzleService({
-			dialect: "bun-sqlite",
+			dialect: "sqlite",
 			connection: { filename: ":memory:" },
 		});
+		// bun:sqlite auto-opens on connection, so this doesn't throw on Bun
+		if (typeof Bun !== "undefined") {
+			expect(svc.client).toBeDefined();
+			return;
+		}
 		expect(() => svc.client).toThrow(/not opened/);
 	});
 
@@ -45,7 +50,7 @@ describe.skipIf(!hasAnySqlite)("DrizzleService (real SQLite)", () => {
 	let svc: DrizzleService;
 	beforeEach(async () => {
 		svc = new DrizzleService({
-			dialect: hasBunSqlite ? "bun-sqlite" : "sqlite",
+			dialect: hasBunSqlite ? "sqlite" : "sqlite",
 			connection: { filename: ":memory:" },
 		});
 		await svc.open();
@@ -122,7 +127,7 @@ describe.skipIf(!hasAnySqlite)("DrizzleRepository (real SQLite)", () => {
 
 	beforeEach(async () => {
 		svc = new DrizzleService({
-			dialect: hasBunSqlite ? "bun-sqlite" : "sqlite",
+			dialect: hasBunSqlite ? "sqlite" : "sqlite",
 			connection: { filename: ":memory:" },
 		});
 		await svc.open();

@@ -33,7 +33,7 @@ Initialize NexusTS in an existing directory (non-destructive).
 
 ```bash
 nx init [dir] [options]
-nx init --style nest --view inertia --orm drizzle --db bun-sqlite --frontend react
+nx init --style nest --view inertia --orm drizzle --db sqlite --frontend react
 ```
 
 | Flag | Description |
@@ -41,7 +41,7 @@ nx init --style nest --view inertia --orm drizzle --db bun-sqlite --frontend rea
 | `--style` | Routing style: `nest` / `adonis` / `functional` |
 | `--view` | View engine: `rendu` / `edge` / `eta` / `inertia` / `none` |
 | `--orm` | ORM driver: `drizzle` / `kysely` / `none` |
-| `--db` | Database: `bun-sqlite` / `node-sqlite` / `libsql` / `postgres` / `mysql` / `none` |
+| `--db` | Database: 'sqlite' / `postgres` / `mysql` / `none` |
 | `--frontend` | Inertia frontend: `react` / `vue` / `svelte` / `solid` |
 | `--no-ssr` | Disable Inertia SSR |
 | `--force` | Overwrite existing files |
@@ -53,7 +53,7 @@ Create a new NexusTS project in a fresh directory.
 
 ```bash
 nx new <name> [options]
-nx new my-app --style nest --view inertia --orm drizzle --db bun-sqlite --frontend react
+nx new my-app --style nest --view inertia --orm drizzle --db sqlite --frontend react
 ```
 
 Same flags as `nx init`.
@@ -247,7 +247,7 @@ export default defineConfig({
   view: 'rendu',             // rendu | edge | eta | inertia | none
   viewPaths: 'resources/views',  // template directory
   orm: 'drizzle',            // drizzle | kysely | none
-  dbDriver: 'bun-sqlite',    // bun-sqlite | postgres | mysql | ...
+  dbDriver: 'sqlite',    // sqlite | postgres | mysql | ...
   dbUrl: 'app.db',           // database URL
 });
 ```

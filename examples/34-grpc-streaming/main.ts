@@ -91,10 +91,7 @@ class DemoServiceImpl {
 @Controller("/demo")
 @Injectable()
 class DemoController {
-  private readonly grpc: GrpcSvcClass;
-  constructor(@Inject(GrpcSvcClass) grpc: GrpcSvcClass) {
-    this.grpc = grpc;
-  }
+  @Inject(GrpcSvcClass) declare private readonly grpc: GrpcSvcClass;
 
   @Get("/ping")
   async ping() {

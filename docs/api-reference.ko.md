@@ -359,10 +359,10 @@ type ParamType   = typeof PARAM_TYPES[keyof typeof PARAM_TYPES];
 ## 런타임 어댑터
 
 ```ts
-function detectRuntime(): 'bun' | 'node' | 'cloudflare';
+function detectRuntime(): 'bun' | 'cloudflare';
 
 class BunRuntime       { serve(handler: (req: Request) => Promise<Response>, options?: { port?: number }): unknown; }
-class NodeRuntime      { serve(handler: (req: Request) => Promise<Response>, options?: { port?: number }): unknown; }
+class BunRuntime      { serve(handler: (req: Request) => Promise<Response>, options?: { port?: number }): unknown; }
 class CloudflareRuntime{ fetch: (req: Request, env?: any, ctx?: any) => Promise<Response>; }
 ```
 
@@ -373,7 +373,7 @@ class CloudflareRuntime{ fetch: (req: Request, env?: any, ctx?: any) => Promise<
 ```ts
 interface DrizzleAdapterConfig {
   schema: Record<string, any>;
-  driver: 'bun-sqlite' | 'node-sqlite' | 'libsql' | 'postgres' | 'mysql';
+  driver: 'sqlite' | 'postgres' | 'mysql';
 }
 
 class DrizzleAdapter {
@@ -498,7 +498,7 @@ class UserService {
 }
 ```
 
-`GET /metrics`는 Prometheus 0.0.4 반환 (또는 클라이언트가 요청 시 OpenMetrics 1.0.0). 기본 Node.js 프로세스 메트릭 자동 등록.
+`GET /metrics`는 Prometheus 0.0.4 반환 (또는 클라이언트가 요청 시 OpenMetrics 1.0.0). 기본 Bun 프로세스 메트릭 자동 등록.
 
 ---
 
@@ -510,12 +510,13 @@ import { Inject, Injectable, REQUEST, getRequest } from "@nexusts/core";
 @Injectable({ scope: "request" })
 class RequestContext {
   id = crypto.randomUUID();
-  constructor(@Inject(REQUEST) public req: any) { /* ... */ }
+  @Inject(REQUEST) declare req: any;
+  constructor() { /* ... */ }
 }
 
 @Injectable()
 class AuditService {
-  constructor(@Inject(RequestContext) private ctx: RequestContext) {}
+  @Inject(RequestContext) declare ctx: RequestContext;
   log(event: string) { console.log(`[${this.ctx.id}] ${event}`); }
 }
 ```

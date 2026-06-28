@@ -1,19 +1,4 @@
-/**
- * Router.
- *
- * The router is responsible for translating the framework's declarative
- * metadata (controllers + @Get/@Post + param decorators + validation)
- * into Hono route handlers.
- *
- * It supports three registration styles:
- * 1. **Nest style**  — class decorators (@Controller, @Get, ...)
- * 2. **Adonis style** — `router.get('/users', UserController, 'list')`
- * 3. **Functional style** — `app.get('/users', async (c) => ...)`
- *
- * The router does NOT own the Hono instance; it just adds routes to
- * the Hono app passed to `Router.create(app, container)`.
- */
-import { safeGetMeta, safeDefineMeta, safeHasMeta, safeParamTypes } from "../di/safe-reflect.js";
+
 import type { Hono } from "hono";
 import { PARAM_TYPES } from "../constants.js";
 import type { ApplicationContainer, DIContainer } from "../di/container.js";
@@ -586,7 +571,7 @@ class NexusRouterImpl implements NexusRouter {
 		return (
 			value !== null &&
 			typeof value === "object" &&
-			value["__nexus_inertia_response__"] === true &&
+			value.__nexus_inertia_response__ === true &&
 			typeof value.toResponse === "function"
 		);
 	}

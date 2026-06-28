@@ -37,7 +37,7 @@ features:
     details: Retry, Circuit Breaker, Bulkhead. 크로스-팟 저장소 (Redis/Drizzle). HTTP 관리 API. 카나리 배포용 기능 플래그.
   - icon: ⚡
     title: 검증된 CI
-    details: 348개 이상의 테스트 (Bun, Node.js 22, Cloudflare Workers, 3개 Drizzle 방언). 모든 커밋에서 smoke 테스트 통과.
+    details: 348개 이상의 테스트 (Bun, Cloudflare Workers, 3개 Drizzle 방언). 모든 커밋에서 smoke 테스트 통과.
 ---
 
 ## NexusTS란?
@@ -60,7 +60,7 @@ features:
 ## 빠른 시작
 
 ```bash
-npm create nexusts@latest my-app
+bun create nexusts@latest my-app
 cd my-app
 bun install
 bun run dev
@@ -68,7 +68,7 @@ bun run dev
 
 ```bash
 # 또는 CLI 직접 사용:
-bunx nx new my-app --view inertia --orm drizzle --db bun-sqlite --frontend react
+bunx nx new my-app --view inertia --orm drizzle --db sqlite --frontend react
 ```
 
 ## 아키텍처

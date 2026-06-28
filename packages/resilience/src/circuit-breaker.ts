@@ -264,7 +264,7 @@ export class CircuitBreaker {
 		if (now - this._lastSync < this._syncIntervalMs) return;
 		this._lastSync = now;
 		try {
-			const snap = await this._store!.getSnapshot(this.name);
+			const snap = await this._store?.getSnapshot(this.name);
 			if (!snap) return;
 			// Apply only if the remote snapshot is newer than the last one we applied.
 			if (snap.updatedAt <= this._lastRemoteUpdate) return;
@@ -286,8 +286,7 @@ export class CircuitBreaker {
 		const win = this.samples.filter((s) => s.ts >= cutoff);
 		const failures = win.filter((s) => !s.ok).length;
 		const successes = win.length - failures;
-		this._store!
-			.saveSnapshot(this.name, {
+		this._store?.saveSnapshot(this.name, {
 				state: this.state,
 				openedAt: this.openedAt,
 				failures,

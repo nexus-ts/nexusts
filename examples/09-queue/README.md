@@ -36,7 +36,7 @@ import { QueueService, QueueModule, OnQueueReady } from "@nexusts/queue";
 
 @Injectable()
 class EmailWorker {
-  constructor(@Inject(QueueService) private queue: QueueService) {}
+  @Inject(QueueService) declare private queue: QueueService;
 
   @OnQueueReady()
   register() {
@@ -51,7 +51,7 @@ class EmailWorker {
 
 @Controller("/jobs")
 class JobController {
-  constructor(@Inject(QueueService) private queue: QueueService) {}
+  @Inject(QueueService) declare private queue: QueueService;
 
   @Post("/email")
   async enqueueEmail(@Body() body: { to: string; subject: string }) {
@@ -98,7 +98,7 @@ this.queue.process("send-email", handler, {
 
 ```ts
 class OrderService {
-  constructor(@Inject(QueueService) private queue: QueueService) {}
+  @Inject(QueueService) declare private queue: QueueService;
   async placeOrder(order: Order) {
     // persist to DB...
     await this.queue.add("send-confirmation", order);

@@ -36,12 +36,12 @@ export const bunSqliteDriver: DriverFactory = async (config) => {
 
 	return {
 		db,
-		dialect: "bun-sqlite",
+		dialect: "sqlite",
 		rawExecutor,
 		async close() {
 			if (sqlite?.close) sqlite.close();
 		},
-		// bun-sqlite ships with the same migrator as better-sqlite3.
+		// bun-sqlite driver ships with the same migrator as better-sqlite3.
 		loadMigrator: async () => {
 			const mod = await import("drizzle-orm/better-sqlite3/migrator");
 			return async (folder: string) => {

@@ -11,17 +11,16 @@
  * - Multiple errors on the same field accumulate
  */
 import { describe, it, expect, beforeEach } from 'vitest';
-import { Application } from '@core/application';
-import { Module } from '@core/decorators/module';
-import { Controller } from '@core/decorators/controller';
-import { Get, Post } from '@core/decorators/http-methods';
-import { Inject } from '@core/decorators/injectable';
-import { Body } from '@core/decorators/params';
-import { Inertia } from '@/view/inertia';
+import { Application } from '@nexusts/core';
+import { Module } from '@nexusts/core';
+import { Controller } from '@nexusts/core';
+import { Get, Post } from '@nexusts/core';
+import { Inject } from '@nexusts/core';
+import { Inertia } from '@nexusts/view';
 
 @Controller('/users')
 class UsersFormController {
-  constructor(@Inject(Inertia.TOKEN) private inertia: Inertia) {}
+  @Inject(Inertia.TOKEN) declare private inertia: Inertia;
 
   @Get('/create')
   createForm() {
@@ -29,7 +28,8 @@ class UsersFormController {
   }
 
   @Post('/store')
-  async store(@Body() input: Record<string, any>) {
+  async store(ctx: any) {
+    const input = await ctx.req.json() as Record<string, any>;
     const form = this.inertia.form('Users/Create', { mode: 'create' });
     if (!input?.name) {
       return form
@@ -42,7 +42,8 @@ class UsersFormController {
   }
 
   @Post('/multi-error')
-  async multi(@Body() _input: Record<string, any>) {
+  async multi(ctx: any) {
+    const _input = await ctx.req.json() as Record<string, any>;
     const form = this.inertia.form('Users/Create');
     return form
       .withErrors({

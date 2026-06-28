@@ -34,7 +34,7 @@
  *
  *   @Injectable()
  *   class UserService {
- *     constructor(@Inject(I18N_SERVICE_TOKEN) private i18n: I18nService) {}
+ *     @Inject(I18N_SERVICE_TOKEN) declare private i18n: I18nService;
  *     greet(name: string, locale: string) {
  *       return this.i18n.t("hello", { name }, locale);
  *     }

@@ -1,7 +1,7 @@
 # Crypto · `@nexusts/crypto` (v0.5)
 
 > New in v0.5. Encryption + password hashing for NexusTS apps.
-> Zero external dependencies. All primitives come from Node's
+> Zero external dependencies. All primitives come from Bun's built-in `crypto` module.
 > built-in `crypto` module.
 
 `@nexusts/crypto` provides:
@@ -67,7 +67,7 @@ Generate the master key once with:
 ```bash
 openssl rand -base64 32
 # or
-node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
+bun -e "console.log(require.'crypto').randomBytes(32).toString('base64'))"
 ```
 
 ---

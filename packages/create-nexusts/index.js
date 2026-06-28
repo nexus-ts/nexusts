@@ -2,16 +2,15 @@
 /**
  * create-nexusts — scaffold a new NexusTS project.
  *
- * Usage (all three forms work identically):
- *   npm create nexusts@latest
- *   npx create-nexusts@latest
+ * Usage:
+ *   bun create nexusts@latest
  *   bunx create-nexusts@latest
  *
  * Examples:
- *   npm create nexusts@latest my-app
- *   npm create nexusts@latest my-app --view rendu --orm drizzle --db bun-sqlite
+ *   bun create nexusts@latest my-app
+ *   bun create nexusts@latest my-app --view rendu --orm drizzle --db bun-sqlite
  *
- * Internally calls `npx @nexusts/core init` in the new directory to
+ * Internally calls `bunx @nexusts/core init` in the new directory to
  * do the heavy lifting.
  */
 
@@ -28,11 +27,11 @@ if (!name || name === "-h" || name === "--help" || name === "-?") {
   create-nexusts — scaffold a new NexusTS project
 
   Usage:
-    npm create nexusts@latest [name] [options]
+    bun create nexusts@latest [name] [options]
 
   Examples:
-    npm create nexusts@latest my-app
-    npm create nexusts@latest my-app --view rendu --orm drizzle --db bun-sqlite
+    bun create nexusts@latest my-app
+    bun create nexusts@latest my-app --view rendu --orm drizzle --db bun-sqlite
 
   Options:
     --style <nest|adonis|functional>   Routing style (default: nest)
@@ -71,9 +70,8 @@ writeFileSync(
 
 console.log(`\n  ✦  Scaffolding ${name}...\n`);
 
-// Detect the runner we were invoked through.
-const isBun = typeof Bun !== "undefined";
-const runner = isBun ? "bunx" : "npx";
+// Bun is always the runner.
+const runner = "bunx";
 
 // Determine if we're running inside the monorepo (local development).
 // If so, use the local CLI directly instead of downloading from npm.

@@ -36,7 +36,7 @@ class AppController {
 @Injectable()
 @WebSocketGateway("/chat")
 class ChatGateway {
-  constructor(@Inject(WebSocketService) private ws: WebSocketService) {}
+  @Inject(WebSocketService) declare private ws: WebSocketService;
 
   @OnWebSocketOpen()
   onOpen(socket: any) {

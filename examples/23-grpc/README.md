@@ -75,9 +75,10 @@ class GrpcAppModule {}
 ```ts
 @Injectable()
 class GreeterClient {
+  @Inject(GRPC_SERVICE_TOKEN) declare grpc: GrpcService;
   private client: any;
-  constructor(@Inject(GRPC_SERVICE_TOKEN) grpc: GrpcService) {
-    this.client = grpc.client("GreeterService", { url: "localhost:50051" });
+  constructor() {
+    this.client = this.grpc.client("GreeterService", { url: "localhost:50051" });
   }
   async sayHello(name: string) {
     return this.client.SayHello({ name });

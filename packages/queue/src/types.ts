@@ -36,7 +36,7 @@ export type JobResult<T = unknown> =
 export type JobHandler<T = unknown> = (
 	data: T,
 	ctx: JobContext,
-) => Promise<JobResult<T> | void> | JobResult<T> | void;
+) => Promise<JobResult<T> | undefined> | JobResult<T> | undefined;
 
 /** Per-job execution context. */
 export interface JobContext {

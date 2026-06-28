@@ -36,7 +36,7 @@ jobs:
           bun-version: latest
       - run: bun install --no-frozen-lockfile
       - name: Run bun-sqlite tests
-        run: bun x vitest run tests/drizzle/ --reporter verbose
+        run: bun test tests/drizzle/
 
   # ──────────────────────────────────────────────────────────────────────────
   # PostgreSQL 16
@@ -69,7 +69,7 @@ jobs:
       - name: Wait for Postgres
         run: until pg_isready -h localhost -U nexus; do sleep 1; done
       - name: Run postgres tests
-        run: bun x vitest run tests/drizzle/ --reporter verbose
+        run: bun test tests/drizzle/
         env:
           DRIZZLE_DIALECT: postgres
 
@@ -85,4 +85,4 @@ jobs:
         with:
           bun-version: latest
       - run: bun install --no-frozen-lockfile
-      - run: bun x vitest run tests/drizzle/factory.test.ts --reporter verbose
+      - run: bun test tests/drizzle/factory.test.ts

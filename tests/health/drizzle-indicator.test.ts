@@ -9,7 +9,7 @@ import { DrizzleService } from "../../src/drizzle/index.js";
 describe("DrizzleHealthIndicator", () => {
 	it("reports up when the probe succeeds", async () => {
 		const db = new DrizzleService({
-			dialect: "bun-sqlite",
+			dialect: "sqlite",
 			connection: { filename: ":memory:" },
 		});
 		await db.open();

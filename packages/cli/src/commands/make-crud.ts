@@ -59,7 +59,7 @@ export const makeCrudCommand: Command = {
 		{
 			name: "dialect",
 			description:
-				"Drizzle dialect (postgres|mysql|sqlite|bun-sqlite|d1). Default: bun-sqlite",
+				"Drizzle dialect (postgres|mysql|sqlite|d1). Default: sqlite",
 		},
 	],
 	async run(ctx: CommandContext): Promise<number> {
@@ -76,7 +76,7 @@ export const makeCrudCommand: Command = {
 		const dialect =
 			(ctx.flags.dialect as string | undefined) ??
 			ctx.config.dialect ??
-			"bun-sqlite";
+			"sqlite";
 		const noRepo = flagBool(ctx.flags, "no-repo", false) || orm === "none";
 		const noTest = flagBool(ctx.flags, "no-test", false);
 		const hasInertia =

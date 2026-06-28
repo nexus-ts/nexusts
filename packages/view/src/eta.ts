@@ -47,9 +47,8 @@ export class EtaAdapter implements ViewAdapter {
 			// user never uses `.eta` files, Eta isn't loaded.
 			let Eta: any;
 			try {
-				// @ts-ignore — eta is an optional peer dep
 				Eta = require("eta").Eta;
-			} catch (e) {
+			} catch (_e) {
 				throw new Error(
 					`[nexus] EtaAdapter: the "eta" package is not installed. ` +
 						`Run \`bun add eta\` (or \`npm install eta\`) to use .eta templates.`,

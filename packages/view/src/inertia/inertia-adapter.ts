@@ -32,7 +32,6 @@ import {
 } from "./helpers.js";
 import { InertiaResponse, INERTIA_RESPONSE_TAG } from "./inertia-response.js";
 import { InertiaFormBuilder } from "./form-helper.js";
-import { safeGetMeta, safeDefineMeta, safeHasMeta } from "@nexusts/core/di/safe-reflect";
 
 const INERTIA_TOKEN = Symbol.for("nexus:Inertia");
 

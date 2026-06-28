@@ -4,7 +4,7 @@
 
 NexusTS는 `@nexusts/queue` 모듈 아래 두 가지 프로덕션 준비 백엔드를 래핑한다.
 
-- **BullMQ** — Redis 기반, 장기 실행 Bun / Node 서버용.
+- **BullMQ** — Redis 기반, 장기 실행 Bun 서버용.
 - **Cloudflare Queues** — Workers 네이티브, 엣지 친화적.
 - **In-memory** — 테스트 및 단일 인스턴스 개발용.
 
@@ -106,7 +106,7 @@ class WorkerModule {}
 
 프로덕션 준비, Redis 기반. 용도:
 
-- 장기 실행 Bun / Node 서버.
+- 장기 실행 Bun 서버.
 - 지연 실행, 재시도, rate limiting이 필요한 작업.
 - Redis 클러스터를 공유하는 다중 인스턴스 배포.
 

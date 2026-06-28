@@ -25,7 +25,7 @@ import { Logger, LoggerModule } from "@nexusts/logger";
 @Injectable()
 @Controller("/")
 class AppController {
-  constructor(@Inject(Logger.TOKEN) private logger: Logger) {}
+  @Inject(Logger.TOKEN) declare private logger: Logger;
 
   @Get("/log")
   log() {

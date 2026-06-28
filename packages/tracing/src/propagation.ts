@@ -83,7 +83,7 @@ export function formatTraceParent(traceId: string, spanId: string, sampled = tru
 export function extractB3Context(
 	headers: Record<string, string>,
 ): { traceId: string; spanId: string; sampled: boolean } | undefined {
-	const b3 = headers["b3"] ?? headers["x-b3-traceid"];
+	const b3 = headers.b3 ?? headers["x-b3-traceid"];
 	if (!b3) return undefined;
 	if (b3.includes("-")) {
 		// b3 single header: "traceId-spanId-sampled-parentSpanId"

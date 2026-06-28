@@ -87,7 +87,7 @@ function loadConfig<S extends ConfigSchema>(options: ConfigOptions<S>): LoadedCo
 	const paths = options.envFilePaths ?? [];
 	const useEnvFile = options.envFile !== false;
 	if (useEnvFile) {
-		const nodeEnv = options.nodeEnv ?? process.env["NODE_ENV"] ?? "development";
+		const nodeEnv = options.nodeEnv ?? process.env.NODE_ENV ?? "development";
 		if (!paths.includes(".env")) paths.unshift(".env");
 		if (!paths.includes(".env.local")) paths.push(".env.local");
 		const envSpecific = `.env.${nodeEnv}`;

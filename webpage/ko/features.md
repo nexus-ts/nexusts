@@ -88,7 +88,7 @@ NexusTS는 **32개 독립 모듈**을 제공합니다. 각 모듈은 별도의 `
 | 이메일 (Null / File / SMTP / MJML) | `@nexusts/mail` | ✅ v0.3 |
 | 설정 관리 | `@nexusts/config` | ✅ v0.3 |
 | i18n (Intl 기반, 복수화) | `@nexusts/i18n` | ✅ v0.5 |
-| Redis 클라이언트 (Bun / Node / Workers KV) | `@nexusts/redis` | ✅ v0.5 |
+| Redis 클라이언트 (Bun / Workers KV) | `@nexusts/redis` | ✅ v0.5 |
 | 파일 업로드 헬퍼 | `@nexusts/upload` | ✅ v0.4 |
 | 헬스 체크 | `@nexusts/health` | ✅ v0.3 |
 

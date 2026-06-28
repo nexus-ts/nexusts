@@ -29,7 +29,7 @@ export class ShieldService {
 		if (config.csrf) {
 			const secret =
 				config.secret ??
-				process.env["NEXUS_SHIELD_SECRET"] ??
+				process.env.NEXUS_SHIELD_SECRET ??
 				"change-me-in-production-please";
 			this.csrf = new CsrfGuard(config.csrf as CsrfConfig, secret);
 		}
@@ -40,10 +40,6 @@ export class ShieldService {
 			config.xContentTypeOptions ?? true,
 			config.referrerPolicy,
 		);
-	}
-
-	constructor() {
-		// DI sets @Inject fields before first use.
 	}
 
 	/**

@@ -122,7 +122,7 @@ export class DrizzleRateLimitStorage implements RateLimitStorage {
 
 	async #applyStrategy(
 		row: Row,
-		points: number,
+		_points: number,
 		limit: number,
 		durationMs: number,
 		now: number,

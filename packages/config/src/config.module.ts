@@ -23,7 +23,7 @@
  *
  *   // any service
  *   class MyService {
- *     constructor(@Inject(ConfigService.TOKEN) private config: ConfigService<typeof configSchema>) {}
+ *     @Inject(ConfigService.TOKEN) declare private config: ConfigService<typeof configSchema>;
  *     connect() {
  *       return this.config.require('DATABASE_URL');
  *     }

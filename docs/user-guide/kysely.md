@@ -382,7 +382,7 @@ const dialect = new MysqlDialect({ pool: createPool({ uri: "mysql://..." }) });
 | Raw SQL | Via `sql\`\`` template tag | Via `sql\`\`` template tag + typed `RawQuery` |
 | Migrations | Kysely `Migrator` (built-in) | Drizzle Kit (external CLI) |
 | Repository | `KyselyRepository` (Lucid-style) | `DrizzleRepository` (Lucid-style) |
-| Dialects | All Kysely dialects | 5 dialects (bun-sqlite, postgres, mysql, sqlite, d1) |
+| Dialects | All Kysely dialects | 5 dialects (sqlite, postgres, mysql, sqlite, d1) |
 | Bundle size | Kysely itself + driver | Drizzle ORM + driver |
 | Use case | SQL-first, maximum type safety | ORM-first, easy table definitions |
 

@@ -15,12 +15,12 @@
  *   export class AppModule {}
  *
  *   // any controller or service
- *   constructor(@Inject(QueueService.TOKEN) private queue: QueueService) {}
+ *   @Inject(QueueService.TOKEN) declare private queue: QueueService;
  *   await this.queue.add('send-email', { to: 'a@b.c' });
  *
  *   // any service — register a worker
  *   class EmailWorker {
- *     constructor(@Inject(QueueService.TOKEN) private queue: QueueService) {}
+ *     @Inject(QueueService.TOKEN) declare private queue: QueueService;
  *     async onInit() {
  *       await this.queue.process('send-email', async (data) => {
  *         // ... send the email

@@ -16,7 +16,7 @@
  *     left alone (the user may have it intentionally).
  *
  * Typical use cases:
- *   - "I want to switch from bun-sqlite to postgres"
+ *   - "I want to switch from sqlite to postgres"
  *     → nx config --db postgres
  *   - "I want to add Drizzle to an existing project"
  *     → nx config --orm drizzle
@@ -30,7 +30,7 @@
  *   --style <name>     Routing style (nest|adonis|functional)
  *   --view <name>      View engine (rendu|edge|inertia|none)
  *   --orm <name>       ORM driver (drizzle|kysely|none)
- *   --db <name>        Database driver
+ *   --db <name>        Database
  *   --db-url <url>     Database URL (used when DATABASE_URL is unset)
  *   --frontend <name>  Inertia frontend (react|vue|svelte|solid)
  *   --ssr              Enable Inertia SSR
@@ -63,7 +63,7 @@ const DEFAULT_VALUES: NxConfigValues = {
 	view: "rendu",
 	viewPaths: "resources/views",
 	orm: "drizzle",
-	dbDriver: "bun-sqlite",
+	dbDriver: "sqlite",
 	dbUrl: "app.db",
 	inertiaFrontend: "react",
 	inertiaSSR: true,
@@ -108,9 +108,7 @@ function parseExistingConfig(path: string): NxConfigValues {
 /** Map a `db` driver name to a drizzle-kit dialect. */
 function driverToDialect(driver: string): string {
 	switch (driver) {
-		case "bun-sqlite":
-		case "node-sqlite":
-		case "libsql":
+		case "sqlite":
 			return "sqlite";
 		case "postgres":
 			return "postgresql";
@@ -123,7 +121,7 @@ function driverToDialect(driver: string): string {
 
 /** Default DATABASE_URL fallback based on the driver. */
 function defaultDbUrl(driver: string): string {
-	if (driver === "bun-sqlite" || driver === "node-sqlite" || driver === "libsql") {
+	if (driver === "sqlite" || driver === "sqlite" ) {
 		return "app.db";
 	}
 	return "";
@@ -138,7 +136,7 @@ export const configCommand: Command = {
 	examples: [
 		"nx config",
 		"nx config --db postgres --db-url postgres://localhost/mydb",
-		"nx config --orm drizzle --db bun-sqlite",
+		"nx config --orm drizzle --db sqlite",
 		"nx config --view inertia --frontend vue --no-ssr",
 		"nx config --force",
 	],
@@ -157,7 +155,7 @@ export const configCommand: Command = {
 		{
 			name: "db",
 			description:
-				"Database driver (bun-sqlite|node-sqlite|libsql|postgres|mysql|none)",
+				"Database (sqlite|postgres|mysql|none)",
 		},
 		{
 			name: "db-url",
@@ -235,8 +233,8 @@ export const configCommand: Command = {
 				})) ?? values.orm;
 			values.dbDriver =
 				(await select(
-					"Database driver",
-					["bun-sqlite", "node-sqlite", "libsql", "postgres", "mysql", "none"],
+					"Database",
+					["sqlite",  "postgres", "mysql", "none"],
 					{ interactive, default: values.dbDriver },
 				)) ?? values.dbDriver;
 			values.inertiaFrontend =

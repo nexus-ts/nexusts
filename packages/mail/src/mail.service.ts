@@ -67,7 +67,7 @@ export class MailService {
 			const mod = await import("mjml");
 			const { html } = mod.mjml2html(template);
 			return html;
-		} catch (err) {
+		} catch (_err) {
 			throw new Error(
 				"renderMjml requires the 'mjml' package. Install it with: bun add mjml",
 			);

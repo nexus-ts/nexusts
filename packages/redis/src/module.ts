@@ -14,7 +14,7 @@
  *
  *   @Injectable()
  *   class UserService {
- *     constructor(@Inject(REDIS_CLIENT_TOKEN) private redis: RedisClient) {}
+ *     @Inject(REDIS_CLIENT_TOKEN) declare private redis: RedisClient;
  *     async countVisits(userId: string) {
  *       return this.redis.incr(`visits:${userId}`, 1, { ex: 60 * 60 });
  *     }
@@ -27,7 +27,7 @@
 
 import { Module } from "@nexusts/core";
 import { createRedisClient } from "./adapters/index.js";
-import type { RedisClient, RedisConfig } from "./types.js";
+import type { RedisConfig } from "./types.js";
 
 export const REDIS_CLIENT_TOKEN = Symbol.for("nexus:RedisClient");
 

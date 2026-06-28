@@ -5,7 +5,7 @@
  * ergonomics on top of Drizzle's table-builder API. The decorators
  * record metadata that the repository can read for default queries.
  */
-import { safeGetMeta, safeDefineMeta, safeHasMeta } from "@nexusts/core/di/safe-reflect";
+import { safeGetMeta, safeDefineMeta, } from "@nexusts/core/di/safe-reflect";
 import {
 	DRIZZLE_TABLE_META,
 	type ColumnMetadata,

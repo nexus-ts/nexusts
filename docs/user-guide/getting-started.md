@@ -15,9 +15,9 @@ about five minutes.
 
 Optional, depending on your target runtime:
 
-- **Node.js** ≥ 22 (only if not using Bun)
+- **Bun** ≥ 1.3.10
 - **Cloudflare Wrangler** — only if deploying to Workers
-- A **Drizzle-compatible database** (postgres, mysql, sqlite, bun-sqlite, d1)
+- A **Drizzle-compatible database** (postgres, mysql, sqlite, sqlite, d1)
 
 ---
 
@@ -53,8 +53,6 @@ bun add @nexusts/queue              # if you need background jobs
     "target": "ES2022",
     "module": "ESNext",
     "moduleResolution": "bundler",
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
@@ -66,8 +64,6 @@ bun add @nexusts/queue              # if you need background jobs
 
 | Flag | Required? | Why |
 | ---- | --------- | --- |
-| `experimentalDecorators` | yes | Enables `@Controller`, `@Inject`, etc. |
-| `emitDecoratorMetadata` | recommended | Enables bare-type constructor injection (works under `tsc`/`ts-node`; Bun's transformer ignores it) |
 | `moduleResolution: "bundler"` | recommended | Best support for Bun + ESM |
 | `strict` | recommended | Standard TS hygiene |
 
@@ -126,7 +122,7 @@ export default {
   routing: 'nest',
   view: 'none',
   orm: 'drizzle',
-  dialect: 'postgres',     // postgres | mysql | sqlite | bun-sqlite | d1
+  dialect: 'postgres',     // postgres | mysql | sqlite | d1
   database: {
     driver: 'postgres',
     url: process.env.DATABASE_URL ?? 'postgres://localhost/myapp',
@@ -251,15 +247,13 @@ Bun's `--hot` flag restarts the process on file change.
 | ------- | ------------ | --- |
 | `Class "X" is missing the @Module() decorator` | Module class missing `@Module({...})` | Add `@Module({ controllers: [...] })` to the class |
 | `Cannot resolve token "DB"` | Token not in any module's `providers` | Add `{ provide: 'DB', useValue: drizzleInstance }` to the relevant module |
-| `No provider for "undefined"` | Injecting a `static TOKEN` that isn't registered | See [common-pitfalls.md §1](./common-pitfalls.md#1-inject-someclasstoken이-동작하지-않음) — register both class and `{ provide: TOKEN, useExisting: Class }` |
-| 404 on a route you defined | Controller class defined inline in `main.ts` | See [common-pitfalls.md §2](./common-pitfalls.md#2-한-파일에-여러-controller를-정의하면-라우터가-누락됨) — put each controller in its own file |
 | `sqlite.query is not a function` | `DrizzleService.client` isn't a raw `bun:sqlite` handle | Use Drizzle's query builder: `db.select().from(table).all()` |
 | `Decorator function return type expected` | Decorator applied to a non-method | Decorators belong on classes, methods, or parameters |
 | 404 on a route you defined (path) | Path mismatch | Check `@Controller('/users')` + `@Get('/:id')` produces `/users/:id` |
-| `'better-sqlite3' is not yet supported in Bun` | Using better-sqlite3 with Bun runtime | Switch to `dialect: 'bun-sqlite'` |
+| `'better-sqlite3' is not yet supported in Bun` | Using better-sqlite3 with Bun runtime | Switch to `dialect: 'sqlite'` |
 | Injecting into constructor parameter | Using `experimentalDecorators` without `@Inject()` | Use field injection: `@Inject(Token) declare field: Type` |
 
-> For more debugging recipes see **[common-pitfalls.md](./common-pitfalls.md)** — a comprehensive guide to
+> For more debugging recipes see **[debugging guide](../design/architecture.md)** — a comprehensive guide to
 > the most common gotchas.
 
 ---

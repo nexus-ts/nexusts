@@ -47,7 +47,7 @@ import { Inertia } from "@nexusts/view";
 @Injectable()
 @Controller("/")
 class HomeController {
-  constructor(@Inject(Inertia.TOKEN) private inertia: Inertia) {}
+  @Inject(Inertia.TOKEN) declare private inertia: Inertia;
 
   @Get("/")
   home() { return this.inertia.render("Home", { greeting: "...", count: 0 }); }

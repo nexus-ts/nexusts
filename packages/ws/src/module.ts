@@ -60,7 +60,7 @@ export class WebSocketModule {
 			exports: [WebSocketService, WEBSOCKET_SERVICE_TOKEN, "WS_CONFIG"],
 		})
 		class ConfiguredWebSocketModule {
-			constructor(@Inject(WEBSOCKET_SERVICE_TOKEN) readonly service: WebSocketService) {}
+			@Inject(WEBSOCKET_SERVICE_TOKEN) declare readonly service: WebSocketService;
 
 			/** Detect the runtime at boot time. */
 			detectRuntime() {

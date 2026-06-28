@@ -185,11 +185,11 @@ NestJS relies on `@nestjs/*` community packages. NexusTS ships equivalent functi
 
 | What you need | NestJS | NexusTS |
 |---------------|--------|---------|
-| HTTP framework | Express / Fastify (via platform adapter) | **Hono** (built-in, Bun/Node/Workers) |
+| HTTP framework | Express / Fastify (via platform adapter) | **Hono** (built-in, Bun + Cloudflare Workers) |
 | ORM | TypeORM / Prisma / MikroORM / Mongoose / Sequelize | `@nexusts/drizzle` (5 dialects) + `@nexusts/kysely` (typed SQL builder) |
 | GraphQL | `@nestjs/graphql` + `@nestjs/apollo` | `@nexusts/graphql` (SDL + code-first) |
 | gRPC | `@nestjs/microservices` | `@nexusts/grpc` (reflection-based, 4 call types) |
-| WebSocket | `@nestjs/websockets` + `@nestjs/platform-socket.io` | `@nexusts/ws` (Bun + Node) |
+| WebSocket | `@nestjs/websockets` + `@nestjs/platform-socket.io` | `@nexusts/ws` (Bun) |
 | SSE | Manual Hono / Express adapter | `@nexusts/sse` (built-in) |
 | Queue / Jobs | `@nestjs/bull` / `@nestjs/bullmq` | `@nexusts/queue` (BullMQ + Cloudflare + memory) |
 | Scheduler / Cron | `@nestjs/schedule` | `@nexusts/schedule` (in-tree cron parser) |
@@ -212,7 +212,7 @@ NestJS relies on `@nestjs/*` community packages. NexusTS ships equivalent functi
 | Compression | `@nestjs/compression` | Hono's `compress()` middleware |
 | CORS | `@nestjs/common` CORS option | Hono's `cors()` middleware |
 | Testing | `@nestjs/testing` | Vitest + `new Application()` (no test module needed) |
-| HTTP client | `@nestjs/axios` | Fetch API (built-in Bun/Node) |
+| HTTP client | `@nestjs/axios` | Fetch API (built-in Bun) |
 
 **What NestJS lacks that NexusTS provides**:
 
@@ -222,7 +222,7 @@ NestJS relies on `@nestjs/*` community packages. NexusTS ships equivalent functi
 | File storage (S3/R2/Local) | `@nexusts/drive` | ❌ No first-party support (DIY multer/S3 SDK) |
 | Encryption / hashing | `@nexusts/crypto` | ❌ No first-party support (DIY `crypto` or `bcrypt`) |
 | Redis client | `@nexusts/redis` (multi-runtime) | ❌ No first-party (use `ioredis` directly) |
-| Runtime adapters | Bun / Node / Cloudflare Workers | ❌ Express / Fastify only |
+| Runtime adapters | Bun + Cloudflare Workers | ❌ Express / Fastify only |
 
 ### Side-by-Side: Common Module Examples
 

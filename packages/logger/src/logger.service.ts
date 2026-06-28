@@ -53,13 +53,13 @@ export class Logger {
 		const opts = this.options ?? {};
 		this._silent = opts.silent ?? false;
 		this._base = opts.base ?? {};
-		this._level = opts.level ?? (process.env["NODE_ENV"] === "production" ? "info" : "debug");
+		this._level = opts.level ?? (process.env.NODE_ENV === "production" ? "info" : "debug");
 		// Only set default transports if none have been assigned externally.
 		if (this._transports.length === 0) {
 			if (opts.transports && opts.transports.length > 0) {
 				this._transports = opts.transports;
 			} else {
-				const pretty = opts.pretty ?? process.env["NODE_ENV"] !== "production";
+				const pretty = opts.pretty ?? process.env.NODE_ENV !== "production";
 				this._transports = [
 					pretty
 						? new PrettyTransport(this._level, this._base)

@@ -46,7 +46,7 @@ export const dbMigrateCommand: Command = {
 		{
 			name: "dialect",
 			description:
-				"Database dialect (postgres|mysql|sqlite|bun-sqlite). Default: bun-sqlite.",
+				"Database dialect (postgres|mysql|sqlite). Default: sqlite.",
 		},
 		{
 			name: "config",
@@ -65,7 +65,7 @@ export const dbMigrateCommand: Command = {
 		const dialect =
 			(ctx.flags.dialect as string | undefined) ??
 			ctx.config.dialect ??
-			"bun-sqlite";
+			"sqlite";
 		const configPath =
 			(ctx.flags.config as string | undefined) ??
 			resolve(ctx.cwd, "drizzle.config.ts");

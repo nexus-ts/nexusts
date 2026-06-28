@@ -8,7 +8,7 @@
  *   - `migrate(folder)` — run schema migrations
  *   - `close()` — release the connection
  *
- *   const db = new DrizzleService({ dialect: 'bun-sqlite', connection: { filename: ':memory:' } });
+ *   const db = new DrizzleService({ dialect: 'sqlite', connection: { filename: ':memory:' } });
  *   await db.open();
  *
  *   const users = pgTable('users', { id: serial('id').primaryKey(), email: text('email') });
@@ -37,15 +37,15 @@ export class DrizzleService {
 	constructor(config?: DrizzleConfig) {
 		const cfg = config ?? this._config;
 		if (cfg) this._config = cfg;
-		// Auto-open synchronously for bun-sqlite.
+		// Auto-open synchronously for sqlite.
 		if (cfg) {
-			if (cfg.dialect === "bun-sqlite" || (cfg.connection as any)?.filename) {
+			if (cfg.dialect === "sqlite" || (cfg.connection as any)?.filename) {
 				this.openSync();
 			}
 		}
 	}
 
-	/** Synchronous open for bun-sqlite. */
+	/** Synchronous open for sqlite. */
 	private openSync(): void {
 		try {
 			const conn = this._config.connection as any;
@@ -72,7 +72,7 @@ export class DrizzleService {
 			};
 			this.driver = {
 				db: this._client,
-				dialect: "bun-sqlite",
+				dialect: "sqlite",
 			} as any;
 			this._opened = true;
 		} catch {

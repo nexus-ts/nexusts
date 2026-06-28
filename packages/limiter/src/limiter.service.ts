@@ -30,13 +30,9 @@ export class LimiterService {
 	private _defaultKey: NonNullable<LimiterConfig["defaultKey"]> | null = null;
 	private _defaultReject: NonNullable<LimiterConfig["defaultReject"]> | null = null;
 
-	constructor() {
-		// DI sets @Inject fields before first use.
-	}
-
 	get storage(): RateLimitStorage {
 		if (!this._storage) {
-			this._storage = (this.config ?? {}).storage ?? new MemoryRateLimitStorage();
+			this._storage = this.config?.storage ?? new MemoryRateLimitStorage();
 		}
 		return this._storage;
 	}
@@ -51,11 +47,11 @@ export class LimiterService {
 	get defaultKey(): NonNullable<LimiterConfig["defaultKey"]> {
 		if (!this._defaultKey) {
 			this._defaultKey =
-				(this.config ?? {}).defaultKey ??
+				this.config?.defaultKey ??
 				((c: any) => {
 					const fwd = c?.req?.header?.("x-forwarded-for");
 					if (fwd) return fwd.split(",")[0]?.trim() ?? "unknown";
-					return c?.req?.raw?.["conn"]?.remoteAddr?.hostname ?? "unknown";
+					return c?.req?.raw?.conn?.remoteAddr?.hostname ?? "unknown";
 				});
 		}
 		return this._defaultKey;
@@ -64,7 +60,7 @@ export class LimiterService {
 	get defaultReject(): NonNullable<LimiterConfig["defaultReject"]> {
 		if (!this._defaultReject) {
 			this._defaultReject =
-				(this.config ?? {}).defaultReject ??
+				this.config?.defaultReject ??
 				((_c, result) =>
 					new Response(
 						JSON.stringify({

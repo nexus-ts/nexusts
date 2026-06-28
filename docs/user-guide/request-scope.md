@@ -26,7 +26,8 @@ class RequestContext {
   id = crypto.randomUUID();
   userId: string | null = null;
 
-  constructor(@Inject(REQUEST) public req: any) {
+  @Inject(REQUEST) declare req: any;
+  constructor() {
     this.userId = extractUserFromToken(this.req.header('authorization'));
   }
 }
@@ -58,8 +59,9 @@ on the current request.
 ```ts
 @Injectable({ scope: 'request' })
 class RequestContext {
-  constructor(@Inject(REQUEST) public req: any) {
-    this.id = req.header('x-request-id') ?? crypto.randomUUID();
+  @Inject(REQUEST) declare req: any;
+  constructor() {
+    this.id = this.req.header('x-request-id') ?? crypto.randomUUID();
   }
 }
 ```
@@ -162,7 +164,8 @@ class Tx {
 
 @Injectable()
 class OrderService {
-  constructor(@Inject(Tx) private tx: Tx, @Inject(DrizzleService) private db: DrizzleService) {}
+  @Inject(Tx) declare private tx: Tx;
+  @Inject(DrizzleService) declare private db: DrizzleService;
   async createOrder(data: OrderInput) {
     // All DB calls in this request share `tx.handle`.
     await this.db.insert(orders).values(data);
@@ -197,9 +200,9 @@ import { getRequestScope } from '@nexusts/core';
 class Ctx { id = Math.random().toString(36).slice(2, 8); }
 
 @Injectable()
-class A { constructor(@Inject(Ctx) public ctx: Ctx) {} }
+class A { @Inject(Ctx) declare ctx: Ctx; }
 @Injectable()
-class B { constructor(@Inject(Ctx) public ctx: Ctx) {} }
+class B { @Inject(Ctx) declare ctx: Ctx; }
 
 describe('request scope', () => {
   it('shares the same instance across consumers in one request', async () => {

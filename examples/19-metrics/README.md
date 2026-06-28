@@ -46,7 +46,7 @@ class OrderService {
 @Injectable()
 @Controller("/orders")
 class OrderController {
-  constructor(@Inject(MetricsService) private metrics: MetricsService) {}
+  @Inject(MetricsService) declare private metrics: MetricsService;
 
   @Get("/")
   place() {

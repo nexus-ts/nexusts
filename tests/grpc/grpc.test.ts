@@ -148,7 +148,7 @@ describe("GrpcService — end-to-end", () => {
 		@Injectable()
 		@GrpcServiceDecorator("Greeter")
 		class GreeterImpl {
-			constructor(@Inject(ConfigService) private cfg: ConfigService) {}
+			@Inject(ConfigService) declare private cfg: ConfigService;
 			@GrpcMethod("Greet")
 			async greet(req: { name: string }) {
 				return { message: `${this.cfg.prefix} Hello, ${req.name}!` };

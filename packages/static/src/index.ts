@@ -22,7 +22,7 @@
  *
  *   @Injectable()
  *   class CustomServer {
- *     constructor(@Inject(StaticService.TOKEN) private static: StaticService) {}
+ *     @Inject(StaticService.TOKEN) declare private static: StaticService;
  *     mount(app: Hono) {
  *       app.use('/public/*', this.static.middleware());
  *     }

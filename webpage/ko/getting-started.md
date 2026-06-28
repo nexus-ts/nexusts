@@ -7,15 +7,15 @@ description: NexusTS 시작하기
 
 ## 사전 요구사항
 
-- [Bun](https://bun.sh) ≥ 1.3.0
-- Node.js ≥ 22 (선택 사항 — Node.js 런타임용)
+- [Bun](https://bun.sh) ≥ 1.3.10
+- **Bun** ≥ 1.3.10
 
 ## 빠른 시작
 
 새 NexusTS 프로젝트를 만드는 가장 빠른 방법:
 
 ```bash
-npm create nexusts@latest my-app
+bun create nexusts@latest my-app
 cd my-app
 bun install
 bun run dev
@@ -37,7 +37,7 @@ bun run dev
 bunx nx new my-app
 
 # 특정 옵션으로 생성
-bunx nx new my-app --style nest --view inertia --orm drizzle --db bun-sqlite --frontend react
+bunx nx new my-app --style nest --view inertia --orm drizzle --db sqlite --frontend react
 
 # 기존 디렉토리에 초기화 (비파괴적)
 bunx nx init --style nest --view inertia --orm drizzle

@@ -104,7 +104,8 @@ export class InertiaResponse {
 					case "deferred": {
 						const d = helper as any;
 						const group: string = d.group ?? "default";
-						(deferredProps[group] ??= []).push(key);
+						deferredProps[group] ??= [];
+						deferredProps[group].push(key);
 						// Placeholder: must be `null` per spec.
 						resolved[key] = null;
 						break;

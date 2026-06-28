@@ -7,9 +7,9 @@ The official scaffolder for [NexusTS](https://github.com/nexus-ts/nexusts). Crea
 ## Quick start
 
 ```bash
-# All three forms are equivalent:
-npm create nexusts@latest my-app
-npx create-nexusts@latest my-app
+# Create a new NexusTS project:
+bun create nexusts@latest my-app
+# Or:
 bunx create-nexusts@latest my-app
 ```
 
@@ -30,22 +30,22 @@ Your app will be running at `http://localhost:3000`.
 | `--style` | `nest` | Routing style: `nest`, `adonis`, `functional` |
 | `--view` | `rendu` | View engine: `rendu`, `edge`, `eta`, `inertia`, `none` |
 | `--orm` | `drizzle` | ORM: `drizzle`, `prisma`, `kysely`, `none` |
-| `--db` | `bun-sqlite` | Database: `bun-sqlite`, `postgres`, `mysql`, `none` |
+| `--db` | `sqlite` | Database: `sqlite`, `postgres`, `mysql`, `none` |
 
 ### Examples
 
 ```bash
 # Minimal: NestJS-style + Rendu + Drizzle + SQLite
-npm create nexusts@latest my-app
+bun create nexusts@latest my-app
 
 # Inertia.js v3 + React SPA
-npm create nexusts@latest my-app --view inertia
+bun create nexusts@latest my-app --view inertia
 
 # No ORM (just an HTTP skeleton)
-npm create nexusts@latest my-app --orm none --db none
+bun create nexusts@latest my-app --orm none --db none
 
 # Functional handler style (Hono-style)
-npm create nexusts@latest my-app --style functional
+bun create nexusts@latest my-app --style functional
 ```
 
 ## What you get
@@ -61,11 +61,11 @@ my-app/
 │   └── main.ts                # Bootstrap (listens on PORT)
 ├── app.config.ts              # Framework config (loaded at boot)
 ├── package.json               # @nexusts/core + your chosen add-ons
-├── tsconfig.json              # Legacy decorators (Bun 1.3 compatible)
+├── tsconfig.json              # Standard decorators (Bun 1.3 default)
 └── README.md                  # Project-specific README
 ```
 
-Internally this runs `npx @nexusts/core init` in the new directory — you can use that command directly in an existing project to add NexusTS without losing files.
+Internally this runs `bunx @nexusts/core init` in the new directory — you can use that command directly in an existing project to add NexusTS without losing files.
 
 ## Help
 

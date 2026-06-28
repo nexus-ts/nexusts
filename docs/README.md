@@ -156,7 +156,7 @@ get published to the npm registry.
 
 ## Conventions · 작성 규칙
 
-- Code samples target **Bun ≥ 1.1** by default. Node/Cloudflare notes are
+- Code samples target **Bun ≥ 1.1** by default. Cloudflare notes are
   called out explicitly when relevant.
 - TypeScript is the only supported language. Decorators require
   `experimentalDecorators: true` in `tsconfig.json`.

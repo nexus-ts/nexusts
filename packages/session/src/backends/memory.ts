@@ -100,7 +100,7 @@ export class MemorySessionStorage implements SessionStorage {
 	}
 
 	async readMany(query: SessionQuery = {}): Promise<SessionRecord[]> {
-		const now = Date.now();
+		const _now = Date.now();
 		const list: SessionRecord[] = [];
 		for (const r of this.#sessions.values()) {
 			if (this.#isExpired(r)) continue;

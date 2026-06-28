@@ -33,7 +33,7 @@ bun nx --version
 
 ```bash
 nx init [dir] [options]
-nx init --style nest --view inertia --orm drizzle --db bun-sqlite --frontend react
+nx init --style nest --view inertia --orm drizzle --db sqlite --frontend react
 ```
 
 | 플래그 | 설명 |
@@ -41,7 +41,7 @@ nx init --style nest --view inertia --orm drizzle --db bun-sqlite --frontend rea
 | `--style` | 라우팅 스타일: `nest` / `adonis` / `functional` |
 | `--view` | 뷰 엔진: `rendu` / `edge` / `eta` / `inertia` / `none` |
 | `--orm` | ORM 드라이버: `drizzle` / `kysely` / `none` |
-| `--db` | 데이터베이스: `bun-sqlite` / `node-sqlite` / `libsql` / `postgres` / `mysql` / `none` |
+| `--db` | 데이터베이스: 'sqlite' / `postgres` / `mysql` / `none` |
 | `--frontend` | Inertia 프론트엔드: `react` / `vue` / `svelte` / `solid` |
 | `--no-ssr` | Inertia SSR 비활성화 |
 | `--force` | 기존 파일 덮어쓰기 |
@@ -53,7 +53,7 @@ nx init --style nest --view inertia --orm drizzle --db bun-sqlite --frontend rea
 
 ```bash
 nx new <name> [options]
-nx new my-app --style nest --view inertia --orm drizzle --db bun-sqlite --frontend react
+nx new my-app --style nest --view inertia --orm drizzle --db sqlite --frontend react
 ```
 
 ## 생성기 명령어
@@ -168,7 +168,7 @@ export default defineConfig({
   view: 'rendu',
   viewPaths: 'resources/views',
   orm: 'drizzle',
-  dbDriver: 'bun-sqlite',
+  dbDriver: 'sqlite',
   dbUrl: 'app.db',
 });
 ```

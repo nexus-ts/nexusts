@@ -59,7 +59,7 @@ export class UserController {
 @Module({
   imports: [
     DrizzleModule.forRoot({
-      dialect: "bun-sqlite",
+      dialect: "sqlite",
       connection: { url: "app.db" },
     }),
   ],

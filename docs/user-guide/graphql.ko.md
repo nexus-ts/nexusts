@@ -165,7 +165,30 @@ GraphQLModule.forRoot({
 정의한다. `@Resolver` 클래스는 데코레이터 평가 시점에 전역 레지스트리에
 자동 등록되므로 `forRoot()`에 나열할 필요가 없다.
 
-### 빠른 예제
+### 표준 모드 (권장, v0.9+)
+
+`@Query`/`@Mutation`의 `args` 옵션으로 인수 타입 선언:
+
+```ts
+import { Resolver, Query, Mutation } from "@nexusts/graphql";
+
+@Resolver()
+class HelloResolver {
+  @Query("hello", { returns: "String!", args: { name: "String!" } })
+  hello(name: string): string {
+    return `Hello, ${name}!`;
+  }
+
+  @Mutation("echo", { returns: "String!", args: { message: "String!" } })
+  echo(message: string): string {
+    return message;
+  }
+}
+```
+
+### 레거시 모드 (`@Arg` 파라미터 데코레이터)
+
+`experimentalDecorators: true` 사용 시 `@Arg` 파라미터 데코레이터도 사용 가능:
 
 ```ts
 import { Resolver, Query, Mutation, Arg } from "@nexusts/graphql";
@@ -182,16 +205,6 @@ class HelloResolver {
     return message;
   }
 }
-
-@Module({
-  imports: [
-    GraphQLModule.forRoot({
-      autoSchema: true,
-      // typeDefs 불필요 — @Resolver 클래스에서 자동 합성
-    }),
-  ],
-})
-class AppModule {}
 ```
 
 자동으로 생성되는 SDL:
@@ -213,7 +226,8 @@ type Mutation {
 | `@Query(name?, { returns })` | 메서드 | `type Query` 필드 선언. `returns`는 GraphQL 타입 문자열 (예: `"String!"`). |
 | `@Mutation(name?, { returns })` | 메서드 | `type Mutation` 필드 선언. |
 | `@Subscription(name?, { returns })` | 메서드 | `type Subscription` 필드 선언. |
-| `@Arg(name, type?)` | 파라미터 | 필드 인수 선언. `type` 기본값 `"String"`. |
+| `@Arg(name, type?)` | 파라미터 (레거시) | 필드 인수 선언. `type` 기본값 `"String"`. |
+| `@Query/@Mutation args` | 옵션 | 표준 모드 인수 타입 맵: `{ name: "String!" }` |
 
 ### 타입 문자열 정규화
 
@@ -248,8 +262,9 @@ GraphQLModule.forRoot({
 
 `autoSchema: true` 상태에서 프레임워크는 `@Resolver` 클래스를
 자동으로 인스턴스화하고 `@Query`/`@Mutation` 메서드를 resolver 맵에
-등록한다. `@Arg` 파라미터는 graphql-js의 `args` 객체에서 이름으로
-추출되어 메서드에 순서대로 전달된다.
+등록한다. 인수는 graphql-js의 `args` 객체에서 이름으로 추출되어 메서드에
+순서대로 전달된다. `@Arg`(레거시) 또는 `@Query` `args` 옵션(표준)
+으로 인수 타입을 정의한다.
 
 > **제약**: 자동 인스턴스화는 인자 없는 생성자를 가정한다. DI 컨테이너
 > 연동이 필요한 경우 `config.resolvers`에 수동으로 resolver 맵을

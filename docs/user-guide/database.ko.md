@@ -11,7 +11,7 @@
 
 ```bash
 # 1. Drizzle + SQLite로 새 프로젝트 스캐폴딩
-nx init --orm drizzle --db bun-sqlite
+nx init --orm drizzle --db sqlite
 
 # 2. 스키마 수정
 #    app/models/user.model.ts
@@ -34,7 +34,7 @@ NexusTS + Drizzle은 세 가지 SQL 드라이버를 기본 지원합니다.
 
 | 드라이버 | 패키지 | 개발 환경 | 프로덕션 | 적합한 용도 |
 |----------|--------|-----------|----------|-------------|
-| `bun-sqlite` | 없음 (Bun 내장) | 설정 불필요 | 단일 파일 (`app.db`) | 프로토타입, 엣지, 단일 서버 |
+| `sqlite` | 없음 (Bun 내장) | 설정 불필요 | 단일 파일 (`app.db`) | 프로토타입, 엣지, 단일 서버 |
 | `postgres` | `pg` 또는 `postgres` | Docker / 로컬 PG | RDS / Supabase / Neon | 프로덕션 앱 |
 | `mysql` | `mysql2` | Docker / 로컬 MySQL | PlanetScale / RDS | 프로덕션 앱 |
 
@@ -47,7 +47,7 @@ import { DrizzleModule } from '@nexusts/drizzle';
 @Module({
   imports: [
     DrizzleModule.forRoot({
-      dialect: 'bun-sqlite',
+      dialect: 'sqlite',
       connection: { url: 'app.db' },
     }),
   ],

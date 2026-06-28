@@ -18,7 +18,7 @@ pattern, decorator integration, and tag-based invalidation.
    when related data changes.
 4. **Decorator API.** `@Cacheable` and `@CacheInvalidate` for
    declarative caching on service methods.
-5. **Cross-runtime.** Works on Bun, Node.js, and Cloudflare Workers
+5. **Cross-runtime.** Works on Bun and Cloudflare Workers
    (via the Drizzle store or a custom adapter).
 
 ## Architecture

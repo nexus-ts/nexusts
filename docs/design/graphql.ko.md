@@ -209,11 +209,28 @@ top-level 키는 GraphQL 타입 이름 (`Query`, `Mutation`,
 ## 데코레이터 API & 전역 Resolver 레지스트리
 
 프레임워크는 `@Resolver`, `@Query`, `@Mutation`, `@Subscription`,
-`@Arg` 데코레이터를 export한다. 그들이 작성한 메타데이터는
-`GraphQLService`가 resolver 맵을 빌드할 때 읽는다:
+`@Arg`(레거시) 데코레이터를 export한다.
+
+### 표준 모드 (v0.9+, 권장)
+
+`@Query`/`@Mutation`의 `args` 옵션 사용:
 
 ```ts
-@Injectable()
+@Resolver("User")
+class UserResolver {
+  @Query("currentUser")
+  me(ctx: Context) { return (ctx as any).state?.user; }
+
+  @Mutation({ args: { name: "String!" } })
+  updateProfile(name: string) { ... }
+}
+```
+
+### 레거시 모드 (`experimentalDecorators: true`)
+
+`@Arg` 파라미터 데코레이터 사용:
+
+```ts
 @Resolver("User")
 class UserResolver {
   @Query("currentUser")

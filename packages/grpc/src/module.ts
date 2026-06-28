@@ -48,7 +48,7 @@ export class GrpcModule {
 						const svc = new GrpcService(config);
 						// Resolve service impls from the global DI container
 						// (stashed by Application during bootstrap).
-						const container = (globalThis as any)["__nexus_container"];
+						const container = (globalThis as any).__nexus_container;
 						if (container) {
 							svc.setResolver((t) => container.resolve(t));
 						}

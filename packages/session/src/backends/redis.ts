@@ -72,16 +72,16 @@ export class RedisSessionStorage implements SessionStorage {
 		try {
 			const obj = JSON.parse(s) as Record<string, unknown>;
 			const record: SessionRecord = {
-				id: String(obj["id"]),
-				userId: (obj["userId"] as string | null) ?? null,
-				data: (obj["data"] as SessionData) ?? ({} as SessionData),
-				createdAt: new Date(String(obj["createdAt"])),
-				lastSeenAt: new Date(String(obj["lastSeenAt"])),
-				expiresAt: new Date(String(obj["expiresAt"])),
+				id: String(obj.id),
+				userId: (obj.userId as string | null) ?? null,
+				data: (obj.data as SessionData) ?? ({} as SessionData),
+				createdAt: new Date(String(obj.createdAt)),
+				lastSeenAt: new Date(String(obj.lastSeenAt)),
+				expiresAt: new Date(String(obj.expiresAt)),
 			};
-			const abs = obj["absoluteExpiresAt"];
+			const abs = obj.absoluteExpiresAt;
 			if (typeof abs === "string") record.absoluteExpiresAt = new Date(abs);
-			const meta = obj["metadata"];
+			const meta = obj.metadata;
 			if (meta && typeof meta === "object") {
 				record.metadata = meta as SessionRecord["metadata"];
 			}

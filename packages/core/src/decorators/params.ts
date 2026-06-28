@@ -15,7 +15,7 @@
  * The metadata is read by the router at mount time to build the
  * handler invocation list.
  */
-import { safeGetMeta, safeDefineMeta, safeHasMeta, safeParamTypes } from "../di/safe-reflect.js";
+import { safeGetMeta, safeDefineMeta, } from "../di/safe-reflect.js";
 import { METADATA_KEY, PARAM_TYPES } from "../constants.js";
 import type { ParamMetadata } from "../di/tokens.js";
 

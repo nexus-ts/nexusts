@@ -1,12 +1,13 @@
 # @nexusts/ws
 
-> **NexusTS** — Bun-native fullstack framework
+> **NexusTS WebSockets** — WebSocket gateways with Bun's built-in `Bun.serve` websocket. Rooms, broadcast, and lifecycle decorators.
 
-## Description
+## Features
 
-WebSockets (Bun native, Node fallback via ws).
-
-@WebSocketGateway(path) / @OnWebSocketMessage() decorators. Rooms, broadcast. Runtime auto-detected (Bun primary; ws as optional peer dep on Node).
+- **Bun native** — uses `Bun.serve` websocket (no ws package needed)
+- **Decorators** — `@WebSocketGateway(path)`, `@OnWebSocketOpen`, `@OnWebSocketMessage`, `@OnWebSocketClose`
+- **Rooms** — `joinRoom`, `leaveRoom`, `broadcastToRoom`
+- **Cloudflare Workers** — compatible via adapter
 
 ## Install
 
@@ -26,18 +27,27 @@ bun add @nexusts/ws
 
 ## Peer dependencies
 
-```bash
-bun add ws
-```
+**None.** Bun's WebSocket runtime is built in — no `ws` package needed.
 
-- **`ws`** ^8.18.0 — Required on Node.js. On Bun the WebSocket runtime is built in, so you can skip this dependency.
-
-Without them the module loads but its public methods throw a clear error pointing to this install command on first call.
-
-## Usage
+## Quick start
 
 ```typescript
-import { /* public API */ } from "@nexusts/ws";
+import { WebSocketModule, WebSocketGateway, OnWebSocketMessage } from "@nexusts/ws";
+import { Module, Injectable } from "@nexusts/core";
+
+@Injectable()
+@WebSocketGateway("/chat")
+class ChatGateway {
+  @OnWebSocketMessage("message")
+  onMessage(client: any, data: { text: string }) {
+    client.send(`Echo: ${data.text}`);
+  }
+}
+
+@Module({
+  imports: [WebSocketModule.forRoot({ gateways: [ChatGateway] })],
+})
+class AppModule {}
 ```
 
 See the [user guide](../../docs/user-guide/ws.md) and the [example app](../../examples/) for a working demo.

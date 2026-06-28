@@ -26,7 +26,7 @@ bun add @nexusts/grpc
 
 ## Peer dependencies
 
-**None.** No external runtime dependencies. `gRPC` is built into the Bun runtime. On Node.js, install `@grpc/grpc-js` and `@grpc/proto-loader` separately.
+**None.** gRPC is built into the Bun runtime — no extra dependencies needed.
 
 ## Usage
 

@@ -53,7 +53,7 @@ function randomId(bytes = 24): string {
 	return b64urlEncode(Buffer.from(arr));
 }
 
-function safeEq(a: string, b: string): boolean {
+function _safeEq(a: string, b: string): boolean {
 	const ab = Buffer.from(a);
 	const bb = Buffer.from(b);
 	if (ab.length !== bb.length) return false;
@@ -108,16 +108,16 @@ export function decodeSessionCookie<T = SessionData>(
 			unknown
 		>;
 		const record: SessionRecord<T> = {
-			id: String(obj["id"]),
-			userId: (obj["userId"] as string | null) ?? null,
-			data: (obj["data"] as T) ?? ({} as T),
-			createdAt: new Date(String(obj["createdAt"])),
-			lastSeenAt: new Date(String(obj["lastSeenAt"])),
-			expiresAt: new Date(String(obj["expiresAt"])),
+			id: String(obj.id),
+			userId: (obj.userId as string | null) ?? null,
+			data: (obj.data as T) ?? ({} as T),
+			createdAt: new Date(String(obj.createdAt)),
+			lastSeenAt: new Date(String(obj.lastSeenAt)),
+			expiresAt: new Date(String(obj.expiresAt)),
 		};
-		const abs = obj["absoluteExpiresAt"];
+		const abs = obj.absoluteExpiresAt;
 		if (typeof abs === "string") record.absoluteExpiresAt = new Date(abs);
-		const meta = obj["metadata"];
+		const meta = obj.metadata;
 		if (meta && typeof meta === "object") {
 			record.metadata = meta as SessionMetadata;
 		}
@@ -160,7 +160,7 @@ export class CookieSessionStorage implements SessionStorage {
 		parts.push(`Path=${opts.path ?? "/"}`);
 		if (opts.domain) parts.push(`Domain=${opts.domain}`);
 		if (opts.httpOnly ?? true) parts.push("HttpOnly");
-		if (opts.secure ?? process.env["NODE_ENV"] === "production")
+		if (opts.secure ?? process.env.NODE_ENV === "production")
 			parts.push("Secure");
 		parts.push(`SameSite=${(opts.sameSite ?? "lax").toUpperCase()}`);
 		const maxAge =

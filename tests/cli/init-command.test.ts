@@ -12,10 +12,10 @@
  * 8. Command registration: name, aliases
  */
 
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { mkdir, mkdtemp, readFile, rm, writeFile, stat } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, rm, stat, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { initCommand } from "../../src/cli/commands/init.js";
 import type { CommandContext } from "../../src/cli/core/index.js";
 
@@ -136,10 +136,8 @@ describe("nx init — fresh install", () => {
 		expect(pkg.dependencies["@nexusts/core"]).toBe("*");
 		expect(pkg.name).toBe("my-app"); // existing name preserved
 
-		// tsconfig.json: experimentalDecorators added
+		// tsconfig.json: no experimentalDecorators
 		const ts = JSON.parse(await readFile(join(target, "tsconfig.json"), "utf8"));
-		expect(ts.compilerOptions.experimentalDecorators).toBe(true);
-		expect(ts.compilerOptions.emitDecoratorMetadata).toBe(true);
 		expect(ts.include).toContain("app/**/*.ts");
 		expect(ts.include).toContain("nx.config.ts");
 	});

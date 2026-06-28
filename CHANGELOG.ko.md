@@ -13,6 +13,155 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.9.13] — 2026-06-27
+
+### 변경
+
+- **CLI 프롬프트 라벨**: `config.ts`, `init.ts`, `new.ts` 명령어에서
+  "Database driver" → "Database"로 간소화.
+
+### 추가
+
+- **`nx init`의 `--runtime` 플래그**: `nx init`에서
+  `--runtime bun`(기본값) 또는 `--runtime cloudflare`를 지정하여
+  새 프로젝트의 대상 런타임을 선택 가능.
+
+---
+
+## [0.9.12] — 2026-06-27
+
+### 추가
+
+- **`nx.config.ts`에 `runtime` 필드**: 생성된 설정 파일에 `runtime: 'bun'`
+  또는 `runtime: 'cloudflare'` 포함.
+- **`nx info` runtime 표시**: `runtime` 필드와 `NX_RUNTIME` 환경변수 출력.
+- **Drizzle config 자동 매핑**: `drizzle.config.ts` dialect이
+  `runtime + db` 조합으로 자동 결정됨.
+
+### 변경
+
+- **CLI 프롬프트 라벨**: "ORM driver" → "ORM", "Database driver" → "Database".
+  runtime 프롬프트가 "Inertia frontend" 대신 "Runtime target"으로 표시.
+
+### 수정
+
+- **CI 워크플로우**: `bun test` 마이그레이션 반영. Workers/Drizzle CI에서
+  vitest 참조 제거.
+- **`nx.config.ts` 템플릿**: 생성된 설정에 `runtime` 필드 포함.
+
+---
+
+## [0.9.11] — 2026-06-27
+
+### 추가
+
+- **CLI `--runtime` 플래그**: `nx new`/`nx init`에서 `--runtime bun` 또는
+  `--runtime cloudflare` 지원.
+- **런타임 + DB 자동 매핑**: Scaffold가 `runtime + db` 조합으로 Drizzle 방언 자동 선택.
+  `cloudflare + sqlite` → `d1`.
+- **`NX_RUNTIME` 환경변수**: 환경변수로 런타임 지정 가능.
+
+### 변경
+
+- **CLI 타입**: `DatabaseDriver` → `Database`로 이름 변경. `d1` 옵션 CLI에서 제거.
+- **`bun-sqlite` 방언**: `sqlite`로 통일. 내부적으로 `drizzle-orm/bun-sqlite` 패키지 참조 유지.
+- **생성자 인젝션 제거**: 모든 서비스가 필드 인젝션(`@Inject(Token) declare field`) 사용.
+- **`sqliteDriver`** (better-sqlite3): Driver 디스패치에서 제거 (API 호환용 re-export 유지).
+
+### 수정
+
+- **CI typecheck**: `ScaffoldOptions`에 `runtime` 필드 전달.
+- **CLI lint**: `config.ts`의 중복 `case "sqlite"` 제거.
+- **Drizzle 방언 타입**: `DrizzleDialect`/`ConnectionOptions`의 중복 `"sqlite"` 제거.
+
+---
+
+## [0.9.10] — 2026-06-27
+
+### 변경
+
+- **런타임 정책**: **Bun + Cloudflare Workers**만 공식 지원.
+  Node.js/Deno 참조 문서에서 제거.
+- **CLI db 옵션**: `libsql` 제거. `sqlite`만 SQLite 옵션으로 유지.
+- **문서 정리**: 불필요 문서 3개 삭제. 모든 문서 Bun-native 중심으로 업데이트.
+
+### 수정
+
+- **`@Validate` 데코레이터**: 듀얼 모드 변환 완료.
+- **`@nexusts/view`**: `lazy()` 헬퍼 패키지 인덱스에서 export.
+- **문서 링크**: 깨진 `common-pitfalls.md` 참조 제거.
+
+---
+
+## [0.9.9] — 2026-06-27
+
+### 추가
+
+- **`@nexusts/graphql`**: `@Resolver`/`@Query`/`@Mutation` 데코레이터가
+  TC39 표준 모드와 레거시 모드를 모두 지원. `args` 옵션으로 인수 타입 선언.
+
+### 변경
+
+- **런타임 지원**: **Bun + Cloudflare Workers**만 공식 지원.
+  Node.js/Deno 참조 제거.
+- **테스트 러너**: `vitest` → `bun test`로 마이그레이션.
+  `vitest.config.ts`, `vitest` 의존성 제거.
+- **`experimentalDecorators`**: root `tsconfig.json`에서 제거.
+- **`emitDecoratorMetadata`**: 모든 설정 파일에서 제거.
+- **`@Validate` 데코레이터**: 듀얼 모드 변환.
+- **CLI 템플릿**: 필드 인젝션 생성으로 변경.
+- **`CacheService`**: 팩토리 패턴으로 변환.
+- **문서**: 모든 `npm`/`npx` → `bun` 명령어로 변경. 불필요 문서 3개 삭제.
+
+### 수정
+
+- **`@nexusts/core/di/container.ts`**: 에러 메시지에서 필드 인젝션 권장.
+- **`@nexusts/view`**: `lazy()` 헬퍼 패키지 인덱스에서 export.
+- **`tests/core/router.test.ts`**: 표준 모드로 재작성.
+- **CI 워크플로우**: `bun test` 마이그레이션 반영.
+
+---
+
+## [0.9.8] — 2026-06-27
+
+### 추가
+
+- **생성자 → 필드 인젝션 마이그레이션**: 60개 이상의 소스 파일, JSDoc 주석,
+  문서를 표준 데코레이터 필드 인젝션(`@Inject(Token) declare field: Type`)으로
+  업데이트. 생성자 인젝션은 레거시 전용으로 문서화.
+
+### 변경
+
+- **`@nexusts/core/di/container.ts`**: 에러 메시지가 필드 인젝션 권장
+  (`@Inject(Svc) declare svc: Svc`).
+
+- **CLI 템플릿**: `make:listener`, `make:queue:job`, `make:queue:worker`,
+  `make:session` 템플릿이 기본적으로 필드 인젝션을 생성.
+
+- **문서 및 예제**: 모든 user-guide, design-doc, API-reference, 예제 README
+  코드 샘플을 필드 인젝션으로 마이그레이션.
+
+### 수정
+
+- **`@nexusts/events/src/event.service.ts`**: Config 인젝션을 표준 필드
+  데코레이터 패턴으로 변경.
+
+- **`@nexusts/resilience/src/admin.module.ts`**: ResilienceAdminController가
+  `declare private _svc` 필드 패턴 사용.
+
+- **`@nexusts/cache/src/cache.service.ts`**: 생성자 인젝션 유지 (테스트에서
+  `new CacheService()` 직접 생성 필요).
+
+### 문서
+
+- 모든 user-guide 문서: controllers, DI, request-scope, drizzle,
+  production-basics 필드 인젝션 예제로 업데이트.
+- 모든 17개 패키지 JSDoc 예제 업데이트.
+- 모든 15개 이상 예제 README 필드 인젝션으로 변환.
+- controllers 가이드에 표준 데코레이터 모드 정보 노트 추가.
+
+---
+
 ## [0.9.7] — 2026-06-26
 
 ### 추가

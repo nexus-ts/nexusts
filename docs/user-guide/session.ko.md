@@ -92,7 +92,7 @@ SessionModule.forRoot({
 });
 ```
 
-형식: `<base64url(payload)>.<base64url(HMAC-SHA256)>`. 상태 비저장 — 서버 측 상태 불필요. 공유 스토리지가 없는 Workers / Vercel / Deno Deploy에 이상적.
+형식: `<base64url(payload)>.<base64url(HMAC-SHA256)>`. 상태 비저장 — 서버 측 상태 불필요. 공유 스토리지가 없는 Workers / Vercel 에 이상적.
 
 ### Redis (v0.5)
 

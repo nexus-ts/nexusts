@@ -30,7 +30,7 @@ import { TracingModule, TracingService } from "@nexusts/tracing";
 
 @Injectable()
 class WorkService {
-  constructor(@Inject(TracingService) private trace: TracingService) {}
+  @Inject(TracingService) declare private trace: TracingService;
 
   async run() {
     return this.trace.span("do-work", async (span) => {
@@ -44,7 +44,7 @@ class WorkService {
 @Injectable()
 @Controller("/")
 class AppController {
-  constructor(@Inject(WorkService) private work: WorkService) {}
+  @Inject(WorkService) declare private work: WorkService;
 
   @Get("/work")
   async work() {

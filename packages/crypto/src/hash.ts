@@ -209,7 +209,7 @@ async function loadArgon2(): Promise<Argon2Module> {
 		return _argon2;
 	}
 	try {
-		// @ts-ignore - optional peer dep
+		// @ts-expect-error - optional peer dep
 		const mod = await import("@node-rs/argon2");
 		_argon2 = (mod as any).default ?? (mod as any);
 		if (!_argon2) throw new Error("invalid argon2 module");

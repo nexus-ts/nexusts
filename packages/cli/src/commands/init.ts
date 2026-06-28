@@ -16,7 +16,8 @@
  *   --style <name>    Routing style (nest|adonis|functional)
  *   --view <name>     View engine (rendu|edge|eta|inertia|none)
  *   --orm <name>      ORM driver (drizzle|kysely|none)
- *   --db <name>       Database driver (bun-sqlite|node-sqlite|libsql|postgres|mysql|none)
+ *   --runtime <name>  Runtime target (bun|cloudflare)
+ *   --db <name>       Database (sqlite|postgres|mysql|none)
  *   --frontend <name> Inertia frontend (react|vue|svelte|solid)
  *   --no-ssr          Disable Inertia SSR
  *   --force           Overwrite existing files
@@ -46,15 +47,16 @@ export const initCommand: Command = {
 	examples: [
 		"nx init",
 		"nx init ./my-app",
-		"nx init --style nest --view inertia --orm drizzle --db bun-sqlite",
+		"nx init --style nest --view inertia --orm drizzle --db sqlite",
 		"nx init --force",
 	],
 	flags: [
+		{ name: "runtime", description: "Runtime target (bun|cloudflare)" },
 		{ name: "target", description: "Target directory (default: cwd)" },
 		{ name: "style", description: "Routing style (nest|adonis|functional)" },
 		{ name: "view", description: "View engine (rendu|edge|eta|inertia|none)" },
 		{ name: "orm", description: "ORM driver (drizzle|kysely|none)" },
-		{ name: "db", description: "Database driver (bun-sqlite|node-sqlite|libsql|postgres|mysql|none)" },
+		{ name: "db", description: "Database (sqlite|postgres|mysql|none)" },
 		{
 			name: "frontend",
 			description: "Inertia frontend (react|vue|svelte|solid)",
@@ -71,14 +73,15 @@ export const initCommand: Command = {
 			ctx.cwd,
 			(ctx.flags.target as string | undefined) ?? ".",
 		);
+		const runtime = await resolveProjectOption(ctx.flags, "runtime", VALID_PROJECT_OPTIONS.runtime, "bun", interactive);
 		const routing = await resolveProjectOption(ctx.flags, "style", VALID_PROJECT_OPTIONS.style, "nest", interactive);
 		const view = await resolveProjectOption(ctx.flags, "view", VALID_PROJECT_OPTIONS.view, "rendu", interactive);
 		const orm = await resolveProjectOption(ctx.flags, "orm", VALID_PROJECT_OPTIONS.orm, "drizzle", interactive);
-		const db = await resolveProjectOption(ctx.flags, "db", VALID_PROJECT_OPTIONS.db, "bun-sqlite", interactive);
+		const db = await resolveProjectOption(ctx.flags, "db", VALID_PROJECT_OPTIONS.db, "sqlite", interactive);
 		const frontend = await resolveProjectOption(ctx.flags, "frontend", VALID_PROJECT_OPTIONS.frontend, "react", interactive);
 		const ssr = !flagBool(ctx.flags, "no-ssr", false);
 		const name = target.split("/").pop() ?? "nexus-app";
-		const dbUrl = db === "bun-sqlite" || db === "node-sqlite" ? "app.db" : "";
+		const dbUrl = db === "sqlite" ? "app.db" : "";
 
 		const plan: PlanEntry[] = [
 			{ path: "package.json", mode: "merge-pkg" },
@@ -129,8 +132,6 @@ export const initCommand: Command = {
 			if (entry.mode === "merge-tsconfig") {
 				if (exists) {
 					mergeTsconfig(abs, {
-						experimentalDecorators: true,
-						emitDecoratorMetadata: true,
 					});
 					merged.push(entry.path);
 				} else {
@@ -149,7 +150,7 @@ export const initCommand: Command = {
 		}
 
 		// Generate remaining project files via scaffold
-		const scaffoldOpts = { target, name, routing, view, orm, db, frontend, ssr, dbUrl };
+		const scaffoldOpts = { target, name, runtime, routing, view, orm, db, frontend, ssr, dbUrl };
 		const scaffoldFiles = generateProjectFiles(target, scaffoldOpts);
 		for (const f of scaffoldFiles) {
 			if (!plan.some((p) => p.path === f)) {
@@ -242,7 +243,6 @@ function defaultTsconfig(): string {
     "module": "ESNext",
     "moduleResolution": "bundler",
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,

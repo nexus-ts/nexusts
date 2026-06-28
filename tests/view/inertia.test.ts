@@ -21,11 +21,11 @@
  */
 import { describe, it, expect, beforeEach } from 'vitest';
 import { z } from 'zod';
-import { Application } from '@core/application';
-import { Module } from '@core/decorators/module';
-import { Controller } from '@core/decorators/controller';
-import { Get, Post } from '@core/decorators/http-methods';
-import { Inject } from '@core/decorators/injectable';
+import { Application } from '@nexusts/core';
+import { Module } from '@nexusts/core';
+import { Controller } from '@nexusts/core';
+import { Get, Post } from '@nexusts/core';
+import { Inject } from '@nexusts/core';
 import {
   Inertia,
   defer,
@@ -34,7 +34,7 @@ import {
   merge,
   deepMerge,
   once,
-} from '@/view/inertia';
+} from '@nexusts/view';
 
 class Counter {
   n = 0;
@@ -43,7 +43,7 @@ class Counter {
 
 @Controller('/page')
 class PageController {
-  constructor(@Inject(Inertia.TOKEN) private inertia: Inertia) {}
+  @Inject(Inertia.TOKEN) declare private inertia: Inertia;
 
   @Get('/')
   home() {

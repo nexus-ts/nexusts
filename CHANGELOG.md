@@ -13,6 +13,184 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.9.13] — 2026-06-27
+
+### Changed
+
+- **CLI prompt labels**: "Database driver" → "Database" across
+  `config.ts`, `init.ts`, and `new.ts` commands.
+
+### Added
+
+- **`--runtime` flag in `nx init`**: `nx init` now accepts
+  `--runtime bun` (default) or `--runtime cloudflare` to specify
+  the target runtime when scaffolding a new project.
+
+---
+
+## [0.9.12] — 2026-06-27
+
+### Added
+
+- **`runtime` in generated `nx.config.ts`**: Scaffold now includes
+  `runtime: 'bun'` or `runtime: 'cloudflare'` in the generated config.
+- **`nx info` runtime display**: Shows `runtime` field and `NX_RUNTIME`
+  environment variable.
+- **Drizzle config auto-mapping**: `drizzle.config.ts` dialect is now
+  resolved from `runtime + db`. `cloudflare + sqlite` → `d1`.
+
+### Changed
+
+- **CLI prompt labels**: "ORM driver" → "ORM", "Database driver" → "Database".
+  `runtime` prompt now shows "Runtime target" instead of "Inertia frontend".
+
+### Fixed
+
+- **`.github/workflows/ci.yml`**: Updated for `bun test` migration.
+  Removed vitest references from Workers and Drizzle CI workflows.
+- **`nx.config.ts` template**: Now includes `runtime` field in generated
+  project config.
+
+---
+
+## [0.9.11] — 2026-06-27
+
+### Added
+
+- **CLI `--runtime` flag**: `nx new` and `nx init` now accept
+  `--runtime bun` (default) or `--runtime cloudflare`.
+- **Runtime + db auto-mapping**: Scaffold resolves Drizzle dialect
+  from `runtime + db` combo. `runtime=cloudflare + db=sqlite` → `d1`.
+- **`NX_RUNTIME` env var**: Override runtime target via environment.
+
+### Changed
+
+- **CLI types**: `DatabaseDriver` renamed to `Database`. `d1` option
+  removed from CLI (auto-mapped via runtime).
+- **`bun-sqlite` dialect**: Replaced with `sqlite` across all packages
+  and documentation. The `drizzle-orm/bun-sqlite` npm package reference
+  is preserved internally.
+- **Sources**: Removed all `constructor(@Inject(`) patterns. All
+  services use field injection (`@Inject(Token) declare field`).
+- **`sqliteDriver`** (better-sqlite3): Removed from driver dispatch;
+  kept as re-export for API compatibility.
+
+### Fixed
+
+- **CI typecheck**: `runtime` field passed to `ScaffoldOptions` in
+  `new.ts` and `init.ts`.
+- **CLI lint**: Duplicate `case "sqlite"` in config.ts removed.
+- **Drizzle dialect type**: Removed duplicate `"sqlite"` entries in
+  `DrizzleDialect` and `ConnectionOptions` types.
+
+---
+
+## [0.9.10] — 2026-06-27
+
+### Changed
+
+- **Runtime policy**: Official support narrowed to **Bun + Cloudflare Workers**
+  only. Node.js and Deno references removed from all documentation.
+- **CLI db options**: `libsql` removed. `sqlite` is the only SQLite option
+  (maps to `bun-sqlite` dialect internally).
+- **Docs cleanup**: Removed `common-pitfalls.md`, `standard-decorators-migration.md`,
+  `testing-published-package.md`. All docs updated for Bun-native focus.
+- **Organization profile**: GitHub `.github/profile/README.md` updated to v0.9.10.
+
+### Fixed
+
+- **`@Validate` decorator**: Converted to dual-mode (standard + legacy).
+- **`@nexusts/view`**: `lazy()` helper now exported from package index.
+- **Doc links**: Fixed broken `common-pitfalls.md` references.
+
+---
+
+## [0.9.9] — 2026-06-27
+
+### Added
+
+- **`@nexusts/graphql`**: Dual-mode decorators (`@Resolver`, `@Query`,
+  `@Mutation`) now support TC39 standard decorators via `args` option
+  (replaces `@Arg` parameter decorator). Parameter decorators (`@Arg`)
+  continue to work in legacy mode.
+
+### Changed
+
+- **Runtime targets**: Official support is now **Bun + Cloudflare Workers**
+  only. Node.js and Deno references removed from all documentation.
+- **Test runner**: Migrated from `vitest` (esbuild) to `bun test` (Bun
+  native). Removed `vitest.config.ts`, `vitest.config.node.ts`, and
+  `vitest` dependency. All 253+ tests pass with `bun test`.
+- **`experimentalDecorators`**: Removed from root `tsconfig.json`.
+  Retained only in `tsconfig.typecheck.json` (for tsc).
+- **`emitDecoratorMetadata`**: Removed from all config files. No longer
+  needed.
+- **`@Validate` decorator**: Converted to dual-mode (standard + legacy).
+- **CLI templates**: `make:listener`, `make:queue:job`, `make:queue:worker`,
+  `make:session` now generate field injection by default.
+- **`CacheService`**: Converted to factory pattern. Constructor accepts
+  optional `config` param. Module uses `useFactory` for DI.
+- **Docs**: All `npm`/`npx` commands replaced with `bun` equivalents.
+  Removed 3 obsolete doc files. Bun minimum version unified to 1.3.10.
+
+### Fixed
+
+- **`@nexusts/core/di/safe-reflect`**: Error messages now recommend
+  field injection (`@Inject(Svc) declare svc: Svc`).
+- **`@nexusts/view`**: `lazy()` helper now exported from package index.
+- **`tests/core/router.test.ts`**: Full rewrite to standard mode.
+  Guards/ExceptionFilter duplicate tests removed.
+- **`tests/e2e/app.test.ts`**: Validation test works without `@Validate`.
+- **CI workflow**: Updated for `bun test` migration.
+
+---
+
+## [0.9.8] — 2026-06-27
+
+### Added
+
+- **Constructor → field injection migration**: All 60+ source files, JSDoc
+  comments, and documentation updated to standard decorator field injection
+  (`@Inject(Token) declare field: Type`). Constructor injection is now
+  explicitly documented as legacy-only, with field injection as the
+  recommended standard pattern.
+
+### Changed
+
+- **`@nexusts/core/di/container.ts`**: Error messages now recommend field
+  injection (`@Inject(Svc) declare svc: Svc`) instead of constructor
+  injection patterns.
+
+- **CLI templates**: `make:listener`, `make:queue:job`, `make:queue:worker`,
+  `make:session` now generate field injection by default.
+
+- **Docs & examples**: All user-guide, design-doc, API-reference, and
+  example README code samples migrated to field injection. Legacy patterns
+  retained where technically required (`super()` calls, Bun bug docs).
+
+### Fixed
+
+- **`@nexusts/events/src/event.service.ts`**: Config injection now uses
+  standard field decorator pattern instead of constructor parameter
+  injection.
+
+- **`@nexusts/resilience/src/admin.module.ts`**: ResilienceAdminController
+  injection uses `declare private _svc` field pattern.
+
+- **`@nexusts/cache/src/cache.service.ts`**: Reverted to constructor
+  injection (required for direct `new CacheService()` instantiation in
+  tests).
+
+### Documentation
+
+- All user-guide docs: controllers, DI, request-scope, drizzle,
+  production-basics updated with field injection examples.
+- All 17 package JSDoc examples: quick-start code snippets updated.
+- All 15+ example READMEs: converted to field injection.
+- Added standard decorator mode informational note in controllers guide.
+
+---
+
 ## [0.9.7] — 2026-06-26
 
 ### Added

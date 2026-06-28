@@ -24,7 +24,7 @@ describeIf("DrizzleSessionStorage (real SQLite)", () => {
 
 	beforeEach(async () => {
 		svc = new DrizzleService({
-			dialect: "bun-sqlite",
+			dialect: "sqlite",
 			connection: { filename: ":memory:" },
 		});
 		await svc.open();

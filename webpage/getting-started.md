@@ -7,15 +7,14 @@ description: Get started with NexusTS
 
 ## Prerequisites
 
-- [Bun](https://bun.sh) ≥ 1.3.0
-- Node.js ≥ 22 (optional — for Node.js runtime)
+- [Bun](https://bun.sh) ≥ 1.3.10
 
 ## Quick Start
 
 The fastest way to create a new NexusTS project:
 
 ```bash
-npm create nexusts@latest my-app
+bun create nexusts@latest my-app
 cd my-app
 bun install
 bun run dev
@@ -37,7 +36,7 @@ For more control over the scaffolding, use the `nx` CLI directly:
 bunx nx new my-app
 
 # Create with specific options
-bunx nx new my-app --style nest --view inertia --orm drizzle --db bun-sqlite --frontend react
+bunx nx new my-app --style nest --view inertia --orm drizzle --db sqlite --frontend react
 
 # Initialize in an existing directory (non-destructive)
 bunx nx init --style nest --view inertia --orm drizzle

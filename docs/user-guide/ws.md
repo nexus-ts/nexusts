@@ -2,7 +2,7 @@
 
 > New in v0.5. Unifies Hono's runtime-specific WebSocket support
 > behind a single, ergonomic API. Works on **Bun** (primary) and
-> **Node.js** (via the `ws` package). Cloudflare Workers is out of
+> **Bun** (primary, via `Bun.serve` websocket). Cloudflare Workers is out of
 > scope — see the [Cloudflare section](#8-cloudflare-workers) below.
 
 `@nexusts/ws` gives you:
@@ -84,16 +84,16 @@ now routed through `ChatGateway`.
 
 ---
 
-## 2. Quick start (Node.js)
+## 2. Quick start
 
 ```ts
 import { createServer } from "node:http";
 import { WebSocketServer } from "ws";
-import { NodeWsAdapter } from "@nexusts/ws";
+import { BunWsAdapter } from "@nexusts/ws";
 
 const app = new Application(AppModule);
 const service = app.container.resolve(WebSocketService);
-const adapter = new NodeWsAdapter(service);
+const adapter = new BunWsAdapter(service);
 const { handleUpgrade } = await adapter.bind([ChatGateway]);
 
 const wss = new WebSocketServer({ noServer: true });

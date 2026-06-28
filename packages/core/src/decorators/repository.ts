@@ -14,7 +14,7 @@
  * }
  * ```
  */
-import { safeGetMeta, safeDefineMeta, safeHasMeta, safeParamTypes } from "../di/safe-reflect.js";
+import { safeGetMeta, safeDefineMeta, safeHasMeta, } from "../di/safe-reflect.js";
 import { METADATA_KEY } from "../constants.js";
 import type { InjectionToken } from "../di/tokens.js";
 

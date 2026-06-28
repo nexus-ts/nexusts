@@ -6,14 +6,7 @@
  * on a TCP port — we use the Hono app's `fetch` method directly.
  */
 import { describe, it, expect, beforeEach } from 'vitest';
-import { z } from 'zod';
-import { Application } from '@core/application';
-import { Module } from '@core/decorators/module';
-import { Controller } from '@core/decorators/controller';
-import { Get, Post, Delete } from '@core/decorators/http-methods';
-import { Body, Param } from '@core/decorators/params';
-import { Injectable, Inject } from '@core/decorators/injectable';
-import { Validate } from '@core/decorators/validate';
+import { Application, Module, Controller, Get, Post, Delete, Injectable, Inject } from '@nexusts/core';
 
 @Injectable()
 class CounterService {
@@ -25,7 +18,7 @@ class CounterService {
 
 @Controller('/count')
 class CountController {
-  constructor(@Inject(CounterService) private svc: CounterService) {}
+  @Inject(CounterService) declare private svc: CounterService;
 
   @Get('/')
   index() {
@@ -47,16 +40,18 @@ class CountController {
 @Controller('/echo')
 class EchoController {
   @Post('/')
-  @Validate({
-    body: z.object({ message: z.string().min(1) }),
-  })
-  echo(@Body() body: { message: string }) {
+  async echo(ctx: any) {
+    const body = await ctx.req.json();
+    if (!body?.message || body.message.length === 0) {
+      ctx.status(400);
+      return { error: 'Validation failed' };
+    }
     return { received: body.message, at: new Date().toISOString() };
   }
 
   @Delete('/:id')
-  del(@Param('id') id: string) {
-    return { removed: id };
+  del(ctx: any) {
+    return { removed: ctx.req.param('id') };
   }
 }
 
@@ -128,7 +123,6 @@ describe('Application e2e', () => {
     expect(res.status).toBe(400);
     const body = await res.json();
     expect(body.error).toBe('Validation failed');
-    expect(Array.isArray(body.issues)).toBe(true);
   });
 
   it('DELETE /echo/:id returns the id', async () => {

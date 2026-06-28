@@ -33,7 +33,7 @@ import { RESILIENCE_META } from "../types.js";
 // At runtime, the dependency is set via `setResilienceService()` so
 // only the *type* needs to be visible at type-check time.
 import type { ResilienceService } from "../resilience.service.js";
-import { safeGetMeta, safeDefineMeta, safeHasMeta } from "@nexusts/core/di/safe-reflect";
+import { safeGetMeta, safeDefineMeta, } from "@nexusts/core/di/safe-reflect";
 
 // Per-method metadata kinds. Each decorator stores its own
 // payload under a separate key so a method can have e.g. `@Retry`

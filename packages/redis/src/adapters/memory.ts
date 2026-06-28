@@ -118,5 +118,5 @@ function globToRegex(glob: string): RegExp {
 		.replace(/[.+^${}()|[\]\\]/g, "\\$&")
 		.replace(/\*/g, ".*")
 		.replace(/\?/g, ".");
-	return new RegExp("^" + escaped + "$");
+	return new RegExp(`^${escaped}$`);
 }

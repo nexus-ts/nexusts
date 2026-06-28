@@ -15,7 +15,6 @@ import type {
 	ApiParamOptions,
 	ApiResponseOptions,
 	JSONSchema,
-	OPENAPI_META as _OM,
 	OpenAPIConfig,
 	OpenAPIDocument,
 	OpenAPIMediaType,
@@ -286,11 +285,7 @@ export class OpenAPIService {
 	}
 
 	private extractPathParams(path: string): string[] {
-		const out: string[] = [];
-		const re = /:([A-Za-z0-9_]+)/g;
-		let m: RegExpExecArray | null;
-		while ((m = re.exec(path)) !== null) out.push(m[1]!);
-		return out;
+		return [...path.matchAll(/:([A-Za-z0-9_]+)/g)].map(m => m[1]!);
 	}
 
 	private normalizePath(path: string): string {

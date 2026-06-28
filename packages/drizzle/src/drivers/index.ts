@@ -6,14 +6,13 @@ import type { DrizzleConfig } from "../types.js";
 import type { DrizzleDriverResult } from "./base.js";
 import { postgresDriver } from "./postgres.js";
 import { mysqlDriver } from "./mysql.js";
-import { sqliteDriver } from "./sqlite.js";
 import { bunSqliteDriver } from "./bun-sqlite.js";
 import { d1Driver } from "./d1.js";
 
 export { postgresDriver } from "./postgres.js";
 export { mysqlDriver } from "./mysql.js";
-export { sqliteDriver } from "./sqlite.js";
 export { bunSqliteDriver } from "./bun-sqlite.js";
+export { sqliteDriver } from "./sqlite.js";
 export { d1Driver } from "./d1.js";
 export type {
 	DrizzleDriverResult,
@@ -30,8 +29,6 @@ export async function resolveDriver(
 		case "mysql":
 			return mysqlDriver(config);
 		case "sqlite":
-			return sqliteDriver(config);
-		case "bun-sqlite":
 			return bunSqliteDriver(config);
 		case "d1":
 			return d1Driver(config);

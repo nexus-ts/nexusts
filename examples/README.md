@@ -81,7 +81,7 @@ bunx create-nexusts my-app   # full scaffold via the CLI
 ```
 
 `create-nexusts` is a separate package that calls
-`npx @nexusts/core init` under the hood — see
+`bunx @nexusts/core init` under the hood — see
 [github.com/nexus-ts/nexusts](https://github.com/nexus-ts/nexusts/tree/main/create-nexusts).
 
 ---

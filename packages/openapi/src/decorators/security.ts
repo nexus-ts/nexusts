@@ -3,7 +3,7 @@
  * for an operation or controller.
  */
 import { OPENAPI_META, type ApiSecurityOptions } from "../types.js";
-import { safeGetMeta, safeDefineMeta, safeHasMeta } from "@nexusts/core/di/safe-reflect";
+import { safeGetMeta, safeDefineMeta, } from "@nexusts/core/di/safe-reflect";
 
 export function ApiSecurity(name: string, scopes: string[] = []): ClassDecorator & MethodDecorator {
 	return (

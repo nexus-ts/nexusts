@@ -7,8 +7,8 @@
  *   - kysely   → table interface + typed repository
  *
  * For Drizzle, the `--dialect` flag selects the right import path and
- * column types: postgres | mysql | sqlite | bun-sqlite | d1. Default
- * is `bun-sqlite` (the typical Bun + local-dev setup).
+ * column types: postgres | mysql | sqlite | d1. Default
+ * is `sqlite` (the typical Bun + local-dev setup).
  *
  * Columns are read from the optional `--columns` flag as a comma-separated
  * list of `name:type` pairs:
@@ -57,7 +57,7 @@ export const makeModelCommand: Command = {
 		{
 			name: "dialect",
 			description:
-				"Drizzle dialect (postgres|mysql|sqlite|bun-sqlite|d1). Default: bun-sqlite",
+				"Drizzle dialect (postgres|mysql|sqlite|d1). Default: sqlite",
 		},
 	],
 	async run(ctx: CommandContext): Promise<number> {
@@ -95,10 +95,10 @@ export const makeModelCommand: Command = {
 			const dialect =
 				(ctx.flags.dialect as string | undefined) ??
 				ctx.config.dialect ??
-				"bun-sqlite";
+				"sqlite";
 			if (!isValidDialect(dialect)) {
 				logger.error(
-					`Unsupported drizzle dialect: ${dialect}. Allowed: postgres, mysql, sqlite, bun-sqlite, d1.`,
+					`Unsupported drizzle dialect: ${dialect}. Allowed: postgres, mysql, sqlite, d1.`,
 				);
 				return 1;
 			}
@@ -159,11 +159,11 @@ function renderColumns(
 			const tsName = toCamel(colName);
 			switch (orm) {
 				case "drizzle": {
-					const d = (dialect ?? "bun-sqlite") as
+					const d = (dialect ?? "sqlite") as
 						| "postgres"
 						| "mysql"
 						| "sqlite"
-						| "bun-sqlite"
+						| "sqlite"
 						| "d1";
 					const helper = mapDrizzleType(d, colType);
 					return `  ${tsName}: ${helper}('${colName}'),`;

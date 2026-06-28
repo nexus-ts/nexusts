@@ -6,7 +6,7 @@ Use this when you need to publish outside the CI workflow.
 
 - Maintainer of the `@nexusts` npm org
 - **2FA enabled** on your npm account
-- `bun` ≥ 1.3.0
+- `bun` ≥ 1.3.10
 
 ## Login (one time per machine)
 

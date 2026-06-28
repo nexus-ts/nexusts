@@ -53,7 +53,7 @@ export class MetricsModule {
 			exports: [MetricsService, METRICS_SERVICE_TOKEN, "METRICS_CONFIG"],
 		})
 		class ConfiguredMetricsModule {
-			constructor(private svc: MetricsService = new MetricsService()) {
+			constructor(svc: MetricsService = new MetricsService()) {
 				if (Object.keys(fullConfig.globalLabels).length > 0) {
 					svc.registry.setGlobalLabels(fullConfig.globalLabels);
 				}
@@ -193,7 +193,6 @@ function registerDefaultMetrics(service: MetricsService): void {
 		help: "Number of active handles.",
 		labelNames: [],
 		collect: () => {
-			// @ts-ignore - Bun may or may not expose this
 			const handles = (process as any)._getActiveHandles?.() ?? [];
 			processActiveHandles.set(handles.length);
 		},
@@ -204,7 +203,6 @@ function registerDefaultMetrics(service: MetricsService): void {
 		help: "Number of active requests.",
 		labelNames: [],
 		collect: () => {
-			// @ts-ignore - Bun may or may not expose this
 			const reqs = (process as any)._getActiveRequests?.() ?? [];
 			processActiveRequests.set(reqs.length);
 		},

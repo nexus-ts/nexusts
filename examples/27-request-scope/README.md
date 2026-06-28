@@ -36,7 +36,7 @@ class RequestContext {
 @Injectable()
 @Controller("/")
 class AppController {
-  constructor(@Inject(RequestContext) private ctx: RequestContext) {}
+  @Inject(RequestContext) declare private ctx: RequestContext;
 
   @Get("/counter")
   counter() {
@@ -88,7 +88,7 @@ fresh state per request.
 ```ts
 @Injectable({ scope: "request" })
 class RequestTx {
-  constructor(@Inject(DrizzleService) private db: DrizzleService) {}
+  @Inject(DrizzleService) declare private db: DrizzleService;
 
   async run(fn: (tx: any) => Promise<any>) {
     // open a transaction just for this request

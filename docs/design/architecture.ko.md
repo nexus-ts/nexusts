@@ -7,7 +7,7 @@
 
 NexusTS는 다음 네 가지 원칙을 중심으로 설계된 **Bun 네이티브 풀스택 프레임워크**입니다.
 
-1. **멀티 런타임** — 동일한 코드가 Bun, Node.js, Deno, Cloudflare Workers에서 동작합니다.
+1. **멀티 런타임** — 동일한 코드가 Bun, Node.js, Cloudflare Workers에서 동작합니다.
 2. **멀티 패러다임** — Nest 스타일 클래스 데코레이터, Adonis 스타일 라우트 테이블, Hono 스타일 함수형 핸들러를 한 앱에서 혼용할 수 있습니다.
 3. **멀티 렌더러** — Rendu, Edge, Inertia 어댑터가 일급 시민이며, React, Vue, Svelte, Solid용 SSR 어댑터를 요청 파이프라인을 분기하지 않고도 연결할 수 있습니다.
 4. **엣지 우선** — 모든 어댑터는 Workers 요청 예산 안에서 동작하도록 설계되었습니다. 핫 패스에 블로킹 I/O가 없습니다.

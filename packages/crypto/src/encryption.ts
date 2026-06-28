@@ -117,7 +117,7 @@ export class EncryptionService {
 	/** True if the string was produced by `encrypt()`. */
 	isEncrypted(value: string): boolean {
 		if (typeof value !== "string") return false;
-		return value.startsWith(VERSION + ".");
+		return value.startsWith(`${VERSION}.`);
 	}
 
 	/* ---------------- HMAC sign / unsign ---------------- */
@@ -231,7 +231,7 @@ function encodeExpiry(expiresAt: number | string | Date | undefined): Buffer {
 	} else if (typeof expiresAt === "string") {
 		// Numeric string = seconds from now
 		const asNum = Number(expiresAt);
-		if (!isNaN(asNum) && asNum > 0) {
+		if (!Number.isNaN(asNum) && asNum > 0) {
 			ms = asNum > 1e12 ? asNum : Date.now() + asNum * 1000;
 		} else {
 			ms = Date.parse(expiresAt);
@@ -239,13 +239,13 @@ function encodeExpiry(expiresAt: number | string | Date | undefined): Buffer {
 	} else {
 		ms = expiresAt.getTime();
 	}
-	if (!isFinite(ms)) return Buffer.alloc(0);
+	if (!Number.isFinite(ms)) return Buffer.alloc(0);
 	return Buffer.from(String(ms), "utf8");
 }
 
 function parseExpiry(s: string): number {
 	const n = Number(s);
-	return isFinite(n) ? n : 0;
+	return Number.isFinite(n) ? n : 0;
 }
 
 interface ParsedV1 {
@@ -258,7 +258,7 @@ interface ParsedV1 {
 }
 
 function parseV1(s: string): ParsedV1 | null {
-	if (typeof s !== "string" || !s.startsWith(VERSION + ".")) return null;
+	if (typeof s !== "string" || !s.startsWith(`${VERSION}.`)) return null;
 	const parts = s.split(".");
 	// v1, iv, tag, ct, expiry, purpose, mac = 7 parts
 	if (parts.length !== 7) return null;

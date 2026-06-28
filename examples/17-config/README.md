@@ -34,7 +34,7 @@ const schema = z.object({
 @Injectable()
 @Controller("/")
 class AppController {
-  constructor(@Inject(ConfigService) private config: ConfigService) {}
+  @Inject(ConfigService) declare private config: ConfigService;
 
   @Get("/info")
   info() {

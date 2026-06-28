@@ -13,6 +13,9 @@ export default {
   // Core
   // ---------------------------------------------------------------------------
 
+  /** Runtime target — \`bun\` (default) or \`cloudflare\`. */
+  runtime: '{{ runtime }}',
+
   /** Routing style used by \`make:controller\` / \`make:crud\`. */
   routing: '{{ routing }}',
 

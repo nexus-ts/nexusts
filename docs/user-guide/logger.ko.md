@@ -489,7 +489,6 @@ interface LogContext {
 
 - [`../design/logger.md`](../design/logger.md) — 디자인 문서
 - [`production-basics.ko.md`](./production-basics.ko.md) — health, config, logger, static 한 곳에서
-- [`common-pitfalls.ko.md`](./common-pitfalls.ko.md) — 디버깅 레시피
 - [`tracing.ko.md`](./tracing.ko.md) — 로그 상관 관계를 통한 분산 추적
 - [`cross-cutting-features.ko.md`](./cross-cutting-features.ko.md) — 횡단 관심사 모듈 개요
 - [Pino 문서](https://getpino.io/) — 로거 백엔드

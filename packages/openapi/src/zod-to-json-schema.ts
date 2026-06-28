@@ -71,7 +71,7 @@ export function zodToJsonSchema(
 	if (def.typeName === "ZodNativeEnum") {
 		const values = (def as { values: Record<string, string | number> }).values;
 		const entries = Object.entries(values).filter(
-			([k, v]) => typeof v !== "number" || isNaN(Number(k)),
+			([k, v]) => typeof v !== "number" || Number.isNaN(Number(k)),
 		);
 		const opts = entries.map(([, v]) => v);
 		const t = opts.every((v) => typeof v === "number") ? "number" : "string";

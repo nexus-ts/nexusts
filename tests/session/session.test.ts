@@ -16,7 +16,6 @@ import { Module } from "@core/decorators/module";
 import { Controller } from "@core/decorators/controller";
 import { Get } from "@core/decorators/http-methods";
 import { Injectable, Inject } from "@core/decorators/injectable";
-import { Ctx } from "@core/decorators/params";
 import {
 	SessionService,
 	SessionModule,
@@ -394,7 +393,7 @@ describe("c.session AdonisJS-style getter", () => {
 		@Controller("/ctx-probe")
 		class CtxProbeController {
 			@Get("/session")
-			probeSession(@Ctx() c: any) {
+			probeSession(c: any) {
 				sessionResult = {
 					hasSession: c.session != null,
 					sameAsGet: c.session === c.get("session"),

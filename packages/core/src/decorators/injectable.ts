@@ -14,11 +14,11 @@
  *
  * @Injectable({ scope: 'request' })
  * class RequestContext {
- *   constructor(@Inject(REQUEST) private req: any) {}
+ *   @Inject(REQUEST) declare private req: any;
  * }
  * ```
  */
-import { safeGetMeta, safeDefineMeta, safeHasMeta, safeParamTypes } from "../di/safe-reflect.js";
+import { safeGetMeta, safeDefineMeta, safeHasMeta, } from "../di/safe-reflect.js";
 import { METADATA_KEY } from "../constants.js";
 import { FIELDS_KEY } from "../di/standard-inject.js";
 
@@ -69,7 +69,7 @@ export function getScope(
  * @Inject('CONFIG') declare config: AppConfig;
  * ```
  */
-export function Inject<T = any>(token: any): any {
+export function Inject<_T = any>(token: any): any {
 	return (
 		target: object,
 		propertyKey: string | symbol | undefined,

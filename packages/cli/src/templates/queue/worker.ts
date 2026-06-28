@@ -16,7 +16,7 @@ import { QueueService, OnQueueReady } from '@nexusts/queue';
  */
 @Injectable()
 export class {{ name }}Worker {
-  constructor(@Inject(QueueService.TOKEN) private readonly queue: QueueService) {}
+  @Inject(QueueService.TOKEN) declare private readonly queue: QueueService;
 
   @OnQueueReady()
   async register(): Promise<void> {

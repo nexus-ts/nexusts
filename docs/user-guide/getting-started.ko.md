@@ -13,7 +13,7 @@
 
 대상 런타임에 따라 다음이 추가로 필요할 수 있습니다.
 
-- **Node.js** ≥ 22 (Bun을 사용하지 않는 경우)
+- **Bun** ≥ 1.3.10
 - **Cloudflare Wrangler** — Workers에 배포할 때만
 
 ---
@@ -39,8 +39,6 @@ bun add -d @types/bun typescript vitest
     "target": "ES2022",
     "module": "ESNext",
     "moduleResolution": "bundler",
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
@@ -52,8 +50,6 @@ bun add -d @types/bun typescript vitest
 
 | 플래그 | 필수? | 이유 |
 | ---- | --------- | --- |
-| `experimentalDecorators` | 예 | `@Controller`, `@Inject` 등을 활성화 |
-| `emitDecoratorMetadata` | 권장 | bare-type 생성자 주입 활성화 (`tsc`/`ts-node`에서 동작; Bun transformer는 무시) |
 | `moduleResolution: "bundler"` | 권장 | Bun + ESM에 대한 최선의 지원 |
 | `strict` | 권장 | 표준 TS 위생 |
 

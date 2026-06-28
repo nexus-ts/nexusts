@@ -6,6 +6,10 @@
  */
 
 import type { Command } from "../core/index.js";
+import configCmd from "./config.js";
+import dbGenerate from "./db-generate.js";
+import dbMigrate from "./db-migrate.js";
+import dbSeed from "./db-seed.js";
 import info from "./info.js";
 import init from "./init.js";
 import makeAuth from "./make-auth.js";
@@ -22,11 +26,7 @@ import makeSchedule from "./make-schedule.js";
 import makeService from "./make-service.js";
 import makeSession from "./make-session.js";
 import makeValidator from "./make-validator.js";
-import dbMigrate from "./db-migrate.js";
-import dbGenerate from "./db-generate.js";
-import dbSeed from "./db-seed.js";
 import newCmd from "./new.js";
-import configCmd from "./config.js";
 import repl from "./repl.js";
 import routeList from "./route-list.js";
 

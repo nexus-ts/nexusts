@@ -158,7 +158,7 @@ async function walk(
 ): Promise<string[]> {
 	const out: string[] = [];
 	const full = join(root, dir);
-	let entries;
+	let entries: import("node:fs").Dirent[];
 	try {
 		entries = await readdir(full, { withFileTypes: true });
 	} catch {

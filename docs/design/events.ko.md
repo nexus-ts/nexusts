@@ -138,7 +138,7 @@ const result = await events.emit('user.created', payload);
 ```ts
 @Injectable()
 class EmailListeners {
-  constructor(@Inject(EventService.TOKEN) private events: EventService) {}
+  @Inject(EventService.TOKEN) declare private events: EventService;
 
   @OnEvent('user.created')
   async handleUserCreated(payload: { userId: string; email: string }) {

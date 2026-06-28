@@ -1,4 +1,4 @@
-import { Inject, Injectable, OnApplicationInit } from '@nexusts/core';
+import { Inject, Injectable, type OnApplicationInit } from '@nexusts/core';
 import { __setScheduleService } from './scanner.js';
 import type {
 	ScheduleRegistry,

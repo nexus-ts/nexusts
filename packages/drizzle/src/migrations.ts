@@ -98,7 +98,7 @@ export async function pushSchema(options?: {
 }): Promise<void> {
 	const schema = options?.schema ?? "./src/schema";
 	const dialect = options?.dialect ?? "sqlite";
-	const url = options?.url ?? process.env["DATABASE_URL"] ?? ":memory:";
+	const url = options?.url ?? process.env.DATABASE_URL ?? ":memory:";
 
 	const schemaPaths = Array.isArray(schema) ? schema : [schema];
 	const configContent = `import { defineConfig } from "drizzle-kit";

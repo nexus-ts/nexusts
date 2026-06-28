@@ -95,7 +95,7 @@ NexusTS ships **33 independent modules** — each is its own `@nexusts/*` packag
 | Email (Null / File / SMTP / MJML) | `@nexusts/mail` | ✅ v0.3 |
 | Configuration management | `@nexusts/config` | ✅ v0.3 |
 | i18n (Intl-based, pluralization) | `@nexusts/i18n` | ✅ v0.5 |
-| Redis client (Bun / Node / Workers KV) | `@nexusts/redis` | ✅ v0.5 |
+| Redis client (Bun / Workers KV) | `@nexusts/redis` | ✅ v0.5 |
 | File upload helper | `@nexusts/upload` | ✅ v0.4 |
 | Health checks | `@nexusts/health` | ✅ v0.3 |
 

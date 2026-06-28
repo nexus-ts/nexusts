@@ -83,12 +83,7 @@ export class Bulkhead {
 		}
 
 		const token = this.enqueue();
-		try {
 			await token.acquire();
-		} catch (err) {
-			// Cancelled or aborted — drop the token and re-throw.
-			throw err;
-		}
 		// Slot acquired. Run and release on completion.
 		this.inFlight += 1;
 		try {

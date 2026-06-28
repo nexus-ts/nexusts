@@ -8,7 +8,7 @@
 NexusTS is a **Bun-native fullstack framework** designed around four
 guiding principles:
 
-1. **Multi-runtime** — the same code runs on Bun, Node.js, Deno, and
+1. **Multi-runtime** — the same code runs on Bun, Cloudflare Workers, and
    Cloudflare Workers.
 2. **Multi-paradigm** — the same app can mix Nest-style class decorators,
    Adonis-style route tables, and Hono-style functional handlers.

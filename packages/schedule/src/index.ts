@@ -25,7 +25,7 @@
  *
  *   @Injectable()
  *   class CleanupWorker {
- *     constructor(@Inject(ScheduleService.TOKEN) private schedule: ScheduleService) {}
+ *     @Inject(ScheduleService.TOKEN) declare private schedule: ScheduleService;
  *
  *     @Cron('0 * * * *')                     // every hour
  *     async hourly() { /* ... *\/ }

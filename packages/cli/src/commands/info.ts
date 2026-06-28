@@ -21,6 +21,7 @@ export const infoCommand: Command = {
 		logger.info(colors.bold("Resolved configuration"));
 		logger.blank();
 		logger.table([
+			["runtime", String(ctx.config.runtime)],
 			["routing", String(ctx.config.routing)],
 			["view", String(ctx.config.view)],
 			["orm", String(ctx.config.orm)],
@@ -48,6 +49,7 @@ export const infoCommand: Command = {
 			"NEXUS_DEBUG",
 			"NO_COLOR",
 			"FORCE_COLOR",
+			"NX_RUNTIME",
 			"NX_ROUTING",
 			"NX_VIEW",
 			"NX_ORM",

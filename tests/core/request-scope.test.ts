@@ -34,18 +34,18 @@ class RequestCtx {
 
 @Injectable()
 class ServiceA {
+	@Inject(RequestCtx) declare private ctx: RequestCtx;
 	touch() {
 		(this.ctx as RequestCtx).touched++;
 	}
-	constructor(@Inject(RequestCtx) private ctx: RequestCtx) {}
 }
 
 @Injectable()
 class ServiceB {
+	@Inject(RequestCtx) declare private ctx: RequestCtx;
 	touch() {
 		(this.ctx as RequestCtx).touched++;
 	}
-	constructor(@Inject(RequestCtx) private ctx: RequestCtx) {}
 }
 
 function makeHono() {
@@ -188,7 +188,7 @@ describe("Application integration · end-to-end", () => {
 	it("scope: 'request' works through the framework", async () => {
 		@Injectable()
 		class TestService {
-			constructor(@Inject(RequestCtx) public ctx: RequestCtx) {}
+			@Inject(RequestCtx) declare public ctx: RequestCtx;
 		}
 		// Simulate a controller via the Hono middleware + DI flow.
 		const root = new DIContainer();

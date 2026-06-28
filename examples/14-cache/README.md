@@ -32,7 +32,7 @@ import { CacheService, CacheModule } from "@nexusts/cache";
 @Injectable()
 @Controller("/")
 class PageController {
-  constructor(@Inject(CacheService) private cache: CacheService) {}
+  @Inject(CacheService) declare private cache: CacheService;
 
   @Get("/slow")
   async slow() {

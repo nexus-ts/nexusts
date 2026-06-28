@@ -44,7 +44,7 @@ export function nodeAdapter(app: Hono, port: number = 3000): any {
 
 			const honoRes = await app.fetch(new Request(url, init));
 			res.statusCode = honoRes.status;
-			honoRes.headers.forEach((v, k) => res.setHeader(k, v));
+			honoRes.headers.forEach((v, k) => { res.setHeader(k, v); });
 			const buf = Buffer.from(await honoRes.arrayBuffer());
 			res.end(buf);
 		} catch (err) {

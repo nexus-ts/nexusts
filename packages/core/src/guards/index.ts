@@ -16,7 +16,7 @@
  * class AdminController { ... }
  * ```
  */
-import { safeGetMeta, safeDefineMeta, safeHasMeta, safeParamTypes } from "../di/safe-reflect.js";
+import { safeGetMeta, safeDefineMeta, } from "../di/safe-reflect.js";
 import {
 	HTTP_GUARDS_METADATA,
 	CONTROLLER_GUARDS_METADATA,

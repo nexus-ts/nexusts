@@ -26,7 +26,7 @@ export class EdgeAdapter implements ViewAdapter {
 	async render(
 		template: string,
 		data: Record<string, any>,
-		context?: ViewContext,
+		_context?: ViewContext,
 		options?: ViewOptions,
 	): Promise<string> {
 		if (!this.edge) {

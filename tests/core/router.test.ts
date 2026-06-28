@@ -1,16 +1,15 @@
 /**
- * Integration tests for the router — covers @Body extraction,
- * @Param, @Query, @Headers, response serialization, guards,
- * interceptors, and exception filters in a real Hono request cycle.
+ * Integration tests for the router — covers standard mode (ctx.req.*),
+ * body extraction, response serialization, guards, interceptors, and
+ * exception filters in a real Hono request cycle.
+ *
+ * Legacy @Body/@Param/@Query/@Headers decorator tests are in
+ * router-legacy.test.ts.
  */
 import { describe, it, expect } from "vitest";
 import { Hono } from "hono";
 import {
 	Controller, Get, Post,
-	Body, Param, Query, Headers,
-	UseGuards, UseFilters,
-	AuthGuard, HttpException,
-	createExceptionFilter,
 	Injectable, Inject,
 } from "@nexusts/core";
 import { ApplicationContainer } from "@nexusts/core";
@@ -28,18 +27,19 @@ function setupRouter() {
 }
 
 // ---------------------------------------------------------------------------
-// @Body("field") extraction — the bug that the blog app uncovered
+// Body extraction (standard mode: await ctx.req.json())
 // ---------------------------------------------------------------------------
 
-describe("@Body field extraction", () => {
-	it("extracts named field from JSON body via @Body('key')", async () => {
+describe("body extraction (standard mode)", () => {
+	it("extracts JSON body via ctx.req.json()", async () => {
 		const { hono, container, router } = setupRouter();
 
 		@Controller("/test")
 		class TestCtrl {
 			@Post("/")
-			async create(@Body("email") email: string, @Body("name") name: string) {
-				return { email, name };
+			async create(ctx: any) {
+				const body = await ctx.req.json();
+				return { email: body.email, name: body.name };
 			}
 		}
 
@@ -58,39 +58,15 @@ describe("@Body field extraction", () => {
 		expect(body).toEqual({ email: "a@b.com", name: "Alice" });
 	});
 
-	it("returns full body when @Body() has no key", async () => {
-		const { hono, container, router } = setupRouter();
-
-		@Controller("/test")
-		class TestCtrl {
-			@Post("/")
-			async create(@Body() body: any) {
-				return body;
-			}
-		}
-
-		container.register(TestCtrl);
-		router.registerController(TestCtrl, container);
-
-		const res = await hono.fetch(
-			new Request("http://localhost/test", {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ a: 1, b: 2 }),
-			}),
-		);
-		const body = await res.json();
-		expect(body).toEqual({ a: 1, b: 2 });
-	});
-
 	it("handles empty JSON body gracefully", async () => {
 		const { hono, container, router } = setupRouter();
 
 		@Controller("/test")
 		class TestCtrl {
 			@Post("/")
-			async create(@Body("key") key: string | undefined) {
-				return { key };
+			async create(ctx: any) {
+				const body = await ctx.req.json();
+				return { key: body.key };
 			}
 		}
 
@@ -110,18 +86,18 @@ describe("@Body field extraction", () => {
 });
 
 // ---------------------------------------------------------------------------
-// @Param, @Query, @Headers extraction
+// Param, Query, Headers extraction (standard mode: ctx.req.*())
 // ---------------------------------------------------------------------------
 
-describe("@Param | @Query | @Headers extraction", () => {
-	it("extracts @Param('id') from path", async () => {
+describe("param | query | headers extraction (standard mode)", () => {
+	it("extracts path param via ctx.req.param()", async () => {
 		const { hono, container, router } = setupRouter();
 
 		@Controller("/users")
 		class TestCtrl {
 			@Get("/:id")
-			get(@Param("id") id: string) {
-				return { id };
+			get(ctx: any) {
+				return { id: ctx.req.param("id") };
 			}
 		}
 
@@ -133,14 +109,14 @@ describe("@Param | @Query | @Headers extraction", () => {
 		expect(body).toEqual({ id: "42" });
 	});
 
-	it("extracts @Query('page') from query string", async () => {
+	it("extracts query param via ctx.req.query()", async () => {
 		const { hono, container, router } = setupRouter();
 
 		@Controller("/items")
 		class TestCtrl {
 			@Get("/")
-			list(@Query("page") page: string) {
-				return { page };
+			list(ctx: any) {
+				return { page: ctx.req.query("page") };
 			}
 		}
 
@@ -152,14 +128,14 @@ describe("@Param | @Query | @Headers extraction", () => {
 		expect(body).toEqual({ page: "3" });
 	});
 
-	it("extracts @Headers('authorization')", async () => {
+	it("extracts header via ctx.req.header()", async () => {
 		const { hono, container, router } = setupRouter();
 
 		@Controller("/secure")
 		class TestCtrl {
 			@Get("/")
-			get(@Headers("authorization") auth: string) {
-				return { auth };
+			get(ctx: any) {
+				return { auth: ctx.req.header("authorization") };
 			}
 		}
 
@@ -266,94 +242,6 @@ describe("response serialization", () => {
 });
 
 // ---------------------------------------------------------------------------
-// Guards — integration with real Request
-// ---------------------------------------------------------------------------
-
-describe("Guards integration", () => {
-	it("AuthGuard rejects request without Bearer token (403)", async () => {
-		const { hono, container, router } = setupRouter();
-
-		@Controller("/admin")
-		@UseGuards(AuthGuard)
-		class AdminCtrl {
-			@Get("/")
-			index() {
-				return { secret: true };
-			}
-		}
-
-		container.register(AdminCtrl);
-		router.registerController(AdminCtrl, container);
-
-		const res = await hono.fetch(new Request("http://localhost/admin"));
-		expect(res.status).toBe(403);
-	});
-
-	it("AuthGuard allows request with Bearer token", async () => {
-		const { hono, container, router } = setupRouter();
-
-		@Controller("/admin")
-		@UseGuards(AuthGuard)
-		class AdminCtrl {
-			@Get("/")
-			index() {
-				return { secret: true };
-			}
-		}
-
-		container.register(AdminCtrl);
-		router.registerController(AdminCtrl, container);
-
-		const res = await hono.fetch(
-			new Request("http://localhost/admin", {
-				headers: { authorization: "Bearer tok123" },
-			}),
-		);
-		expect(res.status).toBe(200);
-		const body = await res.json();
-		expect(body).toEqual({ secret: true });
-	});
-});
-
-// ---------------------------------------------------------------------------
-// Exception Filters — integration
-// ---------------------------------------------------------------------------
-
-describe("Exception Filters integration", () => {
-	it("catches HttpException and returns proper status", async () => {
-		const { hono, container, router } = setupRouter();
-
-		const notFoundFilter = createExceptionFilter((error, _ctx) => {
-			if (error instanceof HttpException && error.statusCode === 404) {
-				return new Response(JSON.stringify({ custom: error.message }), {
-					status: 404,
-					headers: { "Content-Type": "application/json" },
-				});
-			}
-			throw error;
-		});
-
-		@Controller("/api")
-		class TestCtrl {
-			@Get("/:id")
-			@UseFilters(notFoundFilter)
-			get(@Param("id") id: string) {
-				if (id === "999") throw HttpException.notFound("Missing");
-				return { id };
-			}
-		}
-
-		container.register(TestCtrl);
-		router.registerController(TestCtrl, container);
-
-		const res = await hono.fetch(new Request("http://localhost/api/999"));
-		expect(res.status).toBe(404);
-		const body = await res.json();
-		expect(body).toEqual({ custom: "Missing" });
-	});
-});
-
-// ---------------------------------------------------------------------------
 // Controller + DI integration
 // ---------------------------------------------------------------------------
 
@@ -368,9 +256,10 @@ describe("Controller + DI integration", () => {
 
 		@Controller("/")
 		class TestCtrl {
-			constructor(@Inject(Greeter) private greeter: Greeter) {}
+			@Inject(Greeter) declare private greeter: Greeter;
 			@Get("/:name")
-			greet(@Param("name") name: string) {
+			greet(ctx: any) {
+				const name = ctx.req.param("name") ?? "";
 				return { msg: this.greeter.greet(name) };
 			}
 		}

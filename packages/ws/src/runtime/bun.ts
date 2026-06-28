@@ -35,7 +35,6 @@ export class BunWsAdapter {
 	 */
 	async install(app: Hono, gateways: GatewayClass[]): Promise<{ websocket: BunWebSocketConfig }> {
 		// Lazy-import Hono's Bun adapter to keep Node builds from breaking.
-		// @ts-ignore - bun adapter is Bun-only
 		const { createBunWebSocket } = await import("hono/bun");
 		const { upgradeWebSocket, websocket } = createBunWebSocket();
 

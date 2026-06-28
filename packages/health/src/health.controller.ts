@@ -13,7 +13,7 @@
 import { Controller, Get, Inject } from "@nexusts/core";
 import type { Context } from "hono";
 import { HealthCheckService } from "./health.service.js";
-import type { HealthCheckKind, HealthConfig } from "./types.js";
+import type { HealthCheckKind, } from "./types.js";
 
 @Controller()
 export class HealthController {

@@ -9,8 +9,7 @@
  * These helpers abstract the storage/retrieval so decorator files don't
  * duplicate the dual-mode logic.
  */
-import { safeGetMeta, safeDefineMeta, safeHasMeta, safeParamTypes } from "./safe-reflect.js";
-import { METADATA_KEY } from "../constants.js";
+import { safeGetMeta, safeHasMeta, } from "./safe-reflect.js";
 
 /** Property name on the constructor that holds the metadata object. */
 export const META_PROP = "__nexus_meta__";

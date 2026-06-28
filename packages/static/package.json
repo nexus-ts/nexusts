@@ -1,6 +1,6 @@
 {
   "name": "@nexusts/static",
-  "version": "0.9.7",
+  "version": "0.9.13",
   "description": "Static file serving (ETag / Range / MIME)",
   "type": "module",
   "main": "./dist/index.js",

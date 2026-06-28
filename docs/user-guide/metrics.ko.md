@@ -29,7 +29,7 @@ class AppModule {}
 
 이 한 번의 호출로:
 
-1. Node.js 프로세스 메트릭 (CPU, 메모리, GC, event loop lag)을 자동 수집 값으로 등록
+1. Bun 프로세스 메트릭 (CPU, 메모리, GC, event loop lag)을 자동 수집
 2. `GET /metrics`를 content negotiation과 함께 마운트 (기본 Prometheus 0.0.4, 클라이언트가 요청 시 OpenMetrics 1.0.0)
 3. 모든 메트릭에 `service: "my-app"`을 global label로 적용
 
@@ -39,9 +39,9 @@ $ curl http://localhost:3000/metrics
 # TYPE process_resident_memory_bytes gauge
 process_resident_memory_bytes{service="my-app"} 12345678
 
-# HELP nodejs_heap_size_used_bytes Node.js heap size used in bytes.
-# TYPE nodejs_heap_size_used_bytes gauge
-nodejs_heap_size_used_bytes{service="my-app"} 4567890
+# HELP bun_heap_size_used_bytes Bun heap size used in bytes.
+# TYPE bun_heap_size_used_bytes gauge
+bun_heap_size_used_bytes{service="my-app"} 4567890
 ...
 ```
 
@@ -176,7 +176,7 @@ Accept: application/openmetrics-text
 
 ---
 
-## 6. 기본 Node.js 프로세스 메트릭
+## 6. 기본 Bun 프로세스 메트릭
 
 `enableDefaultMetrics: true` (기본)일 때, 다음 gauge가 scrape 시점에 실행되는 `collect()` 콜백과 함께 등록됨:
 
@@ -186,7 +186,7 @@ Accept: application/openmetrics-text
 | `process_resident_memory_bytes` | RSS (bytes) |
 | `process_cpu_user_seconds_total` | user CPU 시간 |
 | `process_cpu_system_seconds_total` | system CPU 시간 |
-| `nodejs_heap_size_used_bytes` | V8 heap 사용 |
+| `bun_heap_size_used_bytes` | V8 heap 사용 |
 | `nodejs_heap_size_total_bytes` | V8 heap 총합 |
 | `nodejs_external_memory_bytes` | 외부 메모리 |
 | `nodejs_eventloop_lag_seconds` | event loop lag (샘플링) |

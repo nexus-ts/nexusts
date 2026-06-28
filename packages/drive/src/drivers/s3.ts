@@ -59,7 +59,7 @@ export class S3Driver implements StorageDriver {
 						}
 					: undefined,
 			});
-		} catch (err) {
+		} catch (_err) {
 			throw new Error(
 				"S3Driver requires @aws-sdk/client-s3. Install it with: bun add @aws-sdk/client-s3",
 			);

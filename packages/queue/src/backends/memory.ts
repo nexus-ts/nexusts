@@ -29,10 +29,8 @@ interface PendingJob {
 /** Per-job worker handle. */
 class MemoryWorkerHandle implements WorkerHandle {
 	#running = true;
-	#handler: JobHandler;
 	#context: { jobId: string; name: string };
-	constructor(name: string, handler: JobHandler) {
-		this.#handler = handler;
+	constructor(name: string, _handler: JobHandler) {
 		this.#context = { jobId: "", name };
 	}
 	get name() {

@@ -11,7 +11,7 @@ raw query API로 감싼다.
 @Module({
   imports: [
     DrizzleModule.forRoot({
-      dialect: 'bun-sqlite',                 // 'postgres' | 'mysql' | 'sqlite' | 'bun-sqlite' | 'd1'
+      dialect: 'sqlite',                 // 'postgres' | 'mysql' | 'sqlite' | 'd1'
       connection: { filename: './data.db' },  // dialect-specific
       logging: true,                         // 선택 쿼리 로거
       autoMigrate: true,                     // 부팅 시 마이그레이션 자동 실행
@@ -34,8 +34,8 @@ class UserService {
 | ------- | ----------------- | ------ |
 | `postgres` | `{ url }` 또는 `{ host, port, user, password, database, ssl, pool }` | `postgres.js` (기본) → `pg` fallback |
 | `mysql` | `{ host, port, user, password, database, pool }` | `mysql2` |
-| `sqlite` | `{ filename, readonly? }` | `better-sqlite3` |
-| `bun-sqlite` | `{ filename }` | `bun:sqlite` (Bun 내장) |
+| 'sqlite' | `{ filename, readonly? }` | `better-sqlite3` |
+| `sqlite` | `{ filename }` | `bun:sqlite` (Bun 내장) |
 | `d1` | `{ binding: D1Database }` | Cloudflare D1 (Workers) |
 
 모든 연결 드라이버 패키지는 **선택 peer dependency** — 사용할 것만
@@ -308,8 +308,8 @@ dialect의 native 형식으로 변환한 후 전송한다:
 
 | Dialect | Native placeholder |
 | ------- | ------------------ |
-| `postgres` / `bun-sqlite` w/ postgres.js | `$1, $2, ...` |
-| `mysql` / `sqlite` / `bun-sqlite` / `d1` | `?, ?, ...` |
+| `postgres` / `sqlite` w/ postgres.js | `$1, $2, ...` |
+| `mysql` / 'sqlite' / `sqlite` / `d1` | `?, ?, ...` |
 
 신경 쓰지 않고 portable 코드를 작성할 수 있다.
 

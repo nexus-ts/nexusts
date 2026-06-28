@@ -228,7 +228,8 @@ export function annotateProps(props: Record<string, any>): PropAnnotation {
 	for (const [key, value] of Object.entries(props)) {
 		if (isInertiaHelper(value)) {
 			const kind = value.__inertiaKind;
-			(byKind[kind] ??= []).push(key);
+			byKind[kind] ??= [];
+			byKind[kind].push(key);
 			configs[key] = value;
 		}
 	}

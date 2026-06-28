@@ -7,18 +7,18 @@
 | Capability | Description |
 | ---------- | ----------- |
 | **MVC** | `@Controller`, `@Module`, `@Injectable`, `@Inject` |
-| **DI** | Constructor injection with singleton / transient / request scopes |
+| **DI** | Field injection with singleton / transient / request scopes. No `experimentalDecorators` or `reflect-metadata` required. |
 | **Routing** | Three styles: Nest decorators, Adonis-style router, Hono functional |
 | **Validation** | `@Validate()` with Zod schemas, automatic 422 responses |
 | **View engines** | Rendu (default), Edge, Eta, Inertia.js v3 (React + Vue) |
 | **CLI** | `nx` command runner: `new`, `init`, `make:*`, `db:*`, `repl` |
-| **Hono server** | Underlying HTTP server (Bun / Node / Cloudflare Workers) |
+| **Hono server** | Underlying HTTP server (Bun / Cloudflare Workers) |
 
 ## Install
 
 ```bash
 bun add @nexusts/core
-npx @nexusts/core init
+bunx @nexusts/core init
 ```
 
 That's it. No additional dependencies required to get a working app.
@@ -35,7 +35,7 @@ to the install command on first call.
 | ------ | ------------ | ------------- |
 | `@nexusts/auth` | better-auth integration | `bun add better-auth` |
 | `@nexusts/cache` | Application cache (memory / Drizzle) | _(none)_ |
-| `@nexusts/cli` | CLI command runner (`nx`) | _(none, bundled with core)_ |
+| `@nexusts/cli` | CLI command runner (`nx`) | _(bundled with core)_ |
 | `@nexusts/config` | Zod-validated configuration | _(none)_ |
 | `@nexusts/crypto` | AES-256-GCM + HMAC + scrypt/argon2 | _(none)_ |
 | `@nexusts/drive` | File storage (Local / S3 / R2 / memory) | _(none)_ |
@@ -61,9 +61,10 @@ to the install command on first call.
 | `@nexusts/tracing` | OpenTelemetry distributed tracing | `bun add @opentelemetry/api` |
 | `@nexusts/upload` | Multipart file upload | _(none)_ |
 | `@nexusts/view` | View engines + Inertia.js v3 | _(none)_ |
-| `@nexusts/ws` | WebSockets (Bun native / Node fallback) | `bun add ws` (Node only) |
+| `@nexusts/ws` | WebSockets (Bun native) | _(Bun has WS built-in)_ |
 
 See [`docs/user-guide/`](../../docs/user-guide/) for the full module list.
+
 ## Usage
 
 ```typescript
@@ -72,7 +73,7 @@ import { Application, Controller, Get, Module } from "@nexusts/core";
 @Controller("/")
 class HelloController {
   @Get("/")
-  index() {
+  index(ctx: any) {
     return { message: "Hello from NexusTS!" };
   }
 }
@@ -83,7 +84,7 @@ class HelloController {
 class AppModule {}
 
 const app = new Application(AppModule);
-export default app;
+await app.listen(3000);
 ```
 
 ## License

@@ -8,11 +8,10 @@
  * follows whichever driver was selected.
  */
 import type {
-	DrizzleDriverResult,
 	DriverFactory,
 	RawExecutor,
 } from "./base.js";
-import type { DrizzleConfig, PostgresConnectionOptions } from "../types.js";
+import type { PostgresConnectionOptions } from "../types.js";
 
 export const postgresDriver: DriverFactory = async (config) => {
 	const conn = config.connection as PostgresConnectionOptions;

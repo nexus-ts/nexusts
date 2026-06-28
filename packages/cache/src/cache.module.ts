@@ -17,7 +17,6 @@ import { CacheService } from "./cache.service.js";
 import { MemoryStore } from "./stores/memory.js";
 import { RedisCacheStore } from "./stores/redis.js";
 import type { CacheConfig } from "./types.js";
-import { safeGetMeta, safeDefineMeta, safeHasMeta } from "@nexusts/core/di/safe-reflect";
 
 @Module({
 	providers: [
@@ -30,7 +29,11 @@ export class CacheModule {
 	static forRoot(config: CacheConfig = {}) {
 		@Module({
 			providers: [
-				CacheService,
+				{
+					provide: CacheService,
+					useFactory: (cfg: CacheConfig) => new CacheService(cfg),
+					inject: ["CACHE_CONFIG"],
+				},
 				{ provide: CacheService.TOKEN, useExisting: CacheService },
 				{
 					provide: "CACHE_CONFIG",

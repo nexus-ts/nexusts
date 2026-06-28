@@ -82,7 +82,7 @@ class InputValueImpl<T = any> implements InputValueChain<T> {
 			return new InputValueImpl(NaN);
 		}
 		const n = Number(this.current);
-		return new InputValueImpl(isNaN(n) ? NaN : n);
+		return new InputValueImpl(Number.isNaN(n) ? NaN : n);
 	}
 
 	int(): InputValueChain<number> {
@@ -90,7 +90,7 @@ class InputValueImpl<T = any> implements InputValueChain<T> {
 			return new InputValueImpl(NaN);
 		}
 		const n = parseInt(String(this.current), 10);
-		return new InputValueImpl(isNaN(n) ? NaN : n);
+		return new InputValueImpl(Number.isNaN(n) ? NaN : n);
 	}
 
 	required(): InputValueChain<T> {
@@ -101,7 +101,7 @@ class InputValueImpl<T = any> implements InputValueChain<T> {
 		) {
 			throw new Error("InputValue: required value is missing");
 		}
-		if (typeof this.current === "number" && isNaN(this.current)) {
+		if (typeof this.current === "number" && Number.isNaN(this.current)) {
 			throw new Error("InputValue: required value is NaN");
 		}
 		return this;
@@ -111,7 +111,7 @@ class InputValueImpl<T = any> implements InputValueChain<T> {
 		if (
 			this.current === null ||
 			this.current === undefined ||
-			(typeof this.current === "number" && isNaN(this.current)) ||
+			(typeof this.current === "number" && Number.isNaN(this.current)) ||
 			this.current === ""
 		) {
 			return new InputValueImpl(fallback);

@@ -22,14 +22,14 @@ import {
 	RedisClient,
 	RedisModule,
 	REDIS_CLIENT_TOKEN,
-} from "../../src/redis/index.js";
+} from "@nexusts/redis";
 import {
 	RedisSessionStorage,
 	CloudflareKVSessionStorage,
 	SessionService,
-} from "../../src/session/index.js";
-import { RedisCacheStore } from "../../src/cache/stores/redis.js";
-import { Application } from "../../src/core/application.js";
+} from "@nexusts/session";
+import { RedisCacheStore } from "@nexusts/cache";
+import { Application } from "@nexusts/core";
 
 describe("detectRedisRuntime", () => {
 	it("returns a known adapter", () => {

@@ -3,9 +3,9 @@
  * `nx config` when the project's ORM is set to `drizzle`.
  *
  * The dialect is derived from the project's `db` driver:
- *   bun-sqlite / node-sqlite / libsql  →  sqlite
- *   postgres                            →  postgresql
- *   mysql                               →  mysql
+ *   sqlite  →  sqlite
+ *   postgres             →  postgresql
+ *   mysql                →  mysql
  */
 
 export default `

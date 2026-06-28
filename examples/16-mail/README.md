@@ -37,7 +37,7 @@ import { MailService, MailModule } from "@nexusts/mail";
 @Injectable()
 @Controller("/mail")
 class MailController {
-  constructor(@Inject(MailService) private mail: MailService) {}
+  @Inject(MailService) declare private mail: MailService;
 
   @Post("/")
   async send(@Body() body: { to: string; subject: string; text: string }) {
@@ -83,7 +83,7 @@ MailModule.forRoot({
 ```ts
 @Injectable()
 class WelcomeMail {
-  constructor(@Inject(MailService) private mail: MailService) {}
+  @Inject(MailService) declare private mail: MailService;
   async send(to: string, name: string) {
     await this.mail.send({
       to,

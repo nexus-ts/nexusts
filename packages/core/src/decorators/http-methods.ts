@@ -16,7 +16,7 @@
  *
  * Legacy mode (experimentalDecorators: true) continues to work identically.
  */
-import { safeGetMeta, safeDefineMeta, safeHasMeta, safeParamTypes } from "../di/safe-reflect.js";
+import { safeGetMeta, safeDefineMeta, } from "../di/safe-reflect.js";
 import { HTTP_METHODS, METADATA_KEY, type HttpMethod } from "../constants.js";
 import type { RouteMetadata } from "../di/tokens.js";
 

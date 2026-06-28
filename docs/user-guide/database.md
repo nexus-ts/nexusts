@@ -19,7 +19,7 @@ Choose **[Kysely](./kysely.md)** for SQL-first development with maximum type saf
 
 ```bash
 # 1. Scaffold a new project with Drizzle + SQLite
-nx init --orm drizzle --db bun-sqlite
+nx init --orm drizzle --db sqlite
 
 # 2. Edit your schema
 #    app/models/user.model.ts
@@ -43,7 +43,7 @@ one that matches your deployment target.
 
 | Driver | Package | Dev setup | Production | Best for |
 |--------|---------|-----------|------------|----------|
-| `bun-sqlite` | none (Bun built-in) | Zero config | Single file (`app.db`) | Prototyping, edge, single-server |
+| `sqlite` | none (Bun built-in) | Zero config | Single file (`app.db`) | Prototyping, edge, single-server |
 | `postgres` | `pg` or `postgres` | Docker / local PG | RDS / Supabase / Neon | Production apps |
 | `mysql` | `mysql2` | Docker / local MySQL | PlanetScale / RDS | Production apps |
 
@@ -56,7 +56,7 @@ import { DrizzleModule } from '@nexusts/drizzle';
 @Module({
   imports: [
     DrizzleModule.forRoot({
-      dialect: 'bun-sqlite',
+      dialect: 'sqlite',
       connection: { url: 'app.db' },
     }),
   ],

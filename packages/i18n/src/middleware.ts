@@ -76,7 +76,7 @@ function parseAcceptLanguage(header: string): Locale[] {
 		.map((part) => {
 			const [tag, qPart] = part.trim().split(";");
 			const q = qPart?.startsWith("q=") ? Number(qPart.slice(2)) : 1;
-			return { tag: tag?.trim() ?? "", q: isFinite(q) ? q : 1 };
+			return { tag: tag?.trim() ?? "", q: Number.isFinite(q) ? q : 1 };
 		})
 		.filter((e) => e.tag.length > 0)
 		.sort((a, b) => b.q - a.q)

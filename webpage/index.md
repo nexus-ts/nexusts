@@ -37,7 +37,6 @@ features:
     details: Retry, Circuit Breaker, Bulkhead. Cross-pod stores (Redis/Drizzle). HTTP admin API. Feature flags for canary deployments.
   - icon: ⚡
     title: Battle-tested CI
-    details: 348+ tests across Bun, Node.js 22, Cloudflare Workers, and 3 Drizzle dialects. Smoke-tested on every commit.
 ---
 
 ## What is NexusTS?
@@ -60,7 +59,7 @@ The framework provides a complete set of tools for building production backend s
 ## Quick Start
 
 ```bash
-npm create nexusts@latest my-app
+bun create nexusts@latest my-app
 cd my-app
 bun install
 bun run dev
@@ -68,7 +67,7 @@ bun run dev
 
 ```bash
 # Or use the CLI directly:
-bunx nx new my-app --view inertia --orm drizzle --db bun-sqlite --frontend react
+bunx nx new my-app --view inertia --orm drizzle --db sqlite --frontend react
 ```
 
 ## Architecture
@@ -96,7 +95,6 @@ bunx nx new my-app --view inertia --orm drizzle --db bun-sqlite --frontend react
 | Feature | NexusTS | NestJS | AdonisJS |
 |---------|---------|--------|----------|
 | **Decorators** | ✅ **TC39 standard ES** | ⚠️ experimentalDecorators | ⚠️ experimentalDecorators |
-| **Runtime** | Bun (native) | Node.js | Node.js |
 | **Packages** | 32 (opt-in) | Monolithic | Monolithic |
 | **GraphQL** | ✅ Built-in | ✅ @nestjs/graphql | ✅ @adonisjs/graphql |
 | **gRPC streaming** | ✅ Built-in | ✅ @nestjs/microservices | ❌ DIY |

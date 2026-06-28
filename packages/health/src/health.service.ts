@@ -11,7 +11,6 @@ import type {
 	HealthCheckResult,
 	HealthCheckEntry,
 	HealthIndicator,
-	HealthIndicatorResult,
 	HealthCheckKind,
 	HealthConfig,
 } from "./types.js";
@@ -60,7 +59,7 @@ export class HealthCheckService {
 	 *
 	 *   await health.check()  → 200 if all 'up', 503 if any 'down'.
 	 */
-	async check(kind: HealthCheckKind = "readiness"): Promise<HealthCheckResult> {
+	async check(_kind: HealthCheckKind = "readiness"): Promise<HealthCheckResult> {
 		const start = Date.now();
 		const indicators = [...this.indicators.values()];
 		const settled = await Promise.allSettled(

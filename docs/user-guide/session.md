@@ -108,7 +108,7 @@ SessionModule.forRoot({
 ```
 
 Format: `<base64url(payload)>.<base64url(HMAC-SHA256)>`. Stateless —
-no server-side state needed. Ideal for Workers / Vercel / Deno
+no server-side state needed. Ideal for Workers / Vercel
 Deploy where shared storage isn't available.
 
 ### Memory

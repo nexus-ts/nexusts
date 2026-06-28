@@ -55,7 +55,7 @@ export class NodeRedisAdapter implements RedisClient {
 	private readonly nodeOptions: Record<string, unknown>;
 
 	constructor(config: RedisConfig = {}) {
-		this.url = config.url ?? process.env["REDIS_URL"] ?? "redis://localhost:6379";
+		this.url = config.url ?? process.env.REDIS_URL ?? "redis://localhost:6379";
 		this.keyPrefix = config.keyPrefix ?? "";
 		this.defaultTtlSeconds = config.defaultTtlSeconds ?? 0;
 		this.nodeOptions = config.nodeOptions ?? {};
@@ -64,14 +64,13 @@ export class NodeRedisAdapter implements RedisClient {
 	private async getClient(): Promise<IORedisLike> {
 		if (this.client) return this.client;
 		try {
-			// @ts-ignore - optional peer dep
 			const mod = await import("ioredis");
 			const Ctor = (mod as any).default ?? (mod as any);
 			if (typeof Ctor !== "function") {
 				throw new Error("ioredis module did not export a constructor");
 			}
 			this.client = new Ctor(this.url, this.nodeOptions) as IORedisLike;
-		} catch (err) {
+		} catch (_err) {
 			throw new Error(
 				"NodeRedisAdapter requires the `ioredis` package. " +
 					"Install with: bun add ioredis",

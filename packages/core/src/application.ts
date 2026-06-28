@@ -1,18 +1,4 @@
-/**
- * Application.
- *
- * The Application is the user-facing entry point: it owns the DI container,
- * the HTTP server, and the view engine. Typical bootstrap:
- *
- * ```ts
- * const app = await new Application(AppModule).bootstrap();
- * await app.listen(3000);
- * ```
- *
- * The class is intentionally small — every feature (DI, HTTP, ORM, view)
- * is a separate concern with its own module. Application composes them.
- */
-import { safeGetMeta, safeDefineMeta, safeHasMeta, safeParamTypes } from "./di/safe-reflect.js";
+
 import { ApplicationContainer } from "./di/container.js";
 import { ModuleScanner } from "./di/scanner.js";
 import { NexusServer, type NexusServerOptions } from "./http/server.js";
@@ -42,7 +28,7 @@ let _scheduleScanner: ((instance: unknown) => void) | null = null;
 export function setScheduleScanner(fn: ((instance: unknown) => void) | null): void {
 	_scheduleScanner = fn;
 }
-import { DIContainer } from "./di/container.js";
+import type { DIContainer } from "./di/container.js";
 
 export interface ApplicationOptions extends NexusServerOptions {
 	/** Default view adapter. Defaults to Rendu. */
@@ -83,7 +69,7 @@ export class Application {
 		this.container = new ApplicationContainer();
 		// Stash container globally so modules (e.g. schedule) can resolve
 		// providers during auto-init without importing @nexusts/core directly.
-		(globalThis as any)["__nexus_container"] = this.container;
+		(globalThis as any).__nexus_container = this.container;
 		const scanner = new ModuleScanner(this.container);
 		const { root, modules } = scanner.scan(rootModule);
 
@@ -134,7 +120,7 @@ export class Application {
 		this.tryLoadNxConfig();
 
 		// Surface debug info in dev.
-		if (process.env["NEXUS_DEBUG"] === "1") {
+		if (process.env.NEXUS_DEBUG === "1") {
 			console.log("[nexus] Modules:", modules.length);
 			console.log(
 				"[nexus] Controllers:",
@@ -153,7 +139,7 @@ export class Application {
 		// app.setViewPaths().
 		if (typeof require === "undefined") return;
 		try {
-			const mod = require(process.cwd() + "/nx.config.ts");
+			const mod = require(`${process.cwd()}/nx.config.ts`);
 			const cfg = mod.default ?? mod;
 			if (cfg && typeof cfg.viewPaths === "string" && cfg.viewPaths.length > 0) {
 				setViewPathsModule(cfg.viewPaths);

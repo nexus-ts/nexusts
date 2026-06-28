@@ -36,7 +36,7 @@
 | 인터셉터 | 수동 | 내장 |
 | 헬스 체킹 | 수동 | 내장 (`@grpc/health`) |
 | 서버 리플렉션 | 수동 | 내장 (`@grpc/reflection`) |
-| Node.js 호환 | Bun 전용 | Bun + Node.js |
+| Node.js 호환 | Bun 전용 | Bun |
 | 번들 크기 | 0 (Bun 내장) | 약 300KB 추가 |
 
 gRPC 시맨틱(메타데이터 전파, 데드라인 전파, 상태 코드, 재시도 로직,

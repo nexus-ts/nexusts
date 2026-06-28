@@ -7,7 +7,7 @@
 
 다음을 만족하는 균일한 세션 스토리지 추상화를 제공한다.
 
-1. **모든 런타임에서 동작** — Bun / Node / Cloudflare Workers / Vercel / Deno Deploy.
+1. **모든 런타임에서 동작** — Bun / Node / Cloudflare Workers / Vercel .
 2. **`@nexusts/auth`와 강제 없이 통합** — better-auth는 자체 DB 기반 세션을 관리; `SessionService`는 일시적 상태(플래시 메시지, 게스트 장바구니, OAuth 플로우 상태)를 관리.
 3. **바퀴를 재발명하지 않음** — 쿠키는 작은 인트리 HMAC로 인코딩/디코딩/검증; `cookie`나 `iron-session` 의존성 없음.
 

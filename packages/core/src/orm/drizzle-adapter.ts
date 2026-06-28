@@ -85,7 +85,7 @@ export class DrizzleModule<Schema extends Record<string, any> = any> {
 	 */
 	asModule() {
 		const token = this.token;
-		const builder = () => this.build();
+		const _builder = () => this.build();
 		// Create an ad-hoc provider class so users can import it directly.
 		class DrizzleProvider {}
 		Object.defineProperty(DrizzleProvider, "name", {

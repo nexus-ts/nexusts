@@ -74,7 +74,7 @@ Scaffold a new project from scratch.
 nx new my-app
 # Interactive — picks routing/view/orm/db
 
-nx new my-app --style nest --view inertia --orm drizzle --db bun-sqlite --no-interaction
+nx new my-app --style nest --view inertia --orm drizzle --db sqlite --no-interaction
 # Non-interactive
 ```
 
@@ -111,7 +111,7 @@ Generate (or refresh) `nx.config.ts` in an existing project.
 nx init
 # Asks: routing / view / orm / db / frontend
 
-nx init --style nest --view inertia --orm drizzle --db bun-sqlite --no-interaction
+nx init --style nest --view inertia --orm drizzle --db sqlite --no-interaction
 # Skips prompts
 
 nx init --merge
@@ -131,7 +131,7 @@ export default {
   view: 'inertia',
   orm: 'drizzle',
   database: {
-    driver: 'bun-sqlite',
+    driver: 'sqlite',
     url: process.env.DATABASE_URL ?? 'app.db',
   },
   inertia: {
@@ -380,7 +380,7 @@ Output:
   routing           nest
   view              inertia
   orm               drizzle
-  database.driver   bun-sqlite
+  database.driver   sqlite
   database.url      app.db
   inertia.frontend  react
   inertia.ssr       true

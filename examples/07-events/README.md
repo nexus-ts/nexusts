@@ -60,7 +60,7 @@ class UserListener {
 
 @Controller("/")
 class EventController {
-  constructor(@Inject(EventService) private events: EventService) {}
+  @Inject(EventService) declare private events: EventService;
 
   @Post("/emit/:type")
   async emit(@Body() body: any, @Param() params: any) {

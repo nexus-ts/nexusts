@@ -37,7 +37,7 @@ how the typed client factory works.
 | Interceptors | Manual | Built-in |
 | Health checking | Manual | Built-in (`@grpc/health`) |
 | Server reflection | Manual | Built-in (`@grpc/reflection`) |
-| Node.js compat | Bun only | Bun + Node.js |
+| Node.js compat | Bun only | Bun |
 | Bundle size | Zero (Bun built-in) | ~300KB added |
 
 We chose `@grpc/grpc-js` because implementing gRPC semantics

@@ -61,7 +61,7 @@ class UserService {
 ```bash
 openssl rand -base64 32
 # 또는
-node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
+bun -e "console.log(require.'crypto').randomBytes(32).toString('base64'))"
 ```
 
 ---

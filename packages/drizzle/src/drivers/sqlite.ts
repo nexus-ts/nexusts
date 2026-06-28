@@ -1,7 +1,7 @@
 /**
  * SQLite driver. Uses `better-sqlite3` (synchronous, fast).
  *
- * For edge / Workers, use `bun-sqlite` or `d1` instead.
+ * For edge / Workers, use `sqlite` or `d1` instead.
  */
 import type { DriverFactory, RawExecutor } from "./base.js";
 import type { SqliteConnectionOptions } from "../types.js";

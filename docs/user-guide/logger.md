@@ -485,7 +485,6 @@ interface LogContext {
 
 - [`../design/logger.md`](../design/logger.md) — design document
 - [`production-basics.md`](./production-basics.md) — health, config, logger, and static in one place
-- [`common-pitfalls.md`](./common-pitfalls.md) — debugging recipes
 - [`tracing.md`](./tracing.md) — distributed tracing from log correlation
 - [`cross-cutting-features.md`](./cross-cutting-features.md) — overview of all cross-cutting modules
 - [Pino documentation](https://getpino.io/) — logger backend

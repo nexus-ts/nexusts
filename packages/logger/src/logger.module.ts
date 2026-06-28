@@ -16,7 +16,7 @@
  *   // any service
  *   @Injectable()
  *   class MyService {
- *     constructor(@Inject(Logger.TOKEN) private logger: Logger) {}
+ *     @Inject(Logger.TOKEN) declare private logger: Logger;
  *
  *     async handle() {
  *       await this.logger.with({ requestId: 'r-1' }, async () => {

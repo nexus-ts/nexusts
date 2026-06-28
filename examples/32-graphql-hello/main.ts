@@ -5,7 +5,6 @@ import {
 	Resolver,
 	Query,
 	Mutation,
-	Arg,
 } from "@nexusts/graphql";
 /**
  * 32-graphql-hello — code-first GraphQL endpoint.
@@ -28,19 +27,19 @@ import {
 // populated when GraphQLModule.forRoot() is called.
 @Resolver()
 class HelloResolver {
-	@Query("hello", { returns: "String!" })
-	hello(@Arg("name", "String!") name: string): string {
+	@Query("hello", { returns: "String!", args: { name: "String!" } })
+	hello(name: string): string {
 		return `Hello, ${name}!`;
 	}
-	@Query("add", { returns: "Int!" })
-	add(@Arg("a", "Int!") a: number, @Arg("b", "Int!") b: number): number {
+	@Query("add", { returns: "Int!", args: { a: "Int!", b: "Int!" } })
+	add(a: number, b: number): number {
 		return a + b;
 	}
 }
 @Resolver()
 class EchoResolver {
-	@Mutation("echo", { returns: "String!" })
-	echo(@Arg("message", "String!") message: string): string {
+	@Mutation("echo", { returns: "String!", args: { message: "String!" } })
+	echo(message: string): string {
 		return message;
 	}
 }

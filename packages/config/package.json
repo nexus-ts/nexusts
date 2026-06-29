@@ -1,6 +1,6 @@
 {
   "name": "@nexusts/config",
-  "version": "0.9.13",
+  "version": "0.9.14",
   "description": "Zod-validated configuration with layered loading",
   "type": "module",
   "main": "./dist/index.js",

@@ -1,3 +1,5 @@
+> ⚠️ **Experimental / 실험 중** — This package is actively developed. The API may change without notice until v1.0.
+
 # @nexusts/view
 
 > **NexusTS View** — View engines (Rendu, Edge Templates, Eta) + Inertia.js v3 adapter for Bun and Cloudflare Workers.

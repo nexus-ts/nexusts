@@ -1,3 +1,5 @@
+> ⚠️ **Experimental / 실험 중** — This package is actively developed. The API may change without notice until v1.0.
+
 # @nexusts/resilience
 
 > **NexusTS** — Bun-native fullstack framework

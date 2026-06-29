@@ -1,3 +1,5 @@
+> ⚠️ **Experimental / 실험 중** — This package is actively developed. The API may change without notice until v1.0.
+
 # @nexusts/cache
 
 > **NexusTS Cache** — Application cache with memory, Redis, and Drizzle backends. Tag-based invalidation, TTL, and decorator support.

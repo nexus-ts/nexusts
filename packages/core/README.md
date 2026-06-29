@@ -1,3 +1,5 @@
+> ⚠️ **Experimental / 실험 중** — This package is actively developed. The API may change without notice until v1.0.
+
 # @nexusts/core
 
 > **NexusTS Core** — Bun-native fullstack framework. Install this and you have a working MVC + DI + routing + validation stack.

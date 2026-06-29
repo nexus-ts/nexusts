@@ -13,6 +13,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.9.14] — 2026-06-29
+
+### 추가
+
+- **34개 패키지 README에 실험 중 표시**: 모든 패키지 `README.md` 상단에
+  `⚠️ Experimental — actively developed` 배너 추가.
+- **최상위 README에도 실험 중 표시**: 루트 `README.md`에 동일한 배너 추가.
+- **`@nexusts/kysely` README 생성**: Kysely 통합 모듈용 `README.md` 작성.
+- **분석 문서**: NexusTS와 NestJS/AdonisJS 비교 분석 보고서 추가.
+
+### 수정
+
+- **Drizzle factory.ts**: `@ts-expect-error`를 `@ts-ignore`로 되돌려 더 넓은 dialect 호환성 확보.
+- **Biome 린트**: 코드베이스 전반의 biome 오류 진단 해결 및 경고 정리.
+
+---
+
 ## [0.9.13] — 2026-06-27
 
 ### 변경
@@ -1605,6 +1622,7 @@ Feature-complete MVP. 프레임워크가 "v0.2 약속" 모듈을 모두 획득.
 
 ---
 
+[0.9.14]: https://github.com/nexus-ts/nexusts/compare/v0.9.13...v0.9.14
 [0.8.3]: https://github.com/nexus-ts/nexusts/compare/v0.8.2...v0.8.3
 [0.8.2]: https://github.com/nexus-ts/nexusts/compare/v0.8.1...v0.8.2
 [0.8.1]: https://github.com/nexus-ts/nexusts/compare/v0.8.0...v0.8.1

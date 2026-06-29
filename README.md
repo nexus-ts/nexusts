@@ -1,3 +1,5 @@
+> ⚠️ **Experimental** — This package is actively developed. The API may change without notice until v1.0.
+
 # NexusTS
 
 <p align="center">
@@ -22,9 +24,10 @@
   <a href="https://github.com/nexus-ts/nexusts/blob/main/CHANGELOG.md">📝 Changelog</a>
 </p>
 
-> **v0.9.6 — Reflect polyfill + SSE/WS fixes.** TC39 standard ES
-> decorators, no reflect-metadata, inline polyfill. Field injection,
-> `ctx.req.*` methods.
+> **v0.9.14 — Experimental notice + analysis docs + lint fixes.**
+> Experimental banner on all 34 package READMEs. Comprehensive
+> NestJS/AdonisJS analysis reports. Biome lint cleanup. Drizzle
+> `@ts-ignore` compatibility fix.
 > 33 independent modules. See [CHANGELOG.md](./CHANGELOG.md) for details.
 
 ---
@@ -1175,6 +1178,10 @@ v1.0, only major bumps will.
   Reflect Metadata polyfill (no npm package needed). WebSocket decorators
   dual-mode (`@WebSocketGateway`, `@OnWebSocket*`). SSE `onAbort()` alias.
   WS client ID persistence fix. `bunAdapter` WebSocket env fix. with `KyselyService`, `KyselyRepository` (Lucid-style), `KyselyModule.forRoot()`, built-in Migrator. CLI integration: `nx db:generate`/`db:migrate --orm kysely`, `make:crud`/`make:model`/`make:migration` Kysely templates. `BunSqliteDialect` for bun:sqlite. **33 modules.** Prisma removed from CLI options.
+- **v0.9.14** (2026-06-29) — **Experimental notice + analysis docs + lint cleanup.**
+  Experimental banner on all 34 package READMEs. Comprehensive
+  NestJS/AdonisJS analysis reports. Biome lint cleanup. Drizzle
+  `@ts-ignore` compatibility fix.
 - **v0.9.13** (2026-06-27) — **CLI prompt refinement + `nx init` runtime flag.**
   "Database driver" → "Database" across all CLI commands. `nx init` now
   accepts `--runtime bun|cloudflare` to specify the target runtime when

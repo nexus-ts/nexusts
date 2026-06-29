@@ -1,6 +1,6 @@
 {
   "name": "@nexusts/drizzle",
-  "version": "0.9.13",
+  "version": "0.9.14",
   "description": "Drizzle ORM integration (default ORM, 5 dialects)",
   "type": "module",
   "main": "./dist/index.js",

@@ -1,3 +1,5 @@
+> ⚠️ **Experimental** — This package is actively developed. The API may change without notice until v1.0.
+
 # create-nexusts
 
 > Scaffold a new [NexusTS](https://github.com/nexus-ts/nexusts) project — Bun-native fullstack framework.

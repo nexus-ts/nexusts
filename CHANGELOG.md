@@ -13,6 +13,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.9.14] — 2026-06-29
+
+### Added
+
+- **Experimental notice on all 34 package READMEs**: All package-level `README.md` files now display an
+  `⚠️ Experimental — actively developed` banner at the top.
+- **Top-level README notice**: Root `README.md` also shows the same experimental banner.
+- **`@nexusts/kysely` README**: Created a proper `README.md` for the Kysely integration module.
+- **Analysis docs**: Added comprehensive NexusTS vs NestJS/AdonisJS analysis reports.
+
+### Fixed
+
+- **Drizzle factory.ts**: Reverted `@ts-expect-error` to `@ts-ignore` for broader dialect compatibility.
+- **Biome lint**: Resolved all biome error-severity diagnostics and cleaned warnings across the codebase.
+
+---
+
 ## [0.9.13] — 2026-06-27
 
 ### Changed
@@ -2045,6 +2062,7 @@ Initial release. **feature-complete MVP core.**
 
 ---
 
+[0.9.14]: https://github.com/nexus-ts/nexusts/compare/v0.9.13...v0.9.14
 [0.8.3]: https://github.com/nexus-ts/nexusts/compare/v0.8.2...v0.8.3
 [0.8.2]: https://github.com/nexus-ts/nexusts/compare/v0.8.1...v0.8.2
 [0.8.1]: https://github.com/nexus-ts/nexusts/compare/v0.8.0...v0.8.1

@@ -1,3 +1,5 @@
+> ⚠️ **Experimental / 실험 중** — This package is actively developed. The API may change without notice until v1.0.
+
 # `@nexusts/feature-flag`
 
 Feature flags, canary deployments, and A/B testing for NexusTS.
